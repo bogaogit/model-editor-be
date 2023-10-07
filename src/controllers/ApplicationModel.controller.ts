@@ -1,4 +1,4 @@
-import { All, Controller, Get, Param } from "@nestjs/common";
+import { All, Body, Controller, Get, Param, Post } from "@nestjs/common";
 import { ApplicationModelsService } from '../services/ApplicationModel.service';
 import { ApplicationModel } from '../models/ApplicationModel.entity';
 
@@ -8,7 +8,7 @@ export class ApplicationModelController {
     private readonly applicationModelsService: ApplicationModelsService,
   ) {}
 
-  @All()
+  @Get()
   findAll(): Promise<ApplicationModel[]> {
     return this.applicationModelsService.findAll();
   }
@@ -16,5 +16,10 @@ export class ApplicationModelController {
   @Get(':id')
   findOne(@Param('id') id: number): Promise<ApplicationModel> {
     return this.applicationModelsService.findOne(id);
+  }
+
+  @Post()
+  async save(@Body() entityData: ApplicationModel) {
+    return this.applicationModelsService.save(entityData);
   }
 }

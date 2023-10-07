@@ -21,4 +21,9 @@ export class ApplicationModelsService {
   async remove(id: number): Promise<void> {
     await this.applicationModelsRepository.delete(id);
   }
+
+  async save(entityData: ApplicationModel): Promise<ApplicationModel> {
+    console.log(entityData);
+    return this.applicationModelsRepository.save(entityData);
+  }
 }
