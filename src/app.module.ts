@@ -2,7 +2,8 @@ import { Module } from "@nestjs/common";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { User } from "./models/user.entity";
+import { ApplicationModel } from "./models/ApplicationModel.entity";
+import { ApplicationModelsModule } from "./modules/ApplicationModel.module";
 
 @Module({
   imports: [
@@ -13,11 +14,10 @@ import { User } from "./models/user.entity";
       username: "postgres",
       password: "postgres",
       database: "model-edit-be",
-      entities: [User],
+      entities: [ApplicationModel],
       synchronize: true,
     }),
+    ApplicationModelsModule
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}
