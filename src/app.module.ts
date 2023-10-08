@@ -5,6 +5,7 @@ import { ApplicationModelsModule } from './modules/ApplicationModel.module';
 import { FilesModule } from './modules/Files.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { join } from 'path';
     }),
     ApplicationModelsModule,
     FilesModule,
+    UserModule,
   ],
 })
 export class AppModule {}
