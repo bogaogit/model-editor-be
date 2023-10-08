@@ -22,11 +22,10 @@ export class FilesController {
   )
   uploadMultipleFiles(
     @UploadedFile() file: Express.Multer.File,
-    @Res() res: Response,
   ) {
     const fileResponse = {
       filename: file.filename,
     };
-    res.status(HttpStatus.OK).send();
+    return fileResponse;
   }
 }
