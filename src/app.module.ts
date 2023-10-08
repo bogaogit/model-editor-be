@@ -4,6 +4,7 @@ import { AppService } from "./app.service";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { ApplicationModel } from "./models/ApplicationModel.entity";
 import { ApplicationModelsModule } from "./modules/ApplicationModel.module";
+import { FilesModule } from "./modules/Files.module";
 
 @Module({
   imports: [
@@ -17,7 +18,8 @@ import { ApplicationModelsModule } from "./modules/ApplicationModel.module";
       entities: [ApplicationModel],
       synchronize: true,
     }),
-    ApplicationModelsModule
+    ApplicationModelsModule,
+    FilesModule
   ],
 })
 export class AppModule {}

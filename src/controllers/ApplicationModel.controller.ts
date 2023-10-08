@@ -15,6 +15,7 @@ export class ApplicationModelController {
 
   @Get(':id')
   findOne(@Param('id') id: number): Promise<ApplicationModel> {
+    console.log("findOne");
     return this.applicationModelsService.findOne(id);
   }
 
