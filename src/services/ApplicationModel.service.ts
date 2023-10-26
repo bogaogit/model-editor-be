@@ -14,11 +14,11 @@ export class ApplicationModelsService {
     return this.applicationModelsRepository.find();
   }
 
-  findOne(id: number): Promise<ApplicationModel | null> {
+  findOne(id: string): Promise<ApplicationModel | null> {
     return this.applicationModelsRepository.findOneBy({ id });
   }
 
-  async delete(id: number): Promise<void> {
+  async delete(id: string): Promise<void> {
     await this.applicationModelsRepository.delete(id);
   }
 

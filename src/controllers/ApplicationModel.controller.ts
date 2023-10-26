@@ -1,4 +1,4 @@
-import { All, Body, Controller, Delete, Get, Param, Post } from "@nestjs/common";
+import { All, Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
 import { ApplicationModelsService } from '../services/ApplicationModel.service';
 import { ApplicationModel } from '../models/ApplicationModel.entity';
 
@@ -14,7 +14,7 @@ export class ApplicationModelController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: number): Promise<ApplicationModel> {
+  findOne(@Param('id') id: string): Promise<ApplicationModel> {
     return this.applicationModelsService.findOne(id);
   }
 
@@ -23,8 +23,13 @@ export class ApplicationModelController {
     return this.applicationModelsService.save(entityData);
   }
 
+  @Put()
+  async saveOrUpdate(@Body() entityData: ApplicationModel) {
+    return this.applicationModelsService.save(entityData);
+  }
+
   @Delete(':id')
-  async delete(@Param('id') id: number) {
+  async delete(@Param('id') id: string) {
     return this.applicationModelsService.delete(id);
   }
 }
