@@ -5,7 +5,7 @@ import { ApplicationModelsModule } from './modules/ApplicationModel.module';
 import { FilesModule } from './modules/Files.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
-import { LoggerMiddleware } from "./middleware/logger.middleware";
+import { LoggerMiddleware } from "./middlewares/logger.middleware";
 
 @Module({
   imports: [
