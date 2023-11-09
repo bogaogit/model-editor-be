@@ -14,19 +14,17 @@ export class StreamController {
   @Post('start')
   async startStreaming() {
     // Run FFmpeg
-    ffmpeg()
 
+    ffmpeg()
 
       // Input file
       .input('video.mp4')
 
-      // Scale the video to 720 pixels in height. The -2 means FFmpeg should figure out the
-      // exact size of the other dimension. In other words, to make the video 720 pixels wide
-      // and make FFmpeg calculate its height, use scale=720:-2 instead.
-      .outputOptions('-vf','scale=-2:720')
+      // Optional: Extract the frames at this frame rate
+      // .fps(10)
 
-      // Output file
-      .saveToFile('video2.mp4')
+      // Output file format. Frames are stored as frame-001.png, frame-002.png, frame-003.png, etc.
+      .saveToFile('frame-%03d.png')
 
       // Log the percentage of work completed
       .on('progress', (progress) => {
