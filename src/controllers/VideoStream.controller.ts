@@ -6,61 +6,41 @@ import ffmpeg from "fluent-ffmpeg";
 import { spawn } from 'child_process';
 import * as fs from "fs";
 
+const ffmpegStatic = require('ffmpeg-static');
+ffmpeg.setFfmpegPath(ffmpegStatic);
+
 @Controller('stream')
 export class StreamController {
   @Post('start')
   async startStreaming() {
-    // const videoPath = join(__dirname, '..', '..', 'uploads', `sample.mp4`);
+    // Run FFmpeg
+    ffmpeg()
 
-    const videoPath = join(__dirname, '..','..', 'uploads', `output.mp4`);
-    const outputPath = join(__dirname, '..', '..', 'uploads', `output.mp4`);
-    const hlsOutputPath = join(__dirname, '..','..', 'uploads', 'hls', `${uuidv4()}.m3u8`);
+      // Input file
+      .input('video.mp4')
 
-    // const stream = fs.createWriteStream('outputfile.divx');
-    // FfmpegCommand(videoPath)
-    //   .output(outputPath)
-    //   .output(stream)
-    //   .on('end', function() {
-    //     console.log('Finished processing');
-    //   })
-    //   .run();
+      // Audio bit rate
+      .outputOptions('-ab', '192k')
 
+      // Output file
+      .saveToFile('audio.mp3')
 
-    // Start capturing video from the web camera using FFmpeg
-    // ffmpeg -y -f vfwcap -r 25 -i 0 out.mp4
-    const ffmpegProcess = spawn('ffmpeg', [
-      '-f', 'v4l2',
-      '-i', '/dev/video0',
-      '-c:v', 'libx264',
-      '-preset', 'ultrafast',
-      '-tune', 'zerolatency',
-      '-f', 'mp4',
-      '-movflags', 'frag_keyframe+empty_moov',
-      '-y', videoPath,
-    ]);
+      // Log the percentage of work completed
+      .on('progress', (progress) => {
+        if (progress.percent) {
+          console.log(`Processing: ${Math.floor(progress.percent)}% done`);
+        }
+      })
 
-    // const ffmpegProcess = spawn('ffmpeg', [
-    //   '-f', 'vfwcap',
-    //   '-y', videoPath,
-    //   '-r', '25',
-    //   '-i', '0',
-    // ]);
+      // The callback that is run when FFmpeg is finished
+      .on('end', () => {
+        console.log('FFmpeg has finished.');
+      })
 
-    // Convert the captured video to HLS format
-    await new Promise((resolve, reject) => {
-      ffmpeg(videoPath)
-        .outputOptions(['-hls_time 10', '-hls_list_size 6', '-start_number 1'])
-        .output(hlsOutputPath)
-        .on('end', resolve)
-        .on('error', reject)
-        .run();
-    });
-
-    // Upload the HLS segments to the server
-    // Implement your own logic here to upload the files to the server
-
-    // Stop the FFmpeg process
-    ffmpegProcess.kill();
+      // The callback that is run when FFmpeg encountered an error
+      .on('error', (error) => {
+        console.error(error);
+      });
 
     return { message: 'Video streaming and upload completed' };
   }
