@@ -15,33 +15,32 @@ export class StreamController {
   async startStreaming() {
     // Run FFmpeg
 
-    ffmpeg()
+    const videoPath = join(__dirname, '..','..', 'uploads', `output.mp4`);
+    const outputPath = join(__dirname, '..', '..', 'uploads', `output.mp4`);
+    const hlsOutputPath = join(__dirname, '..','..', 'uploads', 'hls', `${uuidv4()}.m3u8`);
 
-      // Input file
-      .input('video.mp4')
 
-      // Optional: Extract the frames at this frame rate
-      // .fps(10)
+    // const ffmpegProcess = spawn('ffmpeg', [
+    //   '-f', 'v4l2',
+    //   '-i', '/dev/video0',
+    //   '-c:v', 'libx264',
+    //   '-preset', 'ultrafast',
+    //   '-tune', 'zerolatency',
+    //   '-f', 'mp4',
+    //   '-movflags', 'frag_keyframe+empty_moov',
+    //   '-y', videoPath,
+    // ]);
 
-      // Output file format. Frames are stored as frame-001.png, frame-002.png, frame-003.png, etc.
-      .saveToFile('frame-%03d.png')
+    await new Promise((resolve, reject) => {
+      ffmpeg('sample-20s.mp4')
+        .outputOptions(['-hls_time 1', '-hls_list_size 6', '-start_number 1'])
+        .output(hlsOutputPath)
+        .on('end', resolve)
+        .on('error', reject)
+        .run();
+    });
 
-      // Log the percentage of work completed
-      .on('progress', (progress) => {
-        if (progress.percent) {
-          console.log(`Processing: ${Math.floor(progress.percent)}% done`);
-        }
-      })
-
-      // The callback that is run when FFmpeg is finished
-      .on('end', () => {
-        console.log('FFmpeg has finished.');
-      })
-
-      // The callback that is run when FFmpeg encountered an error
-      .on('error', (error) => {
-        console.error(error);
-      });
+    // ffmpegProcess.kill();
 
     return { message: 'Video streaming and upload completed' };
   }
