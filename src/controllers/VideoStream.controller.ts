@@ -16,14 +16,17 @@ export class StreamController {
     // Run FFmpeg
     ffmpeg()
 
+
       // Input file
       .input('video.mp4')
 
-      // Audio bit rate
-      .outputOptions('-ab', '192k')
+      // Scale the video to 720 pixels in height. The -2 means FFmpeg should figure out the
+      // exact size of the other dimension. In other words, to make the video 720 pixels wide
+      // and make FFmpeg calculate its height, use scale=720:-2 instead.
+      .outputOptions('-vf','scale=-2:720')
 
       // Output file
-      .saveToFile('audio.mp3')
+      .saveToFile('video2.mp4')
 
       // Log the percentage of work completed
       .on('progress', (progress) => {
