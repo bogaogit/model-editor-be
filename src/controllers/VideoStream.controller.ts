@@ -20,26 +20,47 @@ export class StreamController {
     const hlsOutputPath = join(__dirname, '..','..', 'uploads', 'hls', `${uuidv4()}.m3u8`);
 
 
-    // const ffmpegProcess = spawn('ffmpeg', [
-    //   '-f', 'v4l2',
-    //   '-i', '/dev/video0',
-    //   '-c:v', 'libx264',
-    //   '-preset', 'ultrafast',
-    //   '-tune', 'zerolatency',
-    //   '-f', 'mp4',
-    //   '-movflags', 'frag_keyframe+empty_moov',
-    //   '-y', videoPath,
-    // ]);
 
-    await new Promise((resolve, reject) => {
-      ffmpeg('sample-20s.mp4')
-        .outputOptions(['-hls_time 1', '-hls_list_size 6', '-start_number 1'])
-        .output(hlsOutputPath)
-        .on('end', resolve)
-        .on('error', reject)
-        .run();
-    });
+    // ffmpeg -f dshow -i video="USB Video Device" out.mp4
+    //
+    // ffmpeg -f dshow -i video=”Lenovo EasyCamera” -vcodec libx264 -tune zerolatency -b 900k -f mpegts udp://localhost:1234
 
+    const ffmpegProcess = spawn('ffmpeg', [
+      '-f', 'dshow',
+      '-i', 'video="USB Video Device"',
+      '-c:v', 'libx264',
+      '-preset', 'ultrafast',
+      '-tune', 'zerolatency',
+      '-vf', '"format=yuv420p"',
+      '-f', 'hls',
+      '-hls_time', '1',
+      '-hls_list_size', '0',
+      '-hls_segment_filename', '"output_%03d.ts"',
+      '-hls_list_size', '0',
+      'output.m3u8',
+    ]);
+
+    ffmpeg('Driver 0')
+      .inputFormat('vfwcap')
+      .output('output.mp4')
+      .on('end', () => {
+        console.log('Capture completed');
+      })
+      .on('error', (err) => {
+        console.error('An error occurred:', err.message);
+      })
+      .run();
+
+
+    // await new Promise((resolve, reject) => {
+    //   ffmpeg(videoPath)
+    //     .outputOptions(['-hls_time 1', '-hls_list_size 6', '-start_number 1'])
+    //     .output(hlsOutputPath)
+    //     .on('end', resolve)
+    //     .on('error', reject)
+    //     .run();
+    // });
+    //
     // ffmpegProcess.kill();
 
     return { message: 'Video streaming and upload completed' };
