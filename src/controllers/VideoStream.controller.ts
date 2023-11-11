@@ -1,4 +1,4 @@
-import { Controller, Post } from '@nestjs/common';
+import { Controller, Get, Header, Param, ParseUUIDPipe, Post, Res } from "@nestjs/common";
 import { createWriteStream } from 'fs';
 import { join } from 'path';
 import { v4 as uuidv4 } from 'uuid';
@@ -9,8 +9,40 @@ import * as fs from "fs";
 const ffmpegStatic = require('ffmpeg-static');
 ffmpeg.setFfmpegPath(ffmpegStatic);
 
-@Controller('stream')
+/*
+ffmpeg -f dshow -i video="USB Video Device":audio="Microphone (USB Audio Device)"  -f hls -hls_time 1.00 -hls_list_size 0 -hls_segment_filename "D:\repo\model-editor-be\uploads\hls\output_%03d.ts" D:\repo\model-editor-be\uploads\hls\output.m3u8
+
+ */
+
+@Controller('hls')
 export class StreamController {
+  @Get('output.m3u8')
+  @Header('Content-Type', 'application/vnd.apple.mpegurl')
+  play() {
+    const playlistPath = join(__dirname, '..','..','uploads', 'hls', 'output.m3u8');
+    const playlist = fs.readFileSync(playlistPath, 'utf8');
+    return playlist
+
+//     return `#EXTM3U
+// #EXT-X-VERSION:3
+// #EXT-X-TARGETDURATION:8
+// #EXT-X-MEDIA-SEQUENCE:0
+// #EXTINF:8.333322,
+// output_000.ts
+// #EXTINF:7.800000,
+// output_001.ts
+// #EXTINF:0.866656,
+// output_002.ts
+// #EXTINF:1.000000,
+// output_003.ts
+// #EXTINF:4.400000,
+// output_004.ts
+// `
+  }
+
+
+
+
   @Post('start')
   async startStreaming() {
     // Run FFmpeg
@@ -39,6 +71,11 @@ export class StreamController {
       '-hls_list_size', '0',
       'output.m3u8',
     ]);
+
+    // ffmpeg.getAvailableFormats(function(err, formats) {
+    //   console.log('Available formats:');
+    //   console.dir(formats);
+    // });
 
     ffmpeg('Driver 0')
       .inputFormat('vfwcap')
