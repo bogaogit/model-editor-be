@@ -41,7 +41,7 @@ export class CloudWatchMetricStore implements MetricStore {
       // }
 
       const metricData: PutMetricDataCommandInput = {
-        Namespace: "MyApp/Metrics8", // Replace "MyApp/Metrics" with your desired metric namespace
+        Namespace: "MyApp/Metrics9", // Replace "MyApp/Metrics" with your desired metric namespace
         MetricData: [
           {
             MetricName: "MyCustomMetric", // Replace "MyCustomMetric" with your desired metric name
