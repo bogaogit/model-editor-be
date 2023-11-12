@@ -4,10 +4,12 @@ import { ApplicationModel } from '../models/ApplicationModel.entity';
 import { ApplicationModelsService } from '../services/ApplicationModel.service';
 import { ApplicationModelController } from '../controllers/ApplicationModel.controller';
 import { StreamController } from "../controllers/VideoStream.controller";
+import { CloudWatchMetricsModule } from "./CloudWatchMetricsModule";
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ApplicationModel])
+    TypeOrmModule.forFeature([ApplicationModel]),
+    CloudWatchMetricsModule,
   ],
   providers: [ApplicationModelsService],
   controllers: [ApplicationModelController, StreamController],
