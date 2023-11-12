@@ -7,7 +7,6 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { LoggerMiddleware } from "./middlewares/logger.middleware";
 import { ConfigModule } from "@nestjs/config";
-import { CloudWatchMetricsModule } from "./modules/CloudWatchMetricsModule";
 
 @Module({
   imports: [
@@ -26,7 +25,6 @@ import { CloudWatchMetricsModule } from "./modules/CloudWatchMetricsModule";
       synchronize: true,
     }),
     ApplicationModelsModule,
-
     FilesModule,
   ],
 })
