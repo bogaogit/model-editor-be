@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ApplicationModel } from '../models/ApplicationModel.entity';
 import { MetricCollector } from "../metricCollection";
+import { StandardUnit } from "@aws-sdk/client-cloudwatch/dist-types/models";
 
 @Injectable()
 export class ApplicationModelsService {
@@ -15,7 +16,7 @@ export class ApplicationModelsService {
   private captureOptional(
     metric: string,
     value: number | undefined | null,
-    units: string,
+    units: StandardUnit,
     tags: Record<string, string> = {},
     namespace: string | undefined = "runtime_recorder",
   ): void {
@@ -25,7 +26,7 @@ export class ApplicationModelsService {
   }
 
   private captureStorageMetrics(value: number, prefix: string, tags: Record<string, string>): void {
-    this.captureOptional(prefix + 'storage:current-recording-size', value, 'bytes', tags)
+    this.captureOptional(prefix + 'storage:current-recording-size', value, 'Bytes', tags)
     // this.captureOptional(prefix + 'storage:storage-free', metrics.freeStorageBytes, 'bytes', tags)
     // this.captureOptional(prefix + 'storage:storage-used', metrics.localStorageUsedBytes, 'bytes', tags)
   }
@@ -40,7 +41,8 @@ export class ApplicationModelsService {
     }
 
     this.captureStorageMetrics(Math.random(), "prefix", tags)
-    return this.applicationModelsRepository.findOneBy({ id });
+    // return this.applicationModelsRepository.findOneBy({ id });
+    return null
   }
 
   async delete(id: string): Promise<void> {
