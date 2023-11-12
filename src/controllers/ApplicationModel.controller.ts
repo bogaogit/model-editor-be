@@ -29,7 +29,7 @@ export class ApplicationModelController {
   // @Roles(['admin'])
   async findAll(): Promise<ApplicationModel[]> {
     const metricData: PutMetricDataCommandInput = {
-      Namespace: "MyApp/Metrics", // Replace "MyApp/Metrics" with your desired metric namespace
+      Namespace: "MyApp/Metrics2", // Replace "MyApp/Metrics" with your desired metric namespace
       MetricData: [
         {
           MetricName: "MyCustomMetric", // Replace "MyCustomMetric" with your desired metric name
