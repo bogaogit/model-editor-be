@@ -15,6 +15,7 @@ import { ApplicationModelsService } from "../services/ApplicationModel.service";
 import { ApplicationModel } from "../models/ApplicationModel.entity";
 import { RolesGuard } from "../guards/roles.guard";
 import { LoggingService } from "../services/Logging.service";
+import { MetricDataResult } from "@aws-sdk/client-cloudwatch";
 
 @Controller("logging")
 export class LoggingController {
@@ -24,7 +25,7 @@ export class LoggingController {
   }
 
   @Get("fetch")
-  fetch(): Promise<number[]> {
+  fetch(): Promise<(number | MetricDataResult)[]> {
     return this.loggingService.fetch();
   }
 

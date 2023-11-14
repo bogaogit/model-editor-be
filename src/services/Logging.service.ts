@@ -34,7 +34,7 @@ export class LoggingService {
     stat: string,
     tags: Record<string, string> = {},
     namespace: string | undefined = "runtime_recorder"
-  ): Promise<MetricDataResult[]> {
+  ): Promise<(number | MetricDataResult)[]> {
     const input: GetMetricDataCommandInput = {
       StartTime: startTime,
       EndTime: endTime,
@@ -69,7 +69,7 @@ export class LoggingService {
     this.captureStorageMetrics(value, "prefix", tags);
   }
 
-  async fetch(): Promise<MetricDataResult[]> {
+  async fetch(): Promise<(number | MetricDataResult)[]> {
     const tags: Record<string, string> = {
       tag1: "tag1"
     };
