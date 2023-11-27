@@ -79,7 +79,10 @@ export class StreamController {
 
     ffmpeg('video=USB Video Device')
       .inputFormat('dshow')
-      .output('output.mp4')
+      .outputOptions('-hls_time 10')
+      .outputOptions('-hls_list_size 6')
+      .outputOptions('-hls_flags delete_segments')
+      .output('uploads/hls/output.m3u8')
       .on('end', () => {
         console.log('Capture completed');
       })
