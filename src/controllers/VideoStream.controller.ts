@@ -83,30 +83,20 @@ export class StreamController {
     //   console.dir(formats);
     // });
 
-    ffmpeg('video=USB Video Device')
-      .inputFormat('dshow')
-      .outputOptions('-hls_time 5')
-      .output('uploads/hls/output.m3u8')
-      .on('start', () => {
-        console.log('Capture start');
-      })
+    ffmpeg()
+      .input('audio=Microphone (USB Audio Device)')
+      .inputOptions('-f dshow')
+      .input('desktop')
+      .inputOptions('-f gdigrab')
+      .output('uploads/hls/output.mp4')
+      .outputOptions('-t 00:00:10')
+      .outputOptions('-c:v libx264')
+      .outputOptions('-preset ultrafast')
       .on('end', () => {
-        console.log('Capture completed');
-      })
-      .on('progress', function(progress) {
-        console.log('Processing: ' + JSON.stringify(progress));
-      })
-      .on('stderr', function(stderrLine) {
-        console.log('Stderr output: ' + JSON.stringify(stderrLine));
-      })
-      .on('error', (err) => {
-        console.error('An error occurred:', err.message);
-      })
-      .on('codecData', function(data) {
-        console.log('Input is ' + data.audio + ' audio ' +
-          'with ' + data.video + ' video');
+        console.log('Screen capture and audio recording completed');
       })
       .run();
+
 
 
 
