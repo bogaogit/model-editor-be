@@ -1,12 +1,12 @@
 import { Controller, Get, Header, Param, ParseUUIDPipe, Post, Res } from "@nestjs/common";
-import { createWriteStream } from 'fs';
-import { join } from 'path';
-import { v4 as uuidv4 } from 'uuid';
+import { createWriteStream } from "fs";
+import { join } from "path";
+import { v4 as uuidv4 } from "uuid";
 import ffmpeg from "fluent-ffmpeg";
-import { spawn } from 'child_process';
+import { spawn } from "child_process";
 import * as fs from "fs";
 
-const ffmpegStatic = require('ffmpeg-static');
+const ffmpegStatic = require("ffmpeg-static");
 ffmpeg.setFfmpegPath(ffmpegStatic);
 
 /*
@@ -14,14 +14,14 @@ ffmpeg -f dshow -i video="USB Video Device":audio="Microphone (USB Audio Device)
 
  */
 
-@Controller('hls')
+@Controller("hls")
 export class StreamController {
-  @Get('output.m3u8')
-  @Header('Content-Type', 'application/vnd.apple.mpegurl')
+  @Get("output.m3u8")
+  @Header("Content-Type", "application/vnd.apple.mpegurl")
   play() {
-    const playlistPath = join(__dirname, '..','..','uploads', 'hls', 'output.m3u8');
-    const playlist = fs.readFileSync(playlistPath, 'utf8');
-    return playlist
+    const playlistPath = join(__dirname, "..", "..", "uploads", "hls", "output.m3u8");
+    const playlist = fs.readFileSync(playlistPath, "utf8");
+    return playlist;
 
 //     return `#EXTM3U
 // #EXT-X-VERSION:3
@@ -49,57 +49,28 @@ export class StreamController {
   // with audio
   // ffmpeg -f dshow -i audio="Microphone (USB Audio Device)" -f gdigrab -framerate 30 -i desktop -c:v libx264 -preset ultrafast output.mp4
 
-  @Post('start')
+  @Post("start")
   async startStreaming() {
-    // Run FFmpeg
 
-    const videoPath = join(__dirname, '..','..', 'uploads', `output.mp4`);
-    const outputPath = join(__dirname, '..', '..', 'uploads', `output.mp4`);
-    const hlsOutputPath = join(__dirname, '..','..', 'uploads', 'hls', `${uuidv4()}.m3u8`);
-
-
-
-    // ffmpeg -f dshow -i video="USB Video Device" out.mp4
-    //
-    // ffmpeg -f dshow -i video=”Lenovo EasyCamera” -vcodec libx264 -tune zerolatency -b 900k -f mpegts udp://localhost:1234
-
-    // const ffmpegProcess = spawn('ffmpeg', [
-    //   '-f', 'dshow',
-    //   '-i', 'video="USB Video Device"',
-    //   '-c:v', 'libx264',
-    //   '-preset', 'ultrafast',
-    //   '-tune', 'zerolatency',
-    //   '-vf', '"format=yuv420p"',
-    //   '-f', 'hls',
-    //   '-hls_time', '1',
-    //   '-hls_list_size', '0',
-    //   '-hls_segment_filename', '"output_%03d.ts"',
-    //   '-hls_list_size', '0',
-    //   'output.m3u8',
-    // ]);
-
-    // ffmpeg.getAvailableFormats(function(err, formats) {
-    //   console.log('Available formats:');
-    //   console.dir(formats);
-    // });
+    /**
+     * In this fluent-ffmpeg command, we use the `input` method to specify the audio input as `"Microphone (USB Audio Device)"` with the `-f dshow` input option. The desktop screen is set as the video input using the `input` method with the `-f gdigrab` input option. The output file is set to `output.mp4` and the video codec is set to `libx264` using the `outputOptions` method. Additionally, the `-preset ultrafast` option is added using the `outputOptions` method.
+     */
 
     ffmpeg()
-      .input('audio=Microphone (USB Audio Device)')
-      .inputOptions('-f dshow')
-      .input('desktop')
-      .inputOptions('-f gdigrab')
-      .output('uploads/hls/output.mp4')
-      .outputOptions('-t 00:00:10')
-      .outputOptions('-c:v libx264')
-      .outputOptions('-preset ultrafast')
-      .on('end', () => {
-        console.log('Screen capture and audio recording completed');
+      .input("audio=Microphone (USB Audio Device)")
+      .inputOptions("-f dshow")
+      .input("desktop")
+      .inputOptions("-f gdigrab")
+      .output("uploads/hls/output.mp4")
+      .outputOptions("-t 00:00:10")
+      .outputOptions("-c:v libx264")
+      .outputOptions("-preset ultrafast")
+      .on("end", () => {
+        console.log("Screen capture and audio recording completed");
       })
       .run();
 
 
-
-
-    return { message: 'Video streaming and upload completed' };
+    return { message: "Video streaming and upload completed" };
   }
 }
