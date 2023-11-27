@@ -40,8 +40,14 @@ export class StreamController {
 // `
   }
 
+  /**
+   * screen capture
+   */
+  // ffmpeg -y -rtbufsize 100M -f gdigrab -t 00:00:30 -framerate 30 -probesize 10M -draw_mouse 1 -i desktop -c:v libx264 -r 30 -preset ultrafast -tune zerolatency -crf 25 -pix_fmt yuv420p video_comapre2.mp4
+  // ffmpeg -y -rtbufsize 100M -f gdigrab -t 00:00:30 -framerate 60 -probesize 10M -draw_mouse 1 -i desktop -c:v libx264 -r 30 -preset ultrafast -tune zerolatency -crf 25 -pix_fmt yuv420p audio="Microphone (USB Audio Device)" video_comapre2.mp4
 
-
+  // with audio
+  // ffmpeg -f dshow -i audio="Microphone (USB Audio Device)" -f gdigrab -framerate 30 -i desktop -c:v libx264 -preset ultrafast output.mp4
 
   @Post('start')
   async startStreaming() {
@@ -79,15 +85,26 @@ export class StreamController {
 
     ffmpeg('video=USB Video Device')
       .inputFormat('dshow')
-      .outputOptions('-hls_time 10')
-      .outputOptions('-hls_list_size 6')
-      .outputOptions('-hls_flags delete_segments')
+      .outputOptions('-hls_time 5')
       .output('uploads/hls/output.m3u8')
+      .on('start', () => {
+        console.log('Capture start');
+      })
       .on('end', () => {
         console.log('Capture completed');
       })
+      .on('progress', function(progress) {
+        console.log('Processing: ' + JSON.stringify(progress));
+      })
+      .on('stderr', function(stderrLine) {
+        console.log('Stderr output: ' + JSON.stringify(stderrLine));
+      })
       .on('error', (err) => {
         console.error('An error occurred:', err.message);
+      })
+      .on('codecData', function(data) {
+        console.log('Input is ' + data.audio + ' audio ' +
+          'with ' + data.video + ' video');
       })
       .run();
 
