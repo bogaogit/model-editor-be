@@ -57,28 +57,28 @@ export class StreamController {
     //
     // ffmpeg -f dshow -i video=”Lenovo EasyCamera” -vcodec libx264 -tune zerolatency -b 900k -f mpegts udp://localhost:1234
 
-    const ffmpegProcess = spawn('ffmpeg', [
-      '-f', 'dshow',
-      '-i', 'video="USB Video Device"',
-      '-c:v', 'libx264',
-      '-preset', 'ultrafast',
-      '-tune', 'zerolatency',
-      '-vf', '"format=yuv420p"',
-      '-f', 'hls',
-      '-hls_time', '1',
-      '-hls_list_size', '0',
-      '-hls_segment_filename', '"output_%03d.ts"',
-      '-hls_list_size', '0',
-      'output.m3u8',
-    ]);
+    // const ffmpegProcess = spawn('ffmpeg', [
+    //   '-f', 'dshow',
+    //   '-i', 'video="USB Video Device"',
+    //   '-c:v', 'libx264',
+    //   '-preset', 'ultrafast',
+    //   '-tune', 'zerolatency',
+    //   '-vf', '"format=yuv420p"',
+    //   '-f', 'hls',
+    //   '-hls_time', '1',
+    //   '-hls_list_size', '0',
+    //   '-hls_segment_filename', '"output_%03d.ts"',
+    //   '-hls_list_size', '0',
+    //   'output.m3u8',
+    // ]);
 
     // ffmpeg.getAvailableFormats(function(err, formats) {
     //   console.log('Available formats:');
     //   console.dir(formats);
     // });
 
-    ffmpeg('Driver 0')
-      .inputFormat('vfwcap')
+    ffmpeg('video=USB Video Device')
+      .inputFormat('dshow')
       .output('output.mp4')
       .on('end', () => {
         console.log('Capture completed');
@@ -89,16 +89,6 @@ export class StreamController {
       .run();
 
 
-    // await new Promise((resolve, reject) => {
-    //   ffmpeg(videoPath)
-    //     .outputOptions(['-hls_time 1', '-hls_list_size 6', '-start_number 1'])
-    //     .output(hlsOutputPath)
-    //     .on('end', resolve)
-    //     .on('error', reject)
-    //     .run();
-    // });
-    //
-    // ffmpegProcess.kill();
 
     return { message: 'Video streaming and upload completed' };
   }
