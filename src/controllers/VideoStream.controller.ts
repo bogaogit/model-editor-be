@@ -83,13 +83,30 @@ export class StreamController {
 
   @Post("screenshots")
   async startScreenshots() {
-    const inputFilePath = 'uploads/sample-20s.mp4';
-    const outputFolderPath = 'uploads/screenshots/';
+    const inputFilePath = 'E:\\h12';
+    const fileName = "11446468-480p"
 
-    ffmpeg("uploads/sample-20s.mp4")
-      .output("uploads/screenshots/foobar.jpeg")
-      .outputOptions("-ss 00:00:03")
-      .outputOptions("-frames:v 1")
+    const outputFolderPath = `uploads/screenshots/${fileName}`
+    if (!fs.existsSync(outputFolderPath)){
+      fs.mkdirSync(outputFolderPath);
+    }
+
+    /**
+     * Here,
+     *
+     * we use the select filter to extract a frame if the expression in single-quotes evaluates to non-zero. If the expression is zero, then select filter discards that frame.
+     * mod(A,B) returns the modulus (remainder after division) result after dividing A by B. So, if we divide 0 by 300, we get 0. Then, 1/300 is 1, and so on.
+     * not inverts this result. So, if the modulus is zero, then the final result is 1. If the modulus is non-zero, then the result is evaluated to zero.
+     * Based on this not operation, the select filter picks up a frame.
+     */
+
+    ffmpeg()
+      .input(`${inputFilePath}/${fileName}.mp4`)
+      .outputOptions([
+        '-vf', 'select=\'not(mod(n,100))\',setpts=\'N/(30*TB)\'',
+        '-f', 'image2'
+      ])
+      .output(`${outputFolderPath}/thumbnail%03d.jpg`)
       .on('end', () => {
         console.log('Screenshots generated successfully.');
       })
