@@ -8,7 +8,7 @@ const ffmpegStatic = require("ffmpeg-static");
 ffmpeg.setFfmpegPath(ffmpegStatic);
 
 
-@Controller("hls")
+@Controller("video-processing")
 export class VideoProcessingController {
   constructor(
     private readonly videoProcessingService: VideoProcessingService
@@ -61,11 +61,50 @@ export class VideoProcessingController {
 
   @Post("screenshots")
   async startScreenshots() {
-    await this.videoProcessingService.startScreenshots();
+    const inputFilePath: string = "E:\\h14";
+    const fileName: string = "2814829-480p";
+    const inputFileType: string = "mp4";
+    const outputFileType: string = "jpg";
+
+    await this.videoProcessingService.startScreenshots(
+      inputFilePath,
+      fileName,
+      inputFileType,
+      outputFileType
+    );
   }
 
   @Post("convertToHls")
   async convertToHls() {
-    await this.videoProcessingService.convertToHls();
+    const inputFilePath: string = "E:\\h14";
+    const fileName: string = "2814829-480p";
+    const inputFileType: string = "mp4";
+
+    await this.videoProcessingService.convertToHls(
+      inputFilePath,
+      fileName,
+      inputFileType
+    );
+  }
+
+  @Post("process")
+  async processVideo() {
+    const inputFilePath: string = "E:\\h14";
+    const fileName: string = "2814829-480p";
+    const inputFileType: string = "mp4";
+    const outputFileType: string = "jpg";
+
+    await this.videoProcessingService.startScreenshots(
+      inputFilePath,
+      fileName,
+      inputFileType,
+      outputFileType
+    );
+
+    await this.videoProcessingService.convertToHls(
+      inputFilePath,
+      fileName,
+      inputFileType
+    );
   }
 }

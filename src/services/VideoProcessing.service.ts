@@ -9,7 +9,7 @@ import { DirectoryUtils } from "../utils/Directory.utils";
 
 const ffmpegStatic = require("ffmpeg-static");
 ffmpeg.setFfmpegPath(ffmpegStatic);
-const path = require('path');
+const path = require("path");
 
 
 /*
@@ -37,21 +37,23 @@ export class VideoProcessingService {
       })
       .on("end", () => {
         console.log("Screen capture and audio recording end");
-      })
+      });
 
-    this.command.run()
+    this.command.run();
 
   }
 
   async endStreaming() {
-    return this.command.ffmpegProc.stdin.write('q');
+    return this.command.ffmpegProc.stdin.write("q");
   }
 
-  async startScreenshots() {
-    const inputFilePath = 'E:\\h14';
-    const fileName = "2814829-480p"
-
-    const outputFolderPath = `uploads/converted/${fileName}/screenshots`
+  async startScreenshots(
+    inputFilePath: string,
+    fileName: string,
+    inputFileType: string,
+    outputFileType: string
+  ) {
+    const outputFolderPath = `uploads/converted/${fileName}/screenshots`;
     DirectoryUtils.createPathRecursively(outputFolderPath);
 
     /**
@@ -69,67 +71,68 @@ export class VideoProcessingService {
      *
      * The `-q:v 2` option sets the quality of the output images. A lower value (e.g., 2) indicates higher quality, while a higher value (e.g., 10) indicates lower quality. You can adjust this value based on your preference.
      */
-    let totalTime
+    let totalTime;
     ffmpeg()
-      .input(`${inputFilePath}/${fileName}.mp4`)
+      .input(`${inputFilePath}/${fileName}.${inputFileType}`)
       .outputOptions([
-        '-vf', 'fps=1/2',
-        '-q:v', '0'
+        "-vf", "fps=1/2",
+        "-q:v", "0"
       ])
-      .output(`${outputFolderPath}/${fileName}-%03d.jpg`)
-      .on('progress', progress => {
+      .output(`${outputFolderPath}/${fileName}-%03d.${outputFileType}`)
+      .on("progress", progress => {
         // HERE IS THE CURRENT TIME
-        const time = parseInt(progress.timemark.replace(/:/g, ''))
+        const time = parseInt(progress.timemark.replace(/:/g, ""));
 
         // AND HERE IS THE CALCULATION
-        const percent = (time / totalTime) * 100
+        const percent = (time / totalTime) * 100;
 
-        console.log(percent)
+        console.log(percent);
       })
-      .on('end', () => {
-        console.log('Screenshots generated successfully.');
+      .on("end", () => {
+        console.log("Screenshots generated successfully.");
       })
-      .on('error', (err) => {
-        console.error('Error generating screenshots:', err);
+      .on("error", (err) => {
+        console.error("Error generating screenshots:", err);
       })
-      .run()
+      .run();
   }
 
-  async convertToHls() {
-    const inputFilePath = 'E:\\h14';
-    const fileName = "2814829-480p"
-
-    const outputFolderPath = `uploads/converted/${fileName}/hls`
+  async convertToHls(
+    inputFilePath: string,
+    fileName: string,
+    inputFileType: string
+  ) {
+    const outputFolderPath = `uploads/converted/${fileName}/hls`;
     DirectoryUtils.createPathRecursively(outputFolderPath);
 
-    let totalTime
+    let totalTime;
     ffmpeg()
-      .input(`${inputFilePath}/${fileName}.mp4`)
+      .input(`${inputFilePath}/${fileName}.${inputFileType}`)
       .outputOptions([
-        '-c:v', 'libx264',
-        '-crf', '21',
-        '-preset', 'veryfast',
-        '-c:a', 'aac',
-        '-b:a', '128k',
-        '-hls_time', '10',
-        '-hls_list_size', '0'
+        "-c:v", "libx264",
+        "-crf", "21",
+        "-preset", "veryfast",
+        "-c:a", "aac",
+        "-b:a", "128k",
+        "-hls_time", "5",
+        "-hls_list_size", "0"
       ])
       .output(`${outputFolderPath}/${fileName}.m3u8`)
-      .on('progress', progress => {
+      .on("progress", progress => {
         // HERE IS THE CURRENT TIME
-        const time = parseInt(progress.timemark.replace(/:/g, ''))
+        const time = parseInt(progress.timemark.replace(/:/g, ""));
 
         // AND HERE IS THE CALCULATION
-        const percent = (time / totalTime) * 100
+        const percent = (time / totalTime) * 100;
 
-        console.log(percent)
+        console.log(percent);
       })
-      .on('end', () => {
-        console.log('hls generated successfully.');
+      .on("end", () => {
+        console.log("hls generated successfully.");
       })
-      .on('error', (err) => {
-        console.error('Error generating hls:', err);
+      .on("error", (err) => {
+        console.error("Error generating hls:", err);
       })
-      .run()
+      .run();
   }
 }
