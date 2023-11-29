@@ -89,8 +89,8 @@ export class VideoProcessingController {
 
   @Post("process")
   async processVideo() {
-    const inputFilePath: string = "E:\\h14";
-    const fileName: string = "2814829-480p";
+    const inputFilePath: string = "E:\\h12";
+    const fileName: string = "14289337-720p";
     const inputFileType: string = "mp4";
     const outputFileType: string = "jpg";
 
