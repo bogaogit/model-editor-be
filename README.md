@@ -1,12 +1,3 @@
 TODO:
 
-* ~~First steps~~
-* ~~Controllers~~
-* ~~Providers~~
-* Modules
-* Middleware
-* Exception filters
-* Pipes
-* Guards
-* Interceptors
-* Custom decorators
+read a video file input and output screenshot in time intervals to help to list the content of video without open them
