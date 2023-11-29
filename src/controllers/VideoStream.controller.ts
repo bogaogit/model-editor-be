@@ -16,6 +16,7 @@ ffmpeg -f dshow -i video="USB Video Device":audio="Microphone (USB Audio Device)
 
 @Controller("hls")
 export class StreamController {
+  private command: any;
   @Get("output.m3u8")
   @Header("Content-Type", "application/vnd.apple.mpegurl")
   play() {
@@ -51,26 +52,32 @@ export class StreamController {
 
   @Post("start")
   async startStreaming() {
-
     /**
      * In this fluent-ffmpeg command, we use the `input` method to specify the audio input as `"Microphone (USB Audio Device)"` with the `-f dshow` input option. The desktop screen is set as the video input using the `input` method with the `-f gdigrab` input option. The output file is set to `output.mp4` and the video codec is set to `libx264` using the `outputOptions` method. Additionally, the `-preset ultrafast` option is added using the `outputOptions` method.
      */
 
-    ffmpeg()
+    this.command = ffmpeg()
       .input("audio=Microphone (USB Audio Device)")
       .inputOptions("-f dshow")
       .input("desktop")
       .inputOptions("-f gdigrab")
-      .output("uploads/hls/output.mp4")
-      .outputOptions("-t 00:00:10")
-      .outputOptions("-c:v libx264")
+      .output("uploads/hls/output.m3u8")
+      .outputOptions("-f hls")
+      .outputOptions("-hls_time 1.00")
+      .outputOptions("-hls_list_size 0")
       .outputOptions("-preset ultrafast")
-      .on("end", () => {
-        console.log("Screen capture and audio recording completed");
+      .on("start", () => {
+        console.log("Screen capture and audio recording started");
       })
-      .run();
+      .on("end", () => {
+        console.log("Screen capture and audio recording end");
+      })
 
+    this.command.run()
+  }
 
-    return { message: "Video streaming and upload completed" };
+  @Post("end")
+  async endStreaming() {
+      return this.command.ffmpegProc.stdin.write('q');
   }
 }
