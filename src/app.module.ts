@@ -7,6 +7,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { LoggerMiddleware } from "./middlewares/logger.middleware";
 import { ConfigModule } from "@nestjs/config";
+import { VideoProcessingModule } from "./modules/VideoProcessing.module";
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { ConfigModule } from "@nestjs/config";
       synchronize: true,
     }),
     ApplicationModelsModule,
+    VideoProcessingModule,
     FilesModule,
   ],
 })
