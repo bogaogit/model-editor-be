@@ -80,4 +80,22 @@ export class StreamController {
   async endStreaming() {
       return this.command.ffmpegProc.stdin.write('q');
   }
+
+  @Post("screenshots")
+  async startScreenshots() {
+    const inputFilePath = 'uploads/sample-20s.mp4';
+    const outputFolderPath = 'uploads/screenshots/';
+
+    ffmpeg("uploads/sample-20s.mp4")
+      .output("uploads/screenshots/foobar.jpeg")
+      .outputOptions("-ss 00:00:03")
+      .outputOptions("-frames:v 1")
+      .on('end', () => {
+        console.log('Screenshots generated successfully.');
+      })
+      .on('error', (err) => {
+        console.error('Error generating screenshots:', err);
+      })
+      .run()
+  }
 }
