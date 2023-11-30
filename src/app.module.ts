@@ -8,12 +8,17 @@ import { join } from 'path';
 import { LoggerMiddleware } from "./middlewares/logger.middleware";
 import { ConfigModule } from "@nestjs/config";
 import { VideoProcessingModule } from "./modules/VideoProcessing.module";
+import { AnalysedVideoModule } from "./analysed-video/AnalysedVideo.module";
 
+/**
+ * http://localhost:3000/static/unnamed.png to access images
+ */
 @Module({
   imports: [
     ConfigModule.forRoot(),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'uploads'),
+      serveRoot: '/static'
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
@@ -28,6 +33,7 @@ import { VideoProcessingModule } from "./modules/VideoProcessing.module";
     ApplicationModelsModule,
     VideoProcessingModule,
     FilesModule,
+    AnalysedVideoModule,
   ],
 })
 export class AppModule implements NestModule {
