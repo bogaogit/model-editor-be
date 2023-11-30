@@ -1,4 +1,4 @@
-import { Controller, Get, Header, Post } from "@nestjs/common";
+import { Controller, Get, Header, Param, ParseUUIDPipe, Post } from "@nestjs/common";
 import * as fs from "fs";
 import { join } from "path";
 import ffmpeg from "fluent-ffmpeg";
@@ -7,6 +7,7 @@ import { VideoProcessingService } from "../services/VideoProcessing.service";
 const ffmpegStatic = require("ffmpeg-static");
 ffmpeg.setFfmpegPath(ffmpegStatic);
 
+type ProcessType = "all" | "hls" | "img" | "audio"
 
 @Controller("video-processing")
 export class VideoProcessingController {
@@ -59,6 +60,18 @@ export class VideoProcessingController {
     await this.videoProcessingService.endStreaming();
   }
 
+  @Post("audio")
+  async extractAudio() {
+    const inputFilePath: string = "D:\\repo\\model-editor-be\\uploads\\converted\\2023-11-19 15-57-00\\hls";
+    const fileName: string = "2023-11-19 15-57-00";
+    const inputFileType: string = "m3u8";
+    await this.videoProcessingService.extractAudio(
+      inputFilePath,
+      fileName,
+      inputFileType
+    );
+  }
+
   @Post("screenshots")
   async startScreenshots() {
     const inputFilePath: string = "E:\\h14";
@@ -87,24 +100,37 @@ export class VideoProcessingController {
     );
   }
 
-  @Post("process")
-  async processVideo() {
-    const inputFilePath: string = "E:\\h12";
-    const fileName: string = "14289337-720p";
-    const inputFileType: string = "mp4";
+  @Post("process/:processType")
+  async processVideo(@Param("processType") processType: ProcessType) {
+    const inputFilePath: string = "D:\\repo\\model-editor-be\\uploads";
+    const fileName: string = "2023-11-19 15-57-00";
+    const inputFileType: string = "mkv";
     const outputFileType: string = "jpg";
 
-    await this.videoProcessingService.startScreenshots(
-      inputFilePath,
-      fileName,
-      inputFileType,
-      outputFileType
-    );
+    if (processType === "all" || processType === "img") {
+      await this.videoProcessingService.startScreenshots(
+        inputFilePath,
+        fileName,
+        inputFileType,
+        outputFileType
+      );
+    }
 
-    await this.videoProcessingService.convertToHls(
-      inputFilePath,
-      fileName,
-      inputFileType
-    );
+    if (processType === "all" || processType === "hls") {
+      await this.videoProcessingService.convertToHls(
+        inputFilePath,
+        fileName,
+        inputFileType
+      );
+    }
+
+    if (processType === "all" || processType === "audio") {
+      const convertedInputFilePath: string = `uploads/converted/${fileName}/hls`;
+      await this.videoProcessingService.extractAudio(
+        convertedInputFilePath,
+        fileName,
+        "m3u8"
+      );
+    }
   }
 }

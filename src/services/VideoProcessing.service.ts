@@ -47,6 +47,33 @@ export class VideoProcessingService {
     return this.command.ffmpegProc.stdin.write("q");
   }
 
+  async extractAudio(
+    inputFilePath: string,
+    fileName: string,
+    inputFileType: string
+  ) {
+    const outputFolderPath = `uploads/converted/${fileName}/audio`;
+    DirectoryUtils.createPathRecursively(outputFolderPath);
+
+    ffmpeg()
+      .input(`${inputFilePath}/${fileName}.${inputFileType}`)
+      .outputOptions([
+        "-vn",
+        "-acodec", "copy"
+      ])
+      .output(`${outputFolderPath}/${fileName}.wav`)
+      .on("progress", progress => {
+        console.log(progress);
+      })
+      .on("end", () => {
+        console.log("extract audio generated successfully.");
+      })
+      .on("error", (err) => {
+        console.error("Error generating extract audio:", err);
+      })
+      .run();
+  }
+
   async startScreenshots(
     inputFilePath: string,
     fileName: string,
@@ -113,9 +140,7 @@ export class VideoProcessingService {
         "-crf", "21",
         "-preset", "veryfast",
         "-c:a", "aac",
-        "-b:a", "128k",
-        "-hls_time", "5",
-        "-hls_list_size", "0"
+        "-b:a", "128k"
       ])
       .output(`${outputFolderPath}/${fileName}.m3u8`)
       .on("progress", progress => {
