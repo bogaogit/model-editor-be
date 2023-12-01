@@ -1,6 +1,6 @@
-import { Controller, Get, Param } from "@nestjs/common";
+import { Controller, Get, HttpStatus, Param, Res } from "@nestjs/common";
 import { AnalysedVideoService } from "./AnalysedVideo.service";
-import { promises as fsPromises } from "fs";
+import fs, { promises as fsPromises } from "fs";
 
 @Controller("analysed-video")
 export class AnalysedVideoController {
@@ -16,6 +16,20 @@ export class AnalysedVideoController {
       return await fsPromises.readdir(directoryPath);
     } catch (error) {
       throw new Error('Failed to read directory');
+    }
+  }
+
+  @Get("transcript/:name")
+  getJson(@Res() res: Response, @Param("name") name: string): void {
+    const transcriptPath = `uploads/converted/${name}/transcript/${name}.json`;
+    try {
+      const jsonData = fs.readFileSync(transcriptPath, 'utf8');
+      const parsedData = JSON.parse(jsonData);
+      //@ts-ignore
+      res.status(HttpStatus.OK).json(parsedData);
+    } catch (error) {
+      //@ts-ignore
+      res.status(HttpStatus.BAD_REQUEST).json({ error: 'Failed to fetch JSON file' });
     }
   }
 }
