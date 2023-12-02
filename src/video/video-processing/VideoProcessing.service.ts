@@ -1,16 +1,9 @@
-import { Controller, Get, Header, Injectable, Param, ParseUUIDPipe, Post, Res } from "@nestjs/common";
-import { createWriteStream } from "fs";
-import { join } from "path";
-import { v4 as uuidv4 } from "uuid";
+import { Injectable } from "@nestjs/common";
 import ffmpeg from "fluent-ffmpeg";
-import { spawn } from "child_process";
-import * as fs from "fs";
 import { DirectoryUtils } from "../../utils/Directory.utils";
 
 const ffmpegStatic = require("ffmpeg-static");
 ffmpeg.setFfmpegPath(ffmpegStatic);
-const path = require("path");
-
 
 /*
 ffmpeg -f dshow -i video="USB Video Device":audio="Microphone (USB Audio Device)"  -f hls -hls_time 1.00 -hls_list_size 0 -hls_segment_filename "D:\repo\model-editor-be\uploads\hls\output_%03d.ts" D:\repo\model-editor-be\uploads\hls\output.m3u8
@@ -69,7 +62,7 @@ export class VideoProcessingService {
       .on("end", () => {
         console.log("extract audio generated successfully.");
         if (callback) {
-          callback()
+          callback();
         }
       })
       .on("error", (err) => {
@@ -123,7 +116,7 @@ export class VideoProcessingService {
       .on("end", () => {
         console.log("Screenshots generated successfully.");
         if (callback) {
-          callback()
+          callback();
         }
       })
       .on("error", (err) => {
@@ -165,7 +158,7 @@ export class VideoProcessingService {
       .on("end", () => {
         console.log("hls generated successfully.");
         if (callback) {
-          callback()
+          callback();
         }
       })
       .on("error", (err) => {

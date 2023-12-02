@@ -1,13 +1,14 @@
-import { Controller, Get, Header, Param, ParseUUIDPipe, Post } from "@nestjs/common";
+import { Body, Controller, Get, Header, Param, ParseUUIDPipe, Post } from "@nestjs/common";
 import * as fs from "fs";
 import { join } from "path";
 import ffmpeg from "fluent-ffmpeg";
 import { VideoProcessingService } from "./VideoProcessing.service";
+import { ConvertedFileInfo, ConvertFileAction, ProcessType } from "../file-scan/FileScan.model";
+import { ApplicationModel } from "../../models/ApplicationModel.entity";
 
 const ffmpegStatic = require("ffmpeg-static");
 ffmpeg.setFfmpegPath(ffmpegStatic);
 
-type ProcessType = "allMaterials" | "hls" | "img" | "audio" | "transcript" | "all"
 
 @Controller("video-processing")
 export class VideoProcessingController {
@@ -60,54 +61,19 @@ export class VideoProcessingController {
     await this.videoProcessingService.endStreaming();
   }
 
-  @Post("audio")
-  async extractAudio() {
-    const inputFilePath: string = "D:\\repo\\model-editor-be\\uploads\\converted\\2023-11-19 15-57-00\\hls";
-    const fileName: string = "2023-11-19 15-57-00";
-    const inputFileType: string = "m3u8";
-    await this.videoProcessingService.extractAudio(
-      inputFilePath,
-      fileName,
-      inputFileType
-    );
-  }
-
-  @Post("screenshots")
-  async startScreenshots() {
-    const inputFilePath: string = "E:\\h14";
-    const fileName: string = "2814829-480p";
-    const inputFileType: string = "mp4";
+  @Post("process")
+  async processVideo(
+    @Body() requestBody: {
+      convertFileAction: ConvertFileAction,
+      convertedFileInfo: ConvertedFileInfo
+    }
+  ) {
+    const inputFilePath: string = requestBody.convertedFileInfo.filePath;
+    const fileName: string = requestBody.convertedFileInfo.fileName;
+    const inputFileType: string = requestBody.convertedFileInfo.extension.replace('.', "");
     const outputFileType: string = "jpg";
 
-    await this.videoProcessingService.startScreenshots(
-      inputFilePath,
-      fileName,
-      inputFileType,
-      outputFileType
-    );
-  }
-
-  @Post("convertToHls")
-  async convertToHls() {
-    const inputFilePath: string = "E:\\h14";
-    const fileName: string = "2814829-480p";
-    const inputFileType: string = "mp4";
-
-    await this.videoProcessingService.convertToHls(
-      inputFilePath,
-      fileName,
-      inputFileType
-    );
-  }
-
-  @Post("process/:processType")
-  async processVideo(@Param("processType") processType: ProcessType) {
-    const inputFilePath: string = "E:\\h14";
-    const fileName: string = "hyj";
-    const inputFileType: string = "mp4";
-    const outputFileType: string = "jpg";
-
-    if (processType === "allMaterials") {
+    if (requestBody.convertFileAction.processType === "allMaterials") {
       await this.videoProcessingService.startScreenshots(
         inputFilePath,
         fileName,
@@ -131,7 +97,7 @@ export class VideoProcessingController {
       );
     }
 
-    if (processType === "img") {
+    if (requestBody.convertFileAction.processType === "img") {
       await this.videoProcessingService.startScreenshots(
         inputFilePath,
         fileName,
@@ -140,7 +106,7 @@ export class VideoProcessingController {
       );
     }
 
-    if (processType === "hls") {
+    if (requestBody.convertFileAction.processType === "hls") {
       await this.videoProcessingService.convertToHls(
         inputFilePath,
         fileName,
@@ -148,7 +114,7 @@ export class VideoProcessingController {
       );
     }
 
-    if (processType === "audio") {
+    if (requestBody.convertFileAction.processType === "audio") {
       const convertedInputFilePath: string = `uploads/converted/${fileName}/hls`;
       await this.videoProcessingService.extractAudio(
         convertedInputFilePath,

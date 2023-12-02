@@ -9,6 +9,7 @@ import { LoggerMiddleware } from "./middlewares/logger.middleware";
 import { ConfigModule } from "@nestjs/config";
 import { VideoProcessingModule } from "./video/video-processing/VideoProcessing.module";
 import { AnalysedVideoModule } from "./video/analysed-video/AnalysedVideo.module";
+import { FileScanModule } from "./video/file-scan/FileScan.module";
 
 /**
  * http://localhost:3000/static/unnamed.png to access images
@@ -34,6 +35,7 @@ import { AnalysedVideoModule } from "./video/analysed-video/AnalysedVideo.module
     VideoProcessingModule,
     FilesModule,
     AnalysedVideoModule,
+    FileScanModule
   ],
 })
 export class AppModule implements NestModule {
