@@ -7,7 +7,7 @@ import { VideoProcessingService } from "../services/VideoProcessing.service";
 const ffmpegStatic = require("ffmpeg-static");
 ffmpeg.setFfmpegPath(ffmpegStatic);
 
-type ProcessType = "all" | "hls" | "img" | "audio"
+type ProcessType = "allMaterials" | "hls" | "img" | "audio" | "transcript" | "all"
 
 @Controller("video-processing")
 export class VideoProcessingController {
@@ -102,12 +102,36 @@ export class VideoProcessingController {
 
   @Post("process/:processType")
   async processVideo(@Param("processType") processType: ProcessType) {
-    const inputFilePath: string = "D:\\repo\\model-editor-be\\uploads";
-    const fileName: string = "2023-11-19 15-57-00";
-    const inputFileType: string = "mkv";
+    const inputFilePath: string = "E:\\h14";
+    const fileName: string = "hyj";
+    const inputFileType: string = "mp4";
     const outputFileType: string = "jpg";
 
-    if (processType === "all" || processType === "img") {
+    if (processType === "allMaterials") {
+      await this.videoProcessingService.startScreenshots(
+        inputFilePath,
+        fileName,
+        inputFileType,
+        outputFileType,
+        () => {
+          this.videoProcessingService.convertToHls(
+            inputFilePath,
+            fileName,
+            inputFileType,
+            () => {
+              const convertedInputFilePath: string = `uploads/converted/${fileName}/hls`;
+              this.videoProcessingService.extractAudio(
+                convertedInputFilePath,
+                fileName,
+                "m3u8"
+              );
+            }
+          );
+        }
+      );
+    }
+
+    if (processType === "img") {
       await this.videoProcessingService.startScreenshots(
         inputFilePath,
         fileName,
@@ -116,7 +140,7 @@ export class VideoProcessingController {
       );
     }
 
-    if (processType === "all" || processType === "hls") {
+    if (processType === "hls") {
       await this.videoProcessingService.convertToHls(
         inputFilePath,
         fileName,
@@ -124,7 +148,7 @@ export class VideoProcessingController {
       );
     }
 
-    if (processType === "all" || processType === "audio") {
+    if (processType === "audio") {
       const convertedInputFilePath: string = `uploads/converted/${fileName}/hls`;
       await this.videoProcessingService.extractAudio(
         convertedInputFilePath,

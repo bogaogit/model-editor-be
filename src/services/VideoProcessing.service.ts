@@ -50,7 +50,8 @@ export class VideoProcessingService {
   async extractAudio(
     inputFilePath: string,
     fileName: string,
-    inputFileType: string
+    inputFileType: string,
+    callback?: () => void
   ) {
     const outputFolderPath = `uploads/converted/${fileName}/audio`;
     DirectoryUtils.createPathRecursively(outputFolderPath);
@@ -67,6 +68,9 @@ export class VideoProcessingService {
       })
       .on("end", () => {
         console.log("extract audio generated successfully.");
+        if (callback) {
+          callback()
+        }
       })
       .on("error", (err) => {
         console.error("Error generating extract audio:", err);
@@ -78,7 +82,8 @@ export class VideoProcessingService {
     inputFilePath: string,
     fileName: string,
     inputFileType: string,
-    outputFileType: string
+    outputFileType: string,
+    callback?: () => void
   ) {
     const outputFolderPath = `uploads/converted/${fileName}/screenshots`;
     DirectoryUtils.createPathRecursively(outputFolderPath);
@@ -117,6 +122,9 @@ export class VideoProcessingService {
       })
       .on("end", () => {
         console.log("Screenshots generated successfully.");
+        if (callback) {
+          callback()
+        }
       })
       .on("error", (err) => {
         console.error("Error generating screenshots:", err);
@@ -127,7 +135,8 @@ export class VideoProcessingService {
   async convertToHls(
     inputFilePath: string,
     fileName: string,
-    inputFileType: string
+    inputFileType: string,
+    callback?: () => void
   ) {
     const outputFolderPath = `uploads/converted/${fileName}/hls`;
     DirectoryUtils.createPathRecursively(outputFolderPath);
@@ -140,7 +149,8 @@ export class VideoProcessingService {
         "-crf", "21",
         "-preset", "veryfast",
         "-c:a", "aac",
-        "-b:a", "128k"
+        "-b:a", "128k",
+        "-hls_list_size", "0"
       ])
       .output(`${outputFolderPath}/${fileName}.m3u8`)
       .on("progress", progress => {
@@ -154,6 +164,9 @@ export class VideoProcessingService {
       })
       .on("end", () => {
         console.log("hls generated successfully.");
+        if (callback) {
+          callback()
+        }
       })
       .on("error", (err) => {
         console.error("Error generating hls:", err);
