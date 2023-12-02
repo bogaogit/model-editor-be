@@ -7,8 +7,8 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { LoggerMiddleware } from "./middlewares/logger.middleware";
 import { ConfigModule } from "@nestjs/config";
-import { VideoProcessingModule } from "./modules/VideoProcessing.module";
-import { AnalysedVideoModule } from "./analysed-video/AnalysedVideo.module";
+import { VideoProcessingModule } from "./video/video-processing/VideoProcessing.module";
+import { AnalysedVideoModule } from "./video/analysed-video/AnalysedVideo.module";
 
 /**
  * http://localhost:3000/static/unnamed.png to access images

@@ -2,7 +2,7 @@ import { Controller, Get, Header, Param, ParseUUIDPipe, Post } from "@nestjs/com
 import * as fs from "fs";
 import { join } from "path";
 import ffmpeg from "fluent-ffmpeg";
-import { VideoProcessingService } from "../services/VideoProcessing.service";
+import { VideoProcessingService } from "./VideoProcessing.service";
 
 const ffmpegStatic = require("ffmpeg-static");
 ffmpeg.setFfmpegPath(ffmpegStatic);

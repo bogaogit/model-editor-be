@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 import ffmpeg from "fluent-ffmpeg";
 import { spawn } from "child_process";
 import * as fs from "fs";
-import { DirectoryUtils } from "../utils/Directory.utils";
+import { DirectoryUtils } from "../../utils/Directory.utils";
 
 const ffmpegStatic = require("ffmpeg-static");
 ffmpeg.setFfmpegPath(ffmpegStatic);

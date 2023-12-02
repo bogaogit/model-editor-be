@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
-import { VideoProcessingController } from "../controllers/VideoProcessing.controller";
-import { VideoProcessingService } from "../services/VideoProcessing.service";
+import { VideoProcessingController } from "./VideoProcessing.controller";
+import { VideoProcessingService } from "./VideoProcessing.service";
 
 @Module({
   imports: [],
