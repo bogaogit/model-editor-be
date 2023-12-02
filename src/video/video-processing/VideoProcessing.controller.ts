@@ -67,10 +67,11 @@ export class VideoProcessingController {
       convertFileAction: ConvertFileAction,
       convertedFileInfo: ConvertedFileInfo
     }
-  ) {
-    const inputFilePath: string = requestBody.convertedFileInfo.filePath;
-    const fileName: string = requestBody.convertedFileInfo.fileName;
-    const inputFileType: string = requestBody.convertedFileInfo.extension.replace('.', "");
+  ): Promise<ConvertedFileInfo> {
+    const convertedFileInfo = requestBody.convertedFileInfo;
+    const inputFilePath: string = convertedFileInfo.filePath;
+    const fileName: string = convertedFileInfo.fileName;
+    const inputFileType: string = convertedFileInfo.extension.replace(".", "");
     const outputFileType: string = "jpg";
 
     if (requestBody.convertFileAction.processType === "allMaterials") {
@@ -89,38 +90,52 @@ export class VideoProcessingController {
               this.videoProcessingService.extractAudio(
                 convertedInputFilePath,
                 fileName,
-                "m3u8"
+                "m3u8",
+                () => {
+                  convertedFileInfo.hasScreenshots = true;
+                  convertedFileInfo.hasHls = true;
+                  convertedFileInfo.hasAudio = true;
+                  return convertedFileInfo;
+                }
               );
             }
           );
         }
       );
-    }
-
-    if (requestBody.convertFileAction.processType === "img") {
+    } else if (requestBody.convertFileAction.processType === "img") {
       await this.videoProcessingService.startScreenshots(
         inputFilePath,
         fileName,
         inputFileType,
-        outputFileType
+        outputFileType,
+        () => {
+          convertedFileInfo.hasScreenshots = true;
+          return convertedFileInfo;
+        }
       );
-    }
-
-    if (requestBody.convertFileAction.processType === "hls") {
+    } else if (requestBody.convertFileAction.processType === "hls") {
       await this.videoProcessingService.convertToHls(
         inputFilePath,
         fileName,
-        inputFileType
+        inputFileType,
+        () => {
+          convertedFileInfo.hasHls = true;
+          return convertedFileInfo;
+        }
       );
-    }
-
-    if (requestBody.convertFileAction.processType === "audio") {
+    } else if (requestBody.convertFileAction.processType === "audio") {
       const convertedInputFilePath: string = `uploads/converted/${fileName}/hls`;
       await this.videoProcessingService.extractAudio(
         convertedInputFilePath,
         fileName,
-        "m3u8"
+        "m3u8",
+        () => {
+          convertedFileInfo.hasAudio = true;
+          return convertedFileInfo;
+        }
       );
     }
+
+    return null
   }
 }
