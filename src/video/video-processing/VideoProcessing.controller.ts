@@ -17,7 +17,6 @@ export class VideoProcessingController {
   ) {
   }
 
-
   @Get("output.m3u8")
   @Header("Content-Type", "application/vnd.apple.mpegurl")
   play() {

@@ -56,6 +56,9 @@ export class VideoProcessingService {
         "-acodec", "copy"
       ])
       .output(`${outputFolderPath}/${fileName}.wav`)
+      .on("start", () => {
+        console.log("audio generated start.");
+      })
       .on("progress", progress => {
         console.log(progress);
       })
@@ -104,14 +107,17 @@ export class VideoProcessingService {
         "-q:v", "0"
       ])
       .output(`${outputFolderPath}/${fileName}-%03d.${outputFileType}`)
+      .on("start", () => {
+        console.log("Screenshots generated start.");
+      })
       .on("progress", progress => {
-        // HERE IS THE CURRENT TIME
-        const time = parseInt(progress.timemark.replace(/:/g, ""));
+        // // HERE IS THE CURRENT TIME
+        // const time = parseInt(progress.timemark.replace(/:/g, ""));
+        //
+        // // AND HERE IS THE CALCULATION
+        // const percent = (time / totalTime) * 100;
 
-        // AND HERE IS THE CALCULATION
-        const percent = (time / totalTime) * 100;
-
-        console.log(percent);
+        // console.log(percent);
       })
       .on("end", () => {
         console.log("Screenshots generated successfully.");
@@ -146,6 +152,9 @@ export class VideoProcessingService {
         "-hls_list_size", "0"
       ])
       .output(`${outputFolderPath}/${fileName}.m3u8`)
+      .on("start", () => {
+        console.log("hls generated start.");
+      })
       .on("progress", progress => {
         // HERE IS THE CURRENT TIME
         const time = parseInt(progress.timemark.replace(/:/g, ""));
