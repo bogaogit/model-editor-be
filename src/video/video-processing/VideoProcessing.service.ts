@@ -106,7 +106,7 @@ export class VideoProcessingService {
         "-vf", "fps=1/2",
         "-q:v", "0"
       ])
-      .output(`${outputFolderPath}/${fileName}-%03d.${outputFileType}`)
+      .output(`${outputFolderPath}/${fileName}-%06d.${outputFileType}`)
       .on("start", () => {
         console.log("Screenshots generated start.");
       })
