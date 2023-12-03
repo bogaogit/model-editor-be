@@ -105,7 +105,7 @@
     "@aws-sdk/util-utf8-browser" "^3.0.0"
     tslib "^1.11.1"
 
-"@aws-sdk/client-cloudwatch@^3.450.0":
+"@aws-sdk/client-cloudwatch@^3.449.0", "@aws-sdk/client-cloudwatch@^3.450.0":
   version "3.450.0"
   resolved "https://registry.npmjs.org/@aws-sdk/client-cloudwatch/-/client-cloudwatch-3.450.0.tgz"
   integrity sha512-oSDIv+ZAIF0XqLkyEmytv3dJPZKOakqAkWHKZV95qMa+dOmaTg32SYYR91GQqjVzaXDDvyoYZs85toZAanoLKg==
@@ -1181,7 +1181,7 @@
     webpack "5.89.0"
     webpack-node-externals "3.0.0"
 
-"@nestjs/common@^10.0.0", "@nestjs/common@^8.0.0 || ^9.0.0 || ^10.0.0", "@nestjs/common@^9.0.0 || ^10.0.0":
+"@nestjs/common@^10.0.0", "@nestjs/common@^10.2.8", "@nestjs/common@^8.0.0 || ^9.0.0 || ^10.0.0", "@nestjs/common@^9.0.0 || ^10.0.0":
   version "10.2.8"
   resolved "https://registry.npmjs.org/@nestjs/common/-/common-10.2.8.tgz"
   integrity sha512-rmpwcdvq2IWMmsUVP8rsdKub6uDWk7dwCYo0aif50JTwcvcxzaP3iKVFKoSgvp0RKYu8h15+/AEOfaInmPpl0Q==
@@ -1859,6 +1859,11 @@
   version "7.0.15"
   resolved "https://registry.npmjs.org/@types/json-schema/-/json-schema-7.0.15.tgz"
   integrity sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==
+
+"@types/lodash@^4.14.202":
+  version "4.14.202"
+  resolved "https://registry.npmjs.org/@types/lodash/-/lodash-4.14.202.tgz"
+  integrity sha512-OvlIYQK9tNneDlS0VN54LLd5uiPCBOp7gS5Z0f1mjoJYBrtStzgmJBxONW3U6OZqdtNzZPmn9BS/7WI7BFFcFQ==
 
 "@types/mime@*":
   version "3.0.4"
@@ -4813,14 +4818,18 @@ mkdirp@^2.1.3:
   resolved "https://registry.npmjs.org/mkdirp/-/mkdirp-2.1.6.tgz"
   integrity sha512-+hEnITedc8LAtIP9u3HJDFIdcLV2vXP33sqLLIzkv1Db1zO/1OxbvYf0Y1OC/S/Qo5dxHXepofhmxL02PsKe+A==
 
-"model-logging@file:../../repogitlab/model-logging":
+model-logging@^1.0.1:
   version "1.0.1"
-  resolved "file:../../repogitlab/model-logging"
+  resolved "https://registry.npmjs.org/model-logging/-/model-logging-1.0.1.tgz"
+  integrity sha512-5y2WhqYagra2CH6FaPuk6zk9DOkoTW/dHRIhHRPNmXveptH3jyVu8staHa+THykcB0i8cISJTItv6gM4dAyjog==
   dependencies:
     "@aws-sdk/client-cloudwatch" "^3.449.0"
     "@nestjs/common" "^10.2.8"
     axios "^1.6.1"
     model-logging "file:dist"
+
+"model-logging@file:dist":
+  resolved "file:node_modules/model-logging/dist"
 
 ms@2.0.0:
   version "2.0.0"

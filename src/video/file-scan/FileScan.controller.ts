@@ -4,6 +4,7 @@ import { join } from "path";
 import ffmpeg from "fluent-ffmpeg";
 import { FileScanService } from "./FileScan.service";
 import { ConvertedFileInfo, ScanDirDto } from "./FileScan.model";
+import _ from "lodash";
 
 const ffmpegStatic = require("ffmpeg-static");
 ffmpeg.setFfmpegPath(ffmpegStatic);
@@ -21,7 +22,12 @@ export class FileScanController {
     @Body() scanDirDto: ScanDirDto,
     @Res() res: Response,
   ) {
-    const convertedFileInfos = await this.fileScanService.scanFileNamesInDirectory(scanDirDto.inputDirectoryPath)
+    let convertedFileInfos = []
+    for (const inputDirectoryPath of scanDirDto.inputDirectoryPaths) {
+      const newConvertedFileInfos = await this.fileScanService.scanFileNamesInDirectory(inputDirectoryPath)
+      convertedFileInfos = _.concat(convertedFileInfos, newConvertedFileInfos)
+    }
+
     //@ts-ignore
     res.status(HttpStatus.OK).json(convertedFileInfos);
   }

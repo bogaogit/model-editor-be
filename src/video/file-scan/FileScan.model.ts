@@ -11,7 +11,7 @@ export const TRANSCRIPT_DIR_NAME = "transcript"
 export type ProcessType = "allMaterials" | "hls" | "img" | "audio" | "transcript" | "all"
 
 export interface ScanDirDto {
-  inputDirectoryPath: string,
+  inputDirectoryPaths: string[],
 }
 
 export interface ConvertFileAction {
