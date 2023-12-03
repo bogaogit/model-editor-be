@@ -1,15 +1,17 @@
 import { MiddlewareConsumer, Module, NestModule, RequestMethod } from "@nestjs/common";
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { ApplicationModel } from './models/ApplicationModel.entity';
-import { ApplicationModelsModule } from './modules/ApplicationModel.module';
-import { FilesModule } from './modules/Files.module';
-import { ServeStaticModule } from '@nestjs/serve-static';
-import { join } from 'path';
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { ApplicationModel } from "./models/ApplicationModel.entity";
+import { ApplicationModelsModule } from "./modules/ApplicationModel.module";
+import { FilesModule } from "./modules/Files.module";
+import { ServeStaticModule } from "@nestjs/serve-static";
+import { join } from "path";
 import { LoggerMiddleware } from "./middlewares/logger.middleware";
 import { ConfigModule } from "@nestjs/config";
 import { VideoProcessingModule } from "./video/video-processing/VideoProcessing.module";
 import { AnalysedVideoModule } from "./video/analysed-video/AnalysedVideo.module";
 import { FileScanModule } from "./video/file-scan/FileScan.module";
+import { TranscribeModule } from "./aws/transcribe/Transcribe.module";
+import { S3Module } from "./aws/s3/S3.module";
 
 /**
  * http://localhost:3000/static/unnamed.png to access images
@@ -35,7 +37,9 @@ import { FileScanModule } from "./video/file-scan/FileScan.module";
     VideoProcessingModule,
     FilesModule,
     AnalysedVideoModule,
-    FileScanModule
+    FileScanModule,
+    TranscribeModule,
+    S3Module
   ],
 })
 export class AppModule implements NestModule {

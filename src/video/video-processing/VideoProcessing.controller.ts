@@ -1,10 +1,11 @@
-import { Body, Controller, Get, Header, Param, ParseUUIDPipe, Post } from "@nestjs/common";
+import { Body, Controller, Get, Header, Post } from "@nestjs/common";
 import * as fs from "fs";
 import { join } from "path";
 import ffmpeg from "fluent-ffmpeg";
 import { VideoProcessingService } from "./VideoProcessing.service";
-import { ConvertedFileInfo, ConvertFileAction, ProcessType } from "../file-scan/FileScan.model";
-import { ApplicationModel } from "../../models/ApplicationModel.entity";
+import { ConvertedFileInfo, ConvertFileAction } from "../file-scan/FileScan.model";
+import { S3Service } from "../../aws/s3/S3.service";
+import { TranscribeService } from "../../aws/transcribe/Transcribe.service";
 
 const ffmpegStatic = require("ffmpeg-static");
 ffmpeg.setFfmpegPath(ffmpegStatic);
@@ -13,7 +14,9 @@ ffmpeg.setFfmpegPath(ffmpegStatic);
 @Controller("video-processing")
 export class VideoProcessingController {
   constructor(
-    private readonly videoProcessingService: VideoProcessingService
+    private readonly videoProcessingService: VideoProcessingService,
+    private readonly s3Service: S3Service,
+    private readonly transcribeService: TranscribeService,
   ) {
   }
 
@@ -129,9 +132,16 @@ export class VideoProcessingController {
         fileName,
         "m3u8",
         () => {
+          this.s3Service.uploadToS3(`uploads/converted/${fileName}/audio`, `${fileName}.wav`)
           convertedFileInfo.hasAudio = true;
           return convertedFileInfo;
         }
+      );
+    } else if (requestBody.convertFileAction.processType === "transcript") {
+      const convertedInputFilePath: string = `uploads/converted/${fileName}/transcript`;
+      await this.transcribeService.createTranscribeJob(
+        fileName,
+        `${convertedInputFilePath}/${fileName}.json`,
       );
     }
 
