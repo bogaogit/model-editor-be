@@ -16,3 +16,5 @@ make a video convert component, called analysed video. use ffmpeg to generate vi
 display img as matrix, can zoom in and out,
 once click on img, it will jump to the video 
 if video has transcript. create new view with imgs and transcribe part grouped.
+
+Cron job task for controlling the entire flow
