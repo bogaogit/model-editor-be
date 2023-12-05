@@ -64,7 +64,7 @@ export class FileScanService {
     return convertedFileInfos;
   }
 
-  private async getFileConvertedInfo(fileName: string, extension: string, inputDirectoryPath: string): Promise<ConvertedFileInfo> {
+  async getFileConvertedInfo(fileName: string, extension: string, inputDirectoryPath: string): Promise<ConvertedFileInfo> {
     const convertedFileInfo: ConvertedFileInfo = new ConvertedFileInfo();
     convertedFileInfo.fileName = fileName;
     convertedFileInfo.isEmpty = false;
