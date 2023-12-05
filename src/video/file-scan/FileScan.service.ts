@@ -17,7 +17,7 @@ const path = require("path");
 const fs = require("fs");
 
 export type FieldName = "img" | "hls" | "audio" | "transcript" | "processing"
-const inputDirectoryPaths = ["E:\\h15"];
+const inputDirectoryPaths = ["/media/bo/d480/h"];
 
 interface FileToProcess {
   id: string,
