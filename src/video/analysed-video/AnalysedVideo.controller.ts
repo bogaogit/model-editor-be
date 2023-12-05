@@ -1,4 +1,4 @@
-import { Controller, Get, HttpStatus, Param, Res } from "@nestjs/common";
+import { Controller, Get, HttpStatus, Param, Res, Response } from "@nestjs/common";
 import { AnalysedVideoService } from "./AnalysedVideo.service";
 import fs, { promises as fsPromises } from "fs";
 

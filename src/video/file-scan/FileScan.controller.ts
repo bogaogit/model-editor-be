@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Header, HttpStatus, Param, ParseUUIDPipe, Post, Res } from "@nestjs/common";
+import { Body, Controller, Get, Header, HttpStatus, Param, ParseUUIDPipe, Post, Res, Response } from "@nestjs/common";
 import ffmpeg from "fluent-ffmpeg";
 import { FileScanService } from "./FileScan.service";
 import { ScanDirDto } from "./FileScan.model";
