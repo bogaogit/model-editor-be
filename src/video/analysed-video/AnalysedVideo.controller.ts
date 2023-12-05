@@ -5,7 +5,6 @@ import fs, { promises as fsPromises } from "fs";
 @Controller("analysed-video")
 export class AnalysedVideoController {
   constructor(
-    private readonly framesdVideoService: AnalysedVideoService
   ) {
   }
 

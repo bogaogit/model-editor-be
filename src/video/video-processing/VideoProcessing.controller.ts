@@ -3,9 +3,10 @@ import * as fs from "fs";
 import { join } from "path";
 import ffmpeg from "fluent-ffmpeg";
 import { VideoProcessingService } from "./VideoProcessing.service";
-import { ConvertedFileInfo, ConvertFileAction } from "../file-scan/FileScan.model";
+import { ConvertFileAction } from "../file-scan/FileScan.model";
 import { S3Service } from "../../aws/s3/S3.service";
 import { TranscribeService } from "../../aws/transcribe/Transcribe.service";
+import { ConvertedFileInfo } from "../file-scan/FileScan.entity";
 
 const ffmpegStatic = require("ffmpeg-static");
 ffmpeg.setFfmpegPath(ffmpegStatic);
@@ -15,8 +16,6 @@ ffmpeg.setFfmpegPath(ffmpegStatic);
 export class VideoProcessingController {
   constructor(
     private readonly videoProcessingService: VideoProcessingService,
-    private readonly s3Service: S3Service,
-    private readonly transcribeService: TranscribeService,
   ) {
   }
 
@@ -70,81 +69,6 @@ export class VideoProcessingController {
       convertedFileInfo: ConvertedFileInfo
     }
   ): Promise<ConvertedFileInfo> {
-    const convertedFileInfo = requestBody.convertedFileInfo;
-    const inputFilePath: string = convertedFileInfo.filePath;
-    const fileName: string = convertedFileInfo.fileName;
-    const inputFileType: string = convertedFileInfo.extension.replace(".", "");
-    const outputFileType: string = "jpg";
-
-    if (requestBody.convertFileAction.processType === "allMaterials") {
-      await this.videoProcessingService.startScreenshots(
-        inputFilePath,
-        fileName,
-        inputFileType,
-        outputFileType,
-        () => {
-          this.videoProcessingService.convertToHls(
-            inputFilePath,
-            fileName,
-            inputFileType,
-            () => {
-              const convertedInputFilePath: string = `uploads/converted/${fileName}/hls`;
-              this.videoProcessingService.extractAudio(
-                convertedInputFilePath,
-                fileName,
-                "m3u8",
-                () => {
-                  convertedFileInfo.hasScreenshots = true;
-                  convertedFileInfo.hasHls = true;
-                  convertedFileInfo.hasAudio = true;
-                  return convertedFileInfo;
-                }
-              );
-            }
-          );
-        }
-      );
-    } else if (requestBody.convertFileAction.processType === "img") {
-      await this.videoProcessingService.startScreenshots(
-        inputFilePath,
-        fileName,
-        inputFileType,
-        outputFileType,
-        () => {
-          convertedFileInfo.hasScreenshots = true;
-          return convertedFileInfo;
-        }
-      );
-    } else if (requestBody.convertFileAction.processType === "hls") {
-      await this.videoProcessingService.convertToHls(
-        inputFilePath,
-        fileName,
-        inputFileType,
-        () => {
-          convertedFileInfo.hasHls = true;
-          return convertedFileInfo;
-        }
-      );
-    } else if (requestBody.convertFileAction.processType === "audio") {
-      const convertedInputFilePath: string = `uploads/converted/${fileName}/hls`;
-      await this.videoProcessingService.extractAudio(
-        convertedInputFilePath,
-        fileName,
-        "m3u8",
-        () => {
-          this.s3Service.uploadToS3(`uploads/converted/${fileName}/audio`, `${fileName}.wav`)
-          convertedFileInfo.hasAudio = true;
-          return convertedFileInfo;
-        }
-      );
-    } else if (requestBody.convertFileAction.processType === "transcript") {
-      const convertedInputFilePath: string = `uploads/converted/${fileName}/transcript`;
-      await this.transcribeService.createTranscribeJob(
-        fileName,
-        `${convertedInputFilePath}/${fileName}.json`,
-      );
-    }
-
-    return null
+    return await this.videoProcessingService.processVideo(requestBody)
   }
 }

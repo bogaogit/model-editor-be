@@ -1,9 +1,7 @@
 import { Body, Controller, Get, Header, HttpStatus, Param, ParseUUIDPipe, Post, Res } from "@nestjs/common";
-import * as fs from "fs";
-import { join } from "path";
 import ffmpeg from "fluent-ffmpeg";
 import { FileScanService } from "./FileScan.service";
-import { ConvertedFileInfo, ScanDirDto } from "./FileScan.model";
+import { ScanDirDto } from "./FileScan.model";
 import _ from "lodash";
 
 const ffmpegStatic = require("ffmpeg-static");

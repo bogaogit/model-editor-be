@@ -5,7 +5,8 @@ import { AnalysedVideoService } from "./AnalysedVideo.service";
 @Module({
   imports: [],
   providers: [AnalysedVideoService],
-  controllers: [AnalysedVideoController]
+  controllers: [AnalysedVideoController],
+  exports: [AnalysedVideoService]
 })
 export class AnalysedVideoModule {
 }

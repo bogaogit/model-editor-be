@@ -12,6 +12,9 @@ import { AnalysedVideoModule } from "./video/analysed-video/AnalysedVideo.module
 import { FileScanModule } from "./video/file-scan/FileScan.module";
 import { TranscribeModule } from "./aws/transcribe/Transcribe.module";
 import { S3Module } from "./aws/s3/S3.module";
+import { ConvertedFileInfo } from "./video/file-scan/FileScan.entity";
+import { ScheduleModule } from "@nestjs/schedule";
+import { TasksModule } from "./tasks/Tasks.module";
 
 /**
  * http://localhost:3000/static/unnamed.png to access images
@@ -30,9 +33,11 @@ import { S3Module } from "./aws/s3/S3.module";
       username: 'postgres',
       password: 'postgres',
       database: 'model-edit-be',
-      entities: [ApplicationModel],
+      entities: [ApplicationModel, ConvertedFileInfo],
       synchronize: true,
     }),
+    ScheduleModule.forRoot(),
+    TasksModule,
     ApplicationModelsModule,
     VideoProcessingModule,
     FilesModule,

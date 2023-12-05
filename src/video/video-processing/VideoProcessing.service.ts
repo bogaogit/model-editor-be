@@ -1,6 +1,11 @@
-import { Injectable } from "@nestjs/common";
+import { Body, Injectable, Logger } from "@nestjs/common";
 import ffmpeg from "fluent-ffmpeg";
 import { DirectoryUtils } from "../../utils/Directory.utils";
+import { ConvertFileAction } from "../file-scan/FileScan.model";
+import { ConvertedFileInfo } from "../file-scan/FileScan.entity";
+import { S3Service } from "../../aws/s3/S3.service";
+import { TranscribeService } from "../../aws/transcribe/Transcribe.service";
+import { FileScanService } from "../file-scan/FileScan.service";
 
 const ffmpegStatic = require("ffmpeg-static");
 ffmpeg.setFfmpegPath(ffmpegStatic);
@@ -13,6 +18,13 @@ ffmpeg -f dshow -i video="USB Video Device":audio="Microphone (USB Audio Device)
 @Injectable()
 export class VideoProcessingService {
   private command: any;
+  private readonly logger = new Logger(VideoProcessingService.name);
+
+  constructor(
+    private readonly s3Service: S3Service,
+    private readonly transcribeService: TranscribeService,
+    private readonly fileScanService: FileScanService,
+  ) {}
 
   async startStreaming() {
     this.command = ffmpeg()
@@ -174,5 +186,120 @@ export class VideoProcessingService {
         console.error("Error generating hls:", err);
       })
       .run();
+  }
+
+  async beingProcess(convertedFileInfo: ConvertedFileInfo, value: boolean) {
+    await this.fileScanService.setFieldValue(convertedFileInfo, 'processing', value)
+  }
+
+  async findNextFileAndProcess() {
+    const isProcessingFile = await this.fileScanService.serviceIsProcessingFile();
+    if (isProcessingFile) return
+
+    const fileToProcess = await this.fileScanService.findNextFileToProcess();
+    if (!fileToProcess) return
+
+    this.logger.log("Picked next job:")
+    this.logger.log(fileToProcess)
+
+    await this.processVideo({
+      convertFileAction: {
+        processType: fileToProcess.processType
+      },
+      convertedFileInfo: fileToProcess.convertedFileInfo
+    })
+  }
+
+  async processVideo(
+    processVideoRequest: {
+      convertFileAction: ConvertFileAction,
+      convertedFileInfo: ConvertedFileInfo
+    }
+  ): Promise<ConvertedFileInfo> {
+    const convertedFileInfo = processVideoRequest.convertedFileInfo;
+    const inputFilePath: string = convertedFileInfo.filePath;
+    const fileName: string = convertedFileInfo.fileName;
+    const inputFileType: string = convertedFileInfo.extension.replace(".", "");
+    const outputFileType: string = "jpg";
+
+    if (processVideoRequest.convertFileAction.processType === "allMaterials") {
+      await this.startScreenshots(
+        inputFilePath,
+        fileName,
+        inputFileType,
+        outputFileType,
+        () => {
+          this.convertToHls(
+            inputFilePath,
+            fileName,
+            inputFileType,
+            () => {
+              const convertedInputFilePath: string = `uploads/converted/${fileName}/hls`;
+              this.extractAudio(
+                convertedInputFilePath,
+                fileName,
+                "m3u8",
+                () => {
+                  convertedFileInfo.hasScreenshots = true;
+                  convertedFileInfo.hasHls = true;
+                  convertedFileInfo.hasAudio = true;
+                  return convertedFileInfo;
+                }
+              );
+            }
+          );
+        }
+      );
+    } else if (processVideoRequest.convertFileAction.processType === "screenshots") {
+      await this.beingProcess(convertedFileInfo, true)
+      await this.startScreenshots(
+        inputFilePath,
+        fileName,
+        inputFileType,
+        outputFileType,
+        () => {
+          convertedFileInfo.hasScreenshots = true;
+          this.fileScanService.setFieldValue(convertedFileInfo, 'img', true)
+          this.beingProcess(convertedFileInfo, false)
+          return convertedFileInfo;
+        }
+      );
+    } else if (processVideoRequest.convertFileAction.processType === "hls") {
+      await this.beingProcess(convertedFileInfo, true)
+      await this.convertToHls(
+        inputFilePath,
+        fileName,
+        inputFileType,
+        () => {
+          convertedFileInfo.hasHls = true;
+          this.fileScanService.setFieldValue(convertedFileInfo, 'hls', true)
+          this.beingProcess(convertedFileInfo, false)
+          return convertedFileInfo;
+        }
+      );
+    } else if (processVideoRequest.convertFileAction.processType === "audio") {
+      await this.beingProcess(convertedFileInfo, true)
+      const convertedInputFilePath: string = `uploads/converted/${fileName}/hls`;
+      await this.extractAudio(
+        convertedInputFilePath,
+        fileName,
+        "m3u8",
+        () => {
+          this.s3Service.uploadToS3(`uploads/converted/${fileName}/audio`, `${fileName}.wav`)
+          convertedFileInfo.hasAudio = true;
+          this.fileScanService.setFieldValue(convertedFileInfo, 'audio', true)
+          this.beingProcess(convertedFileInfo, false)
+          return convertedFileInfo;
+        }
+      );
+    } else if (processVideoRequest.convertFileAction.processType === "transcript") {
+      const convertedInputFilePath: string = `uploads/converted/${fileName}/transcript`;
+      await this.transcribeService.createTranscribeJob(
+        fileName,
+        `${convertedInputFilePath}/${fileName}.json`,
+      );
+    }
+
+    return null
   }
 }
