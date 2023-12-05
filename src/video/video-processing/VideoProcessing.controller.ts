@@ -1,8 +1,12 @@
-import { Controller, Get, Header, Post } from "@nestjs/common";
+import { Body, Controller, Get, Header, Post } from "@nestjs/common";
 import * as fs from "fs";
 import { join } from "path";
 import ffmpeg from "fluent-ffmpeg";
-import { VideoProcessingService } from "../services/VideoProcessing.service";
+import { VideoProcessingService } from "./VideoProcessing.service";
+import { ConvertFileAction } from "../file-scan/FileScan.model";
+import { S3Service } from "../../aws/s3/S3.service";
+import { TranscribeService } from "../../aws/transcribe/Transcribe.service";
+import { ConvertedFileInfo } from "../file-scan/FileScan.entity";
 
 const ffmpegStatic = require("ffmpeg-static");
 ffmpeg.setFfmpegPath(ffmpegStatic);
@@ -11,10 +15,9 @@ ffmpeg.setFfmpegPath(ffmpegStatic);
 @Controller("video-processing")
 export class VideoProcessingController {
   constructor(
-    private readonly videoProcessingService: VideoProcessingService
+    private readonly videoProcessingService: VideoProcessingService,
   ) {
   }
-
 
   @Get("output.m3u8")
   @Header("Content-Type", "application/vnd.apple.mpegurl")
@@ -59,52 +62,13 @@ export class VideoProcessingController {
     await this.videoProcessingService.endStreaming();
   }
 
-  @Post("screenshots")
-  async startScreenshots() {
-    const inputFilePath: string = "E:\\h14";
-    const fileName: string = "2814829-480p";
-    const inputFileType: string = "mp4";
-    const outputFileType: string = "jpg";
-
-    await this.videoProcessingService.startScreenshots(
-      inputFilePath,
-      fileName,
-      inputFileType,
-      outputFileType
-    );
-  }
-
-  @Post("convertToHls")
-  async convertToHls() {
-    const inputFilePath: string = "E:\\h14";
-    const fileName: string = "2814829-480p";
-    const inputFileType: string = "mp4";
-
-    await this.videoProcessingService.convertToHls(
-      inputFilePath,
-      fileName,
-      inputFileType
-    );
-  }
-
   @Post("process")
-  async processVideo() {
-    const inputFilePath: string = "E:\\h12";
-    const fileName: string = "14289337-720p";
-    const inputFileType: string = "mp4";
-    const outputFileType: string = "jpg";
-
-    await this.videoProcessingService.startScreenshots(
-      inputFilePath,
-      fileName,
-      inputFileType,
-      outputFileType
-    );
-
-    await this.videoProcessingService.convertToHls(
-      inputFilePath,
-      fileName,
-      inputFileType
-    );
+  async processVideo(
+    @Body() requestBody: {
+      convertFileAction: ConvertFileAction,
+      convertedFileInfo: ConvertedFileInfo
+    }
+  ): Promise<ConvertedFileInfo> {
+    return await this.videoProcessingService.processVideo(requestBody)
   }
 }
