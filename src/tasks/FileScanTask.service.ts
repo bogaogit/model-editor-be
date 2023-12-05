@@ -19,9 +19,9 @@ export class FileScanTaskService {
     await this.fileScanService.scanDirectories()
   }
 
-  // @Cron('*/10 * * * * *')
-  // async pickNewJob() {
-  //   this.logger.log('Scanning and Picking new job ...');
-  //   await this.videoProcessingService.findNextFileAndProcess()
-  // }
+  @Cron('*/10 * * * * *')
+  async pickNewJob() {
+    this.logger.log('Scanning and Picking new job ...');
+    await this.videoProcessingService.findNextFileAndProcess()
+  }
 }
