@@ -285,7 +285,7 @@ export class VideoProcessingService {
         fileName,
         "m3u8",
         () => {
-          this.s3Service.uploadToS3(`uploads/converted/${fileName}/audio`, `${fileName}.wav`)
+          // this.s3Service.uploadToS3(`uploads/converted/${fileName}/audio`, `${fileName}.wav`)
           convertedFileInfo.hasAudio = true;
           this.fileScanService.setFieldValue(convertedFileInfo, 'audio', true)
           this.beingProcess(convertedFileInfo, false)
