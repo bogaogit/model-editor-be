@@ -157,10 +157,8 @@ export class VideoProcessingService {
       .input(`${inputFilePath}/${fileName}.${inputFileType}`)
       .outputOptions([
         "-c:v", "libx264",
-        "-crf", "21",
         "-preset", "veryfast",
         "-c:a", "aac",
-        "-b:a", "128k",
         "-hls_list_size", "0"
       ])
       .output(`${outputFolderPath}/${fileName}.m3u8`)
