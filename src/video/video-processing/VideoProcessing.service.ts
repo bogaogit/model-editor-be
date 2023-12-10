@@ -15,7 +15,7 @@ ffmpeg -f dshow -i video="USB Video Device":audio="Microphone (USB Audio Device)
 
  */
 
-const USE_CUDA = false;
+const USE_CUDA = true;
 
 @Injectable()
 export class VideoProcessingService {
@@ -155,10 +155,15 @@ export class VideoProcessingService {
     const outputFolderPath = `uploads/converted/${fileName}/hls`;
     DirectoryUtils.createPathRecursively(outputFolderPath);
 
-    const outputOptions = USE_CUDA ? [
+    const inputOptions = USE_CUDA ? [
         "-hwaccel", "cuda",
+      ] :
+      [];
+
+    const outputOptions = USE_CUDA ? [
         "-c:v", "h264_nvenc",
-        "-b:v", "2M",
+        "-b:v", "6000k",
+        "-maxrate:v", "9000k",
         "-c:a", "aac",
         "-hls_time", "10",
         "-hls_list_size", "0"
@@ -176,19 +181,14 @@ export class VideoProcessingService {
     let totalTime;
     ffmpeg()
       .input(`${inputFilePath}/${fileName}.${inputFileType}`)
+      .inputOptions(inputOptions)
       .outputOptions(outputOptions)
       .output(`${outputFolderPath}/${fileName}.m3u8`)
       .on("start", () => {
         console.log("hls generated start.");
       })
       .on("progress", progress => {
-        // HERE IS THE CURRENT TIME
-        const time = parseInt(progress.timemark.replace(/:/g, ""));
-
-        // AND HERE IS THE CALCULATION
-        const percent = (time / totalTime) * 100;
-
-        console.log(percent);
+        console.log(progress);
       })
       .on("end", () => {
         console.log("hls generated successfully.");
