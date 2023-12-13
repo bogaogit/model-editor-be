@@ -17,7 +17,7 @@ const path = require("path");
 const fs = require("fs");
 
 export type FieldName = "img" | "hls" | "audio" | "transcript" | "processing"
-const inputDirectoryPaths = ["E:\\h4p1"];
+
 
 interface FileToProcess {
   id: string,
@@ -28,6 +28,9 @@ interface FileToProcess {
 @Injectable()
 export class FileScanService {
   private readonly logger = new Logger(FileScanService.name);
+  private PROCESS_TRANSCRIBE_TASK: string = process.env.PROCESS_TRANSCRIBE_TASK
+  private INPUT_DIRECTORY: string = process.env.INPUT_DIRECTORY
+  inputDirectoryPaths = JSON.parse(this.INPUT_DIRECTORY);
 
   constructor(
     @InjectRepository(ConvertedFileInfo)
@@ -38,7 +41,7 @@ export class FileScanService {
 
   async scanDirectories() {
     let convertedFileInfos = [];
-    for (const inputDirectoryPath of inputDirectoryPaths) {
+    for (const inputDirectoryPath of this.inputDirectoryPaths) {
       const newConvertedFileInfos = await this.scanFileNamesInDirectory(inputDirectoryPath);
       convertedFileInfos = _.concat(convertedFileInfos, newConvertedFileInfos);
     }
@@ -154,11 +157,15 @@ export class FileScanService {
   }
 
   async findNextFileToProcess(): Promise<FileToProcess | undefined> {
-    const whereCondition: FindOptionsWhere<ConvertedFileInfo>[] = [
+    let whereCondition: FindOptionsWhere<ConvertedFileInfo>[] = [
       { hasScreenshots: false },
       { hasHls: false },
-      { hasAudio: false }
+      { hasAudio: false },
     ];
+
+    if (this.PROCESS_TRANSCRIBE_TASK === "true"){
+      whereCondition.push({ hasTranscript: false })
+    }
 
     const findItem = await this.convertedFileInfoRepository.findOneBy(
       whereCondition
@@ -172,6 +179,8 @@ export class FileScanService {
         processType = "hls";
       } else if (!findItem.hasAudio) {
         processType = "audio";
+      } else if (!findItem.hasTranscript) {
+        processType = "transcript";
       }
 
       return {

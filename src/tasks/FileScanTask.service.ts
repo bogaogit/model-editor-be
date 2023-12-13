@@ -6,6 +6,7 @@ import { VideoProcessingService } from "../video/video-processing/VideoProcessin
 @Injectable()
 export class FileScanTaskService {
   private readonly logger = new Logger(FileScanTaskService.name);
+  private RUN_TASKS: string = process.env.RUN_TASKS
 
   constructor(
     private fileScanService: FileScanService,
@@ -15,13 +16,17 @@ export class FileScanTaskService {
 
   @Cron('*/30 * * * * *')
   async scanFiles() {
-    this.logger.log('Scanning Directories ...');
-    await this.fileScanService.scanDirectories()
+    if (this.RUN_TASKS === "true") {
+      this.logger.log('Scanning Directories ...');
+      await this.fileScanService.scanDirectories()
+    }
   }
 
   @Cron('*/10 * * * * *')
   async pickNewJob() {
-    this.logger.log('Scanning and Picking new job ...');
-    await this.videoProcessingService.findNextFileAndProcess()
+    if (this.RUN_TASKS === "true") {
+      this.logger.log('Scanning and Picking new job ...');
+      await this.videoProcessingService.findNextFileAndProcess()
+    }
   }
 }

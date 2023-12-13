@@ -21,6 +21,7 @@ const USE_CUDA = true;
 export class VideoProcessingService {
   private command: any;
   private readonly logger = new Logger(VideoProcessingService.name);
+  private UPLOAD_AUDIO_S3: string = process.env.UPLOAD_AUDIO_S3
 
   constructor(
     private readonly s3Service: S3Service,
@@ -299,7 +300,9 @@ export class VideoProcessingService {
         fileName,
         "m3u8",
         () => {
-          // this.s3Service.uploadToS3(`uploads/converted/${fileName}/audio`, `${fileName}.wav`)
+          if (this.UPLOAD_AUDIO_S3 === "true") {
+            this.s3Service.uploadToS3(`uploads/converted/${fileName}/audio`, `${fileName}.wav`)
+          }
           convertedFileInfo.hasAudio = true;
           this.fileScanService.setFieldValue(convertedFileInfo, "audio", true);
           this.beingProcess(convertedFileInfo, false);
@@ -312,6 +315,7 @@ export class VideoProcessingService {
         fileName,
         `${convertedInputFilePath}/${fileName}.json`
       );
+      await this.fileScanService.setFieldValue(convertedFileInfo, "transcript", true);
     }
 
     return null;
