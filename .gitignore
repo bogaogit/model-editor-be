@@ -37,3 +37,4 @@ lerna-debug.log*
 *.mp4
 *.mp3
 /uploads
+/assets

@@ -2,7 +2,7 @@ import { Controller, Get, HttpStatus, Param, Res, Response } from "@nestjs/commo
 import { AnalysedVideoService } from "./AnalysedVideo.service";
 import fs, { promises as fsPromises } from "fs";
 import path from 'path'
-import { nodewhisper } from 'nodejs-whisper'
+// import Bard from "bard-ai";
 
 @Controller("analysed-video")
 export class AnalysedVideoController {
@@ -10,34 +10,24 @@ export class AnalysedVideoController {
   ) {
   }
 
-  @Get("whisper")
-  async whisper(@Res() res: Response): Promise<void> {
-    // const transcriptPath = `uploads/converted/${name}/transcript/${name}.json`;
+
+
+  /*@Get("bard")
+  async bard(@Res() res: Response): Promise<void> {
     try {
-      // Need to provide exact path to your audio file.
-      const filePath = path.resolve(__dirname, '../../../male.wav')
+      try {
+        const COOKIE = "g.a000fAh-ltGGwHdguCDWugdDu9DRcF7rDUEMwlIzp033SUp-xCsK_CrPiBtPEoTOAlDDh8pi-AACgYKAbUSAQASFQHGX2Minxk4IFnmNEWnBaN3QIlORRoVAUF8yKrWrjNK_5RdeL87rHWLWW6t0076"
+        let myBard = new Bard(COOKIE);
 
-      await nodewhisper(filePath, {
-        modelName: 'tiny.en', //Downloaded models name
-        autoDownloadModelName: 'tiny.en', // (optional) autodownload a model if model is not present
-        whisperOptions: {
-          outputInText: false, // get output result in txt file
-          outputInVtt: false, // get output result in vtt file
-          outputInSrt: true, // get output result in srt file
-          outputInCsv: false, // get output result in csv file
-          translateToEnglish: false, //translate from source language to english
-          wordTimestamps: false, // Word-level timestamps
-          timestamps_length: 20, // amount of dialogue per timestamp pair
-          splitOnWord: true, //split on word rather than on token
-        },
-      })
-
-      // console.log(transcript); // output: [ {start,end,speech} ]
+        console.log(await myBard.ask("Hello, world!"));
+      } catch (error) {
+        console.error('Error:', error);
+      }
     } catch (error) {
       //@ts-ignore
       res.status(HttpStatus.BAD_REQUEST).json({ error: 'Failed transcribe using whisper' });
     }
-  }
+  }*/
 
   @Get("images-info/:name")
   async getImagesInfo(@Param("name") name: string): Promise<string[]> {

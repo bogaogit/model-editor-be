@@ -119,7 +119,7 @@ export class VideoProcessingService {
     ffmpeg()
       .input(`${inputFilePath}/${fileName}.${inputFileType}`)
       .outputOptions([
-        "-vf", "fps=1/2",
+        "-vf", "fps=1/10",
         "-q:v", "0"
       ])
       .output(`${outputFolderPath}/${fileName}-%06d.${outputFileType}`)
