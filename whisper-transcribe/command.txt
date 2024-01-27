@@ -1,0 +1,6 @@
+give me the structure of the page defined in the following text in a table format, with entity name in title case (separated using space) and attribute name in title case (separated using space), and attribute data type, examples, and use target entity as type for tables.
+attribute data type must be one of these: string, boolean, date, dateTime, one-to-many, one-to-one, many-to-one.
+Respond in multiple lines plain string only. The response format must be formatted as follows: 
+Name | Attribute Data Type | Attribute Group | Target Entity | Example
+
+it has an attribute named Courthouse, it is a string, and example is Kath's Court. Another attribute named Courtroom, a string, example will be Live Courtroom. Another attribute named Department, as a string, example is Bird Law. Another attribute named Sessions, which has type one-to-many, the target entity is Session, example is "Session 1, 9am - 12pm"
