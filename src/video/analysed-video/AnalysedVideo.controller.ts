@@ -2,7 +2,7 @@ import { Controller, Get, HttpStatus, Param, Res, Response } from "@nestjs/commo
 import { AnalysedVideoService } from "./AnalysedVideo.service";
 import fs, { promises as fsPromises } from "fs";
 import path from 'path'
-// import Bard from "bard-ai";
+const { BardAPI } = require('bard-api-node');
 
 @Controller("analysed-video")
 export class AnalysedVideoController {
@@ -12,14 +12,22 @@ export class AnalysedVideoController {
 
 
 
-  /*@Get("bard")
+  @Get("bard")
   async bard(@Res() res: Response): Promise<void> {
     try {
       try {
-        const COOKIE = "g.a000fAh-ltGGwHdguCDWugdDu9DRcF7rDUEMwlIzp033SUp-xCsK_CrPiBtPEoTOAlDDh8pi-AACgYKAbUSAQASFQHGX2Minxk4IFnmNEWnBaN3QIlORRoVAUF8yKrWrjNK_5RdeL87rHWLWW6t0076"
-        let myBard = new Bard(COOKIE);
+        const assistant = new BardAPI();
 
-        console.log(await myBard.ask("Hello, world!"));
+        // Set session information for authentication
+        await assistant.setSession('__Secure-1PSID', 'g.a000fAh-ltGGwHdguCDWugdDu9DRcF7rDUEMwlIzp033SUp-xCsK_CrPiBtPEoTOAlDDh8pi-AACgYKAbUSAQASFQHGX2Minxk4IFnmNEWnBaN3QIlORRoVAUF8yKrWrjNK_5RdeL87rHWLWW6t0076'); // or '__Secure-3PSID'
+        await assistant.setSession('__Secure-1PSIDTS', 'sidts-CjIBPVxjSjFFg_tzlP4jBFK7UQdDeGeO9nsNv3YigCsOrhSbkn0aAL_2nyMgZfZXS8ngSBAA'); // or '__Secure-3PSID'
+        // ...
+
+        // Send a query to Bard
+        const response = await assistant.getBardResponse('Hello, how are you?');
+        console.log('Bard:', response.content);
+
+
       } catch (error) {
         console.error('Error:', error);
       }
@@ -27,7 +35,7 @@ export class AnalysedVideoController {
       //@ts-ignore
       res.status(HttpStatus.BAD_REQUEST).json({ error: 'Failed transcribe using whisper' });
     }
-  }*/
+  }
 
   @Get("images-info/:name")
   async getImagesInfo(@Param("name") name: string): Promise<string[]> {
