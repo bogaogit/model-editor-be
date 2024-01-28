@@ -62,7 +62,7 @@ export class VideoProcessingService {
     inputFileType: string,
     callback?: () => void
   ) {
-    const outputFolderPath = `uploads/converted/${fileName}/audio`;
+    const outputFolderPath = `uploads/audios/${fileName}`;
     DirectoryUtils.createPathRecursively(outputFolderPath);
 
     ffmpeg()

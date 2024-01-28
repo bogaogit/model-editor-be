@@ -49,7 +49,7 @@ export class AnalysedVideoController {
 
   @Get("transcript/:name")
   getJson(@Res() res: Response, @Param("name") name: string): void {
-    const transcriptPath = `uploads/converted/${name}/transcript/${name}.json`;
+    const transcriptPath = `uploads/transcripts/${name}.json`;
     try {
       const jsonData = fs.readFileSync(transcriptPath, 'utf8');
       const parsedData = JSON.parse(jsonData);

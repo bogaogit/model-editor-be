@@ -3,8 +3,8 @@ import json
 import os
 import time
 
-source_dir = "D://repo//videos"
-output_dir = "D://repo//transcripts"
+source_dir = "../uploads/audios"
+output_dir = "../uploads/transcripts"
 transcribing = False
 
 def check_for_file():
