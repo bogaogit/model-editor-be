@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { DirectoryUtils } from "../../utils/Directory.utils";
 import { promises as fsPromises } from "fs";
+import { FfprobeData } from "fluent-ffmpeg";
 
 export const CONVERTED_DIR = `uploads/converted`
 export const AUDIO_DIR_NAME = "audio"
@@ -17,4 +18,13 @@ export interface ScanDirDto {
 export interface ConvertFileAction {
   processType: ProcessType,
   override?: boolean,
+}
+
+export interface VideoInfo {
+  durationS: number,
+}
+
+export interface VideoIndexInfo {
+  screenshots: string[],
+  videoInfo?: FfprobeData,
 }

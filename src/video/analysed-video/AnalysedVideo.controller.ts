@@ -1,16 +1,16 @@
 import { Controller, Get, HttpStatus, Param, Res, Response } from "@nestjs/common";
 import { AnalysedVideoService } from "./AnalysedVideo.service";
 import fs, { promises as fsPromises } from "fs";
-import path from 'path'
+import { VideoIndexInfo } from "../file-scan/FileScan.model";
+
 const { BardAPI } = require('bard-api-node');
 
 @Controller("analysed-video")
 export class AnalysedVideoController {
   constructor(
+    private readonly analysedVideoService: AnalysedVideoService
   ) {
   }
-
-
 
   @Get("bard")
   async bard(@Res() res: Response): Promise<void> {
@@ -38,13 +38,24 @@ export class AnalysedVideoController {
   }
 
   @Get("images-info/:name")
-  async getImagesInfo(@Param("name") name: string): Promise<string[]> {
+  async getImagesInfo(@Param("name") name: string): Promise<VideoIndexInfo> {
+    const videoIndexInfo: VideoIndexInfo = { screenshots: [] }
     const directoryPath = `uploads/converted/${name}/screenshots`;
     try {
-      return await fsPromises.readdir(directoryPath);
+      videoIndexInfo.screenshots = await fsPromises.readdir(directoryPath);
     } catch (error) {
-      throw new Error('Failed to read directory');
+      console.log('Error reading screenshots:', error);
     }
+
+    try {
+      const metadata = await this.analysedVideoService.getVideoInfo(name)
+      console.log(metadata)
+      videoIndexInfo.videoInfo = await this.analysedVideoService.getVideoInfo(name)
+    } catch (error) {
+      console.log('Error using ffprobe module:', error);
+    }
+
+    return videoIndexInfo;
   }
 
   @Get("transcript/:name")
