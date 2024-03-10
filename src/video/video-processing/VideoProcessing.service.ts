@@ -68,8 +68,9 @@ export class VideoProcessingService {
     ffmpeg()
       .input(`${inputFilePath}/${fileName}.${inputFileType}`)
       .outputOptions([
-        "-vn",
-        "-acodec", "copy"
+        "-ar", "16000",
+        "-ac", "1",
+        "-c:a", "pcm_s16le"
       ])
       .output(`${outputFolderPath}/${fileName}.wav`)
       .on("start", () => {
