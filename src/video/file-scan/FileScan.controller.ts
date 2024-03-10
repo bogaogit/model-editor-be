@@ -65,4 +65,12 @@ export class FileScanController {
     //@ts-ignore
     res.status(HttpStatus.OK).json(convertedFileInfos);
   }
+
+  @Get("all")
+  async getAllFromDB(@Res() res: Response) {
+    const convertedFileInfos = await this.fileScanService.findAll();
+
+    //@ts-ignore
+    res.status(HttpStatus.OK).json(convertedFileInfos);
+  }
 }
