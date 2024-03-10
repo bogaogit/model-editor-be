@@ -16,6 +16,7 @@ ffmpeg -f dshow -i video="USB Video Device":audio="Microphone (USB Audio Device)
  */
 
 const USE_CUDA = true;
+const SCREENSHOTS_TOTAL_NUMBER = 20;
 
 @Injectable()
 export class VideoProcessingService {
@@ -101,51 +102,50 @@ export class VideoProcessingService {
     const outputFolderPath = `uploads/converted/${fileName}/screenshots`;
     DirectoryUtils.createPathRecursively(outputFolderPath);
 
-    /**
-     * Here,
-     *
-     * we use the select filter to extract a frame if the expression in single-quotes evaluates to non-zero. If the expression is zero, then select filter discards that frame.
-     * mod(A,B) returns the modulus (remainder after division) result after dividing A by B. So, if we divide 0 by 300, we get 0. Then, 1/300 is 1, and so on.
-     * not inverts this result. So, if the modulus is zero, then the final result is 1. If the modulus is non-zero, then the result is evaluated to zero.
-     * Based on this not operation, the select filter picks up a frame.
-     */
+    const inputFile = `${inputFilePath}/${fileName}.${inputFileType}`
 
-    /**
-     *
-     * Replace "input.mp4" with the name of your input video file. The `-vf "fps=1/5"` option sets the frame rate to 1 frame per 5 seconds, indicating that a screenshot will be taken every 5 seconds. Adjust the value if you want screenshots at a different interval.
-     *
-     * The `-q:v 2` option sets the quality of the output images. A lower value (e.g., 2) indicates higher quality, while a higher value (e.g., 10) indicates lower quality. You can adjust this value based on your preference.
-     */
-    let totalTime;
-    ffmpeg()
-      .input(`${inputFilePath}/${fileName}.${inputFileType}`)
-      .outputOptions([
-        "-vf", "fps=1/10",
-        "-q:v", "0"
-      ])
-      .output(`${outputFolderPath}/${fileName}-%06d.${outputFileType}`)
-      .on("start", () => {
-        console.log("Screenshots generated start.");
-      })
-      .on("progress", progress => {
-        // // HERE IS THE CURRENT TIME
-        // const time = parseInt(progress.timemark.replace(/:/g, ""));
-        //
-        // // AND HERE IS THE CALCULATION
-        // const percent = (time / totalTime) * 100;
+    ffmpeg.ffprobe(inputFile, function(err, metadata) {
+      if (err) {
+        console.error('An error occurred:', err);
+        return;
+      }
 
-        // console.log(percent);
-      })
-      .on("end", () => {
-        console.log("Screenshots generated successfully.");
-        if (callback) {
-          callback();
-        }
-      })
-      .on("error", (err) => {
-        console.error("Error generating screenshots:", err);
-      })
-      .run();
+      const duration = metadata.format.duration;
+      const fps = duration/SCREENSHOTS_TOTAL_NUMBER
+      console.log('Video duration (seconds):', duration);
+
+      ffmpeg()
+        .input(inputFile)
+        .outputOptions([
+          "-vf", "fps=1/" + (Math.ceil(fps)).toString(),
+          "-q:v", "0"
+        ])
+        .output(`${outputFolderPath}/${fileName}-%06d.${outputFileType}`)
+        .on("start", () => {
+          console.log("Screenshots generated start.");
+        })
+        .on("progress", progress => {
+          // // HERE IS THE CURRENT TIME
+          // const time = parseInt(progress.timemark.replace(/:/g, ""));
+          //
+          // // AND HERE IS THE CALCULATION
+          // const percent = (time / totalTime) * 100;
+
+          // console.log(percent);
+        })
+        .on("end", () => {
+          console.log("Screenshots generated successfully.");
+          if (callback) {
+            callback();
+          }
+        })
+        .on("error", (err) => {
+          console.error("Error generating screenshots:", err);
+        })
+        .run();
+    });
+
+
   }
 
   async convertToHls(
