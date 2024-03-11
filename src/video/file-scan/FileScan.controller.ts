@@ -74,6 +74,14 @@ export class FileScanController {
     res.status(HttpStatus.OK).json(convertedFileInfos);
   }
 
+  @Get("get-by-name/:fileName")
+  async getOneByName(@Param("fileName") fileName: string, @Res() res: Response) {
+    const convertedFileInfo = await this.fileScanService.findOneByName(fileName);
+
+    //@ts-ignore
+    res.status(HttpStatus.OK).json(convertedFileInfo);
+  }
+
   @Get("all")
   async getAllFromDB(@Res() res: Response) {
     const convertedFileInfos = await this.fileScanService.findAll();
