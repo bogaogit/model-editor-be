@@ -51,6 +51,14 @@ export class FileScanController {
     res.status(HttpStatus.OK).json(convertedFileInfos);
   }
 
+  @Get("get-all-media-items")
+  async getAllMediaItem(@Res() res: Response) {
+    const items = await this.fileScanService.findAll()
+
+    //@ts-ignore
+    res.status(HttpStatus.OK).json(items);
+  }
+
   @Get("processed-files")
   async processedFiles(@Res() res: Response) {
     const convertedFileInfos = [];

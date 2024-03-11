@@ -47,14 +47,6 @@ export class AnalysedVideoController {
       console.log('Error reading screenshots:', error);
     }
 
-    try {
-      const metadata = await this.analysedVideoService.getVideoInfo(name)
-      console.log(metadata)
-      videoIndexInfo.videoInfo = await this.analysedVideoService.getVideoInfo(name)
-    } catch (error) {
-      console.log('Error using ffprobe module:', error);
-    }
-
     return videoIndexInfo;
   }
 

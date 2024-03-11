@@ -22,5 +22,4 @@ export interface ConvertFileAction {
 
 export interface VideoIndexInfo {
   screenshots: string[],
-  videoInfo?: FfprobeData,
 }
