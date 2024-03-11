@@ -40,7 +40,7 @@ export class FileScanService {
   constructor(
     @InjectRepository(ConvertedFileInfo)
     private convertedFileInfoRepository: Repository<ConvertedFileInfo>,
-    // private analysedVideoService: AnalysedVideoService
+    private analysedVideoService: AnalysedVideoService
   ) {
     this.clearProcessingFileFlag().then(() => {})
   }
@@ -118,7 +118,7 @@ export class FileScanService {
 
     if (!convertedFileInfo.videoInfo){
       const fullFileName = `${convertedFileInfo.filePath}/${convertedFileInfo.fileName}${convertedFileInfo.extension}`
-      // convertedFileInfo.videoInfo = await this.analysedVideoService.getVideoInfoFromFullPath(fullFileName)
+      convertedFileInfo.videoInfo = await this.analysedVideoService.getVideoInfoFromFullPath(fullFileName)
     }
 
     return convertedFileInfo;
