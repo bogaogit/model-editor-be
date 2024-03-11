@@ -20,10 +20,6 @@ export interface ConvertFileAction {
   override?: boolean,
 }
 
-export interface VideoInfo {
-  durationS: number,
-}
-
 export interface VideoIndexInfo {
   screenshots: string[],
   videoInfo?: FfprobeData,

@@ -12,6 +12,11 @@ import { ConvertedFileInfo } from "./FileScan.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { FindOptionsWhere, Repository, UpdateResult } from "typeorm";
 import _ from "lodash";
+import ffmpeg from "fluent-ffmpeg";
+import { AnalysedVideoService } from "../analysed-video/AnalysedVideo.service";
+
+const ffmpegStatic = require("ffmpeg-static");
+ffmpeg.setFfmpegPath(ffmpegStatic);
 
 const path = require("path");
 const fs = require("fs");
@@ -34,7 +39,8 @@ export class FileScanService {
 
   constructor(
     @InjectRepository(ConvertedFileInfo)
-    private convertedFileInfoRepository: Repository<ConvertedFileInfo>
+    private convertedFileInfoRepository: Repository<ConvertedFileInfo>,
+    private analysedVideoService: AnalysedVideoService
   ) {
     this.clearProcessingFileFlag().then(() => {})
   }
@@ -57,7 +63,7 @@ export class FileScanService {
     for (const fileName of fileNames) {
       const extension = path.extname(fileName);
       const onlyFileName = path.basename(fileName, extension);
-      const convertedFileInfo = await this.getFileConvertedInfo(onlyFileName, extension, inputDirectoryPath);
+      const convertedFileInfo = await this.buildFileConvertedInfo(onlyFileName, extension, inputDirectoryPath);
       if (convertedFileInfo) {
         await this.createIfNotExistByFileName(convertedFileInfo);
         convertedFileInfos.push(convertedFileInfo);
@@ -67,7 +73,7 @@ export class FileScanService {
     return convertedFileInfos;
   }
 
-  async getFileConvertedInfo(fileName: string, extension: string, inputDirectoryPath: string): Promise<ConvertedFileInfo> {
+  async buildFileConvertedInfo(fileName: string, extension: string, inputDirectoryPath: string): Promise<ConvertedFileInfo> {
     const convertedFileInfo: ConvertedFileInfo = new ConvertedFileInfo();
     convertedFileInfo.fileName = fileName;
     convertedFileInfo.isEmpty = false;
@@ -110,6 +116,11 @@ export class FileScanService {
       convertedFileInfo.isEmpty = true;
     }
 
+    if (!convertedFileInfo.videoInfo){
+      const fullFileName = `${convertedFileInfo.filePath}/${convertedFileInfo.fileName}${convertedFileInfo.extension}`
+      convertedFileInfo.videoInfo = await this.analysedVideoService.getVideoInfoFromFullPath(fullFileName)
+    }
+
     return convertedFileInfo;
   }
 
@@ -119,6 +130,10 @@ export class FileScanService {
 
   findOne(id: string): Promise<ConvertedFileInfo | null> {
     return this.convertedFileInfoRepository.findOneBy({ id });
+  }
+
+  findOneByName(name: string): Promise<ConvertedFileInfo | null> {
+    return this.convertedFileInfoRepository.findOneBy({ fileName: name });
   }
 
   async delete(id: string): Promise<void> {

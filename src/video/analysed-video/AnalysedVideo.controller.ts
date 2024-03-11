@@ -2,13 +2,15 @@ import { Controller, Get, HttpStatus, Param, Res, Response } from "@nestjs/commo
 import { AnalysedVideoService } from "./AnalysedVideo.service";
 import fs, { promises as fsPromises } from "fs";
 import { VideoIndexInfo } from "../file-scan/FileScan.model";
+import { FileScanService } from "../file-scan/FileScan.service";
 
 const { BardAPI } = require('bard-api-node');
 
 @Controller("analysed-video")
 export class AnalysedVideoController {
   constructor(
-    private readonly analysedVideoService: AnalysedVideoService
+    private readonly analysedVideoService: AnalysedVideoService,
+    private readonly fileScanService: FileScanService
   ) {
   }
 
@@ -48,9 +50,8 @@ export class AnalysedVideoController {
     }
 
     try {
-      const metadata = await this.analysedVideoService.getVideoInfo(name)
-      console.log(metadata)
-      videoIndexInfo.videoInfo = await this.analysedVideoService.getVideoInfo(name)
+      const fileEntity = await this.fileScanService.findOneByName(name)
+      videoIndexInfo.videoInfo = fileEntity.videoInfo
     } catch (error) {
       console.log('Error using ffprobe module:', error);
     }

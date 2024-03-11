@@ -1,4 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
+import { FfprobeData } from "fluent-ffmpeg";
 
 @Entity("converted_file_info")
 export class ConvertedFileInfo {
@@ -24,4 +25,6 @@ export class ConvertedFileInfo {
   hasAll: boolean = false;
   @Column({ name: "processing" })
   processing: boolean = false;
+  @Column({ name: "videoInfo", type: "json", nullable: true })
+  videoInfo: FfprobeData;
 }

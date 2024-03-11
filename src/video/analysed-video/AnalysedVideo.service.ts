@@ -1,7 +1,5 @@
 import { Injectable } from "@nestjs/common";
 import ffmpeg, { FfprobeData } from "fluent-ffmpeg";
-import childProcess from "child_process";
-import Ffmpeg from "fluent-ffmpeg";
 
 const ffmpegStatic = require("ffmpeg-static");
 ffmpeg.setFfmpegPath(ffmpegStatic);
@@ -16,6 +14,16 @@ export class AnalysedVideoService {
 
     return new Promise(resolve => {
       ffmpeg.ffprobe(videoPath, (err, metadata) => {
+        resolve(metadata);
+      });
+    });
+  }
+
+  getVideoInfoFromFullPath(
+    fileFullPath: string,
+  ): Promise<FfprobeData>{
+    return new Promise(resolve => {
+      ffmpeg.ffprobe(fileFullPath, (err, metadata) => {
         resolve(metadata);
       });
     });

@@ -45,7 +45,7 @@ export class FileScanController {
   @Get("processed-file/:fileName")
   async processedFile(@Param("fileName") fileName: string, @Res() res: Response) {
     const inputDirectoryPath = `uploads/converted/`;
-    const convertedFileInfos = await this.fileScanService.getFileConvertedInfo(fileName, "mp4", inputDirectoryPath);
+    const convertedFileInfos = await this.fileScanService.buildFileConvertedInfo(fileName, "mp4", inputDirectoryPath);
 
     //@ts-ignore
     res.status(HttpStatus.OK).json(convertedFileInfos);
@@ -58,7 +58,7 @@ export class FileScanController {
     const fileNames = this.getDirectories(inputDirectoryPath);
 
     for (const fileName of fileNames) {
-      const convertedFileInfo = await this.fileScanService.getFileConvertedInfo(fileName, "mp4", inputDirectoryPath);
+      const convertedFileInfo = await this.fileScanService.buildFileConvertedInfo(fileName, "mp4", inputDirectoryPath);
       convertedFileInfos.push(convertedFileInfo);
     }
 
