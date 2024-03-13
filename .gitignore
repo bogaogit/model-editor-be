@@ -37,5 +37,6 @@ lerna-debug.log*
 *.mp4
 *.mp3
 *.wav
+*.pyc
 /uploads
 /assets
