@@ -4,7 +4,7 @@ import os
 import time
 
 mic = WhisperMic()
-source_dir = "../uploads/audios"
+source_dir = "../uploads/transcripts_audios"
 output_dir = "../uploads/transcripts"
 transcribing = False
 
