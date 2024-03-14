@@ -67,7 +67,7 @@ def update_task_data(task_data):
   print(task_data)
 
   try:
-    response = requests.put(api_gateway_url, json=json.dumps(task_data), headers=headers)
+    response = requests.put(api_gateway_url, json=task_data, headers=headers)
     print(f"Updated task data: {response.text}")
 
   except requests.exceptions.RequestException as e:
