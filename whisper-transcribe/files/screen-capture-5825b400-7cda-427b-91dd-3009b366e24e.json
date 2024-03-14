@@ -1,0 +1,617 @@
+[
+    {
+        "id": 0,
+        "seek": 3000,
+        "start": 30.0,
+        "end": 31.0,
+        "text": " Hi.",
+        "tokens": [
+            50364,
+            2421,
+            13,
+            50414
+        ],
+        "temperature": 0.0,
+        "avg_logprob": -0.48147912927576014,
+        "compression_ratio": 1.3509933774834437,
+        "no_speech_prob": 0.3120093047618866
+    },
+    {
+        "id": 1,
+        "seek": 3000,
+        "start": 31.0,
+        "end": 35.0,
+        "text": " Sorry, I just tried to speak.",
+        "tokens": [
+            50414,
+            4919,
+            11,
+            286,
+            445,
+            3031,
+            281,
+            1710,
+            13,
+            50614
+        ],
+        "temperature": 0.0,
+        "avg_logprob": -0.48147912927576014,
+        "compression_ratio": 1.3509933774834437,
+        "no_speech_prob": 0.3120093047618866
+    },
+    {
+        "id": 2,
+        "seek": 3000,
+        "start": 35.0,
+        "end": 36.0,
+        "text": " That's okay.",
+        "tokens": [
+            50614,
+            663,
+            311,
+            1392,
+            13,
+            50664
+        ],
+        "temperature": 0.0,
+        "avg_logprob": -0.48147912927576014,
+        "compression_ratio": 1.3509933774834437,
+        "no_speech_prob": 0.3120093047618866
+    },
+    {
+        "id": 3,
+        "seek": 3000,
+        "start": 36.0,
+        "end": 37.0,
+        "text": " Yeah.",
+        "tokens": [
+            50664,
+            865,
+            13,
+            50714
+        ],
+        "temperature": 0.0,
+        "avg_logprob": -0.48147912927576014,
+        "compression_ratio": 1.3509933774834437,
+        "no_speech_prob": 0.3120093047618866
+    },
+    {
+        "id": 4,
+        "seek": 3000,
+        "start": 37.0,
+        "end": 42.0,
+        "text": " I hope you feel better soon.",
+        "tokens": [
+            50714,
+            286,
+            1454,
+            291,
+            841,
+            1101,
+            2321,
+            13,
+            50964
+        ],
+        "temperature": 0.0,
+        "avg_logprob": -0.48147912927576014,
+        "compression_ratio": 1.3509933774834437,
+        "no_speech_prob": 0.3120093047618866
+    },
+    {
+        "id": 5,
+        "seek": 3000,
+        "start": 42.0,
+        "end": 49.0,
+        "text": " No, it's pretty terrible this time.",
+        "tokens": [
+            50964,
+            883,
+            11,
+            309,
+            311,
+            1238,
+            6237,
+            341,
+            565,
+            13,
+            51314
+        ],
+        "temperature": 0.0,
+        "avg_logprob": -0.48147912927576014,
+        "compression_ratio": 1.3509933774834437,
+        "no_speech_prob": 0.3120093047618866
+    },
+    {
+        "id": 6,
+        "seek": 3000,
+        "start": 49.0,
+        "end": 50.0,
+        "text": " I don't know.",
+        "tokens": [
+            51314,
+            286,
+            500,
+            380,
+            458,
+            13,
+            51364
+        ],
+        "temperature": 0.0,
+        "avg_logprob": -0.48147912927576014,
+        "compression_ratio": 1.3509933774834437,
+        "no_speech_prob": 0.3120093047618866
+    },
+    {
+        "id": 7,
+        "seek": 3000,
+        "start": 50.0,
+        "end": 52.0,
+        "text": " I got the similar thing as yours.",
+        "tokens": [
+            51364,
+            286,
+            658,
+            264,
+            2531,
+            551,
+            382,
+            6342,
+            13,
+            51464
+        ],
+        "temperature": 0.0,
+        "avg_logprob": -0.48147912927576014,
+        "compression_ratio": 1.3509933774834437,
+        "no_speech_prob": 0.3120093047618866
+    },
+    {
+        "id": 8,
+        "seek": 3000,
+        "start": 52.0,
+        "end": 58.0,
+        "text": " You know, my throat is totally fucked.",
+        "tokens": [
+            51464,
+            509,
+            458,
+            11,
+            452,
+            12394,
+            307,
+            3879,
+            22518,
+            13,
+            51764
+        ],
+        "temperature": 0.0,
+        "avg_logprob": -0.48147912927576014,
+        "compression_ratio": 1.3509933774834437,
+        "no_speech_prob": 0.3120093047618866
+    },
+    {
+        "id": 9,
+        "seek": 5800,
+        "start": 58.0,
+        "end": 61.0,
+        "text": " Sorry to hear that.",
+        "tokens": [
+            50364,
+            4919,
+            281,
+            1568,
+            300,
+            13,
+            50514
+        ],
+        "temperature": 0.0,
+        "avg_logprob": -0.30391270601296727,
+        "compression_ratio": 1.4610389610389611,
+        "no_speech_prob": 0.07528378069400787
+    },
+    {
+        "id": 10,
+        "seek": 5800,
+        "start": 61.0,
+        "end": 64.0,
+        "text": " I like this quick so you don't have to speak too long.",
+        "tokens": [
+            50514,
+            286,
+            411,
+            341,
+            1702,
+            370,
+            291,
+            500,
+            380,
+            362,
+            281,
+            1710,
+            886,
+            938,
+            13,
+            50664
+        ],
+        "temperature": 0.0,
+        "avg_logprob": -0.30391270601296727,
+        "compression_ratio": 1.4610389610389611,
+        "no_speech_prob": 0.07528378069400787
+    },
+    {
+        "id": 11,
+        "seek": 5800,
+        "start": 64.0,
+        "end": 65.0,
+        "text": " Okay.",
+        "tokens": [
+            50664,
+            1033,
+            13,
+            50714
+        ],
+        "temperature": 0.0,
+        "avg_logprob": -0.30391270601296727,
+        "compression_ratio": 1.4610389610389611,
+        "no_speech_prob": 0.07528378069400787
+    },
+    {
+        "id": 12,
+        "seek": 5800,
+        "start": 65.0,
+        "end": 66.0,
+        "text": " Yeah.",
+        "tokens": [
+            50714,
+            865,
+            13,
+            50764
+        ],
+        "temperature": 0.0,
+        "avg_logprob": -0.30391270601296727,
+        "compression_ratio": 1.4610389610389611,
+        "no_speech_prob": 0.07528378069400787
+    },
+    {
+        "id": 13,
+        "seek": 5800,
+        "start": 66.0,
+        "end": 67.0,
+        "text": " I don't want to talk to you.",
+        "tokens": [
+            50764,
+            286,
+            500,
+            380,
+            528,
+            281,
+            751,
+            281,
+            291,
+            13,
+            50814
+        ],
+        "temperature": 0.0,
+        "avg_logprob": -0.30391270601296727,
+        "compression_ratio": 1.4610389610389611,
+        "no_speech_prob": 0.07528378069400787
+    },
+    {
+        "id": 14,
+        "seek": 5800,
+        "start": 67.0,
+        "end": 68.0,
+        "text": " Sorry.",
+        "tokens": [
+            50814,
+            4919,
+            13,
+            50864
+        ],
+        "temperature": 0.0,
+        "avg_logprob": -0.30391270601296727,
+        "compression_ratio": 1.4610389610389611,
+        "no_speech_prob": 0.07528378069400787
+    },
+    {
+        "id": 15,
+        "seek": 5800,
+        "start": 68.0,
+        "end": 69.0,
+        "text": " That's okay.",
+        "tokens": [
+            50864,
+            663,
+            311,
+            1392,
+            13,
+            50914
+        ],
+        "temperature": 0.0,
+        "avg_logprob": -0.30391270601296727,
+        "compression_ratio": 1.4610389610389611,
+        "no_speech_prob": 0.07528378069400787
+    },
+    {
+        "id": 16,
+        "seek": 5800,
+        "start": 69.0,
+        "end": 73.0,
+        "text": " Did you just want to share your screen?",
+        "tokens": [
+            50914,
+            2589,
+            291,
+            445,
+            528,
+            281,
+            2073,
+            428,
+            2568,
+            30,
+            51114
+        ],
+        "temperature": 0.0,
+        "avg_logprob": -0.30391270601296727,
+        "compression_ratio": 1.4610389610389611,
+        "no_speech_prob": 0.07528378069400787
+    },
+    {
+        "id": 17,
+        "seek": 5800,
+        "start": 73.0,
+        "end": 74.0,
+        "text": " Yeah.",
+        "tokens": [
+            51114,
+            865,
+            13,
+            51164
+        ],
+        "temperature": 0.0,
+        "avg_logprob": -0.30391270601296727,
+        "compression_ratio": 1.4610389610389611,
+        "no_speech_prob": 0.07528378069400787
+    },
+    {
+        "id": 18,
+        "seek": 5800,
+        "start": 74.0,
+        "end": 79.0,
+        "text": " If your recorder is hitting local regional.",
+        "tokens": [
+            51164,
+            759,
+            428,
+            37744,
+            307,
+            8850,
+            2654,
+            10964,
+            13,
+            51414
+        ],
+        "temperature": 0.0,
+        "avg_logprob": -0.30391270601296727,
+        "compression_ratio": 1.4610389610389611,
+        "no_speech_prob": 0.07528378069400787
+    },
+    {
+        "id": 19,
+        "seek": 7900,
+        "start": 79.0,
+        "end": 101.0,
+        "text": " See, it's not appearing here.",
+        "tokens": [
+            50364,
+            3008,
+            11,
+            309,
+            311,
+            406,
+            19870,
+            510,
+            13,
+            51464
+        ],
+        "temperature": 0.0,
+        "avg_logprob": -0.6438721021016439,
+        "compression_ratio": 0.7837837837837838,
+        "no_speech_prob": 0.17195013165473938
+    },
+    {
+        "id": 20,
+        "seek": 10100,
+        "start": 101.0,
+        "end": 112.0,
+        "text": " And the recorder just stopped it and normally I just...",
+        "tokens": [
+            50364,
+            400,
+            264,
+            37744,
+            445,
+            5936,
+            309,
+            293,
+            5646,
+            286,
+            445,
+            485,
+            50914
+        ],
+        "temperature": 0.0,
+        "avg_logprob": -0.4692932764689128,
+        "compression_ratio": 1.4683544303797469,
+        "no_speech_prob": 0.2626141905784607
+    },
+    {
+        "id": 21,
+        "seek": 10100,
+        "start": 112.0,
+        "end": 113.0,
+        "text": " Yeah.",
+        "tokens": [
+            50914,
+            865,
+            13,
+            50964
+        ],
+        "temperature": 0.0,
+        "avg_logprob": -0.4692932764689128,
+        "compression_ratio": 1.4683544303797469,
+        "no_speech_prob": 0.2626141905784607
+    },
+    {
+        "id": 22,
+        "seek": 10100,
+        "start": 113.0,
+        "end": 114.0,
+        "text": " Sorry.",
+        "tokens": [
+            50964,
+            4919,
+            13,
+            51014
+        ],
+        "temperature": 0.0,
+        "avg_logprob": -0.4692932764689128,
+        "compression_ratio": 1.4683544303797469,
+        "no_speech_prob": 0.2626141905784607
+    },
+    {
+        "id": 23,
+        "seek": 10100,
+        "start": 114.0,
+        "end": 115.0,
+        "text": " Yeah.",
+        "tokens": [
+            51014,
+            865,
+            13,
+            51064
+        ],
+        "temperature": 0.0,
+        "avg_logprob": -0.4692932764689128,
+        "compression_ratio": 1.4683544303797469,
+        "no_speech_prob": 0.2626141905784607
+    },
+    {
+        "id": 24,
+        "seek": 10100,
+        "start": 115.0,
+        "end": 116.0,
+        "text": " Okay.",
+        "tokens": [
+            51064,
+            1033,
+            13,
+            51114
+        ],
+        "temperature": 0.0,
+        "avg_logprob": -0.4692932764689128,
+        "compression_ratio": 1.4683544303797469,
+        "no_speech_prob": 0.2626141905784607
+    },
+    {
+        "id": 25,
+        "seek": 10100,
+        "start": 116.0,
+        "end": 117.0,
+        "text": " Yeah.",
+        "tokens": [
+            51114,
+            865,
+            13,
+            51164
+        ],
+        "temperature": 0.0,
+        "avg_logprob": -0.4692932764689128,
+        "compression_ratio": 1.4683544303797469,
+        "no_speech_prob": 0.2626141905784607
+    },
+    {
+        "id": 26,
+        "seek": 10100,
+        "start": 117.0,
+        "end": 118.0,
+        "text": " Okay.",
+        "tokens": [
+            51164,
+            1033,
+            13,
+            51214
+        ],
+        "temperature": 0.0,
+        "avg_logprob": -0.4692932764689128,
+        "compression_ratio": 1.4683544303797469,
+        "no_speech_prob": 0.2626141905784607
+    },
+    {
+        "id": 27,
+        "seek": 10100,
+        "start": 118.0,
+        "end": 119.0,
+        "text": " Yeah.",
+        "tokens": [
+            51214,
+            865,
+            13,
+            51264
+        ],
+        "temperature": 0.0,
+        "avg_logprob": -0.4692932764689128,
+        "compression_ratio": 1.4683544303797469,
+        "no_speech_prob": 0.2626141905784607
+    },
+    {
+        "id": 28,
+        "seek": 10100,
+        "start": 119.0,
+        "end": 120.0,
+        "text": " Okay.",
+        "tokens": [
+            51264,
+            1033,
+            13,
+            51314
+        ],
+        "temperature": 0.0,
+        "avg_logprob": -0.4692932764689128,
+        "compression_ratio": 1.4683544303797469,
+        "no_speech_prob": 0.2626141905784607
+    },
+    {
+        "id": 29,
+        "seek": 10100,
+        "start": 120.0,
+        "end": 121.0,
+        "text": " Okay.",
+        "tokens": [
+            51314,
+            1033,
+            13,
+            51364
+        ],
+        "temperature": 0.0,
+        "avg_logprob": -0.4692932764689128,
+        "compression_ratio": 1.4683544303797469,
+        "no_speech_prob": 0.2626141905784607
+    },
+    {
+        "id": 30,
+        "seek": 10100,
+        "start": 121.0,
+        "end": 122.0,
+        "text": " Yeah.",
+        "tokens": [
+            51364,
+            865,
+            13,
+            51414
+        ],
+        "temperature": 0.0,
+        "avg_logprob": -0.4692932764689128,
+        "compression_ratio": 1.4683544303797469,
+        "no_speech_prob": 0.2626141905784607
+    }
+]

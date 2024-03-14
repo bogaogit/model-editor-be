@@ -4,7 +4,7 @@ url = "https://qwo5jkqle3.execute-api.ap-southeast-2.amazonaws.com/items"
 # Define the data to send in the body (can be dictionary, JSON string, etc.)
 data = {
     "id": "9a39be7a-4f8c-434a-8d45-c57196f1867f",
-    "name": "test",
+    "name": "test111",
     "dataType": "task",
     "audioProcessing": "pending",
     "transcribeProcessing": "pending"

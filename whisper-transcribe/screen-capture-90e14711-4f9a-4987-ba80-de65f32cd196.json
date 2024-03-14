@@ -3,80 +3,27 @@
         "id": 0,
         "seek": 0,
         "start": 0.0,
-        "end": 2.0,
-        "text": " (Clears throat)",
+        "end": 20.0,
+        "text": " Hello, hello, hello, hello, hello, hello.",
         "tokens": [
             50364,
-            522,
-            34,
-            306,
-            685,
-            12394,
-            8,
-            50464
+            2425,
+            11,
+            7751,
+            11,
+            7751,
+            11,
+            7751,
+            11,
+            7751,
+            11,
+            7751,
+            13,
+            51364
         ],
-        "temperature": 1.0,
-        "avg_logprob": -2.3657976347824623,
-        "compression_ratio": 1.1481481481481481,
-        "no_speech_prob": 0.4560108482837677
-    },
-    {
-        "id": 1,
-        "seek": 0,
-        "start": 2.0,
-        "end": 4.16,
-        "text": " (INAUDIBLE)",
-        "tokens": [
-            50464,
-            522,
-            5444,
-            8,
-            50572
-        ],
-        "temperature": 1.0,
-        "avg_logprob": -2.3657976347824623,
-        "compression_ratio": 1.1481481481481481,
-        "no_speech_prob": 0.4560108482837677
-    },
-    {
-        "id": 2,
-        "seek": 0,
-        "start": 9.0,
-        "end": 10.68,
-        "text": " (Clears throat)",
-        "tokens": [
-            50814,
-            522,
-            34,
-            306,
-            685,
-            12394,
-            8,
-            50898
-        ],
-        "temperature": 1.0,
-        "avg_logprob": -2.3657976347824623,
-        "compression_ratio": 1.1481481481481481,
-        "no_speech_prob": 0.4560108482837677
-    },
-    {
-        "id": 3,
-        "seek": 0,
-        "start": 17.8,
-        "end": 18.68,
-        "text": " (Male voice again)",
-        "tokens": [
-            51254,
-            522,
-            30171,
-            3177,
-            797,
-            8,
-            51298
-        ],
-        "temperature": 1.0,
-        "avg_logprob": -2.3657976347824623,
-        "compression_ratio": 1.1481481481481481,
+        "temperature": 0.2,
+        "avg_logprob": -0.9459985097249349,
+        "compression_ratio": 2.1578947368421053,
         "no_speech_prob": 0.4560108482837677
     }
 ]
