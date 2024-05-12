@@ -1,0 +1,29 @@
+[
+    {
+        "id": 0,
+        "seek": 0,
+        "start": 0.0,
+        "end": 20.0,
+        "text": " Hello, hello, hello, hello, hello, hello.",
+        "tokens": [
+            50364,
+            2425,
+            11,
+            7751,
+            11,
+            7751,
+            11,
+            7751,
+            11,
+            7751,
+            11,
+            7751,
+            13,
+            51364
+        ],
+        "temperature": 0.2,
+        "avg_logprob": -0.9459985097249349,
+        "compression_ratio": 2.1578947368421053,
+        "no_speech_prob": 0.4560108482837677
+    }
+]

@@ -2,13 +2,7 @@ import requests
 
 url = "https://qwo5jkqle3.execute-api.ap-southeast-2.amazonaws.com/items"
 # Define the data to send in the body (can be dictionary, JSON string, etc.)
-data = {
-    "id": "9a39be7a-4f8c-434a-8d45-c57196f1867f",
-    "name": "test",
-    "dataType": "task",
-    "audioProcessing": "pending",
-    "transcribeProcessing": "pending"
-}
+data = {'transcribeProcessing': 'done', 'dataType': 'task', 'audioProcessing': 'pending', 'id': 'e36e1e8a-8410-424d-ad13-140a5e0c34e7', 'name': 'screen-capture-5825b400-7cda-427b-91dd-3009b366e24e.mp4'}
 
 # Optional headers (e.g., Content-Type for JSON data)
 headers = {

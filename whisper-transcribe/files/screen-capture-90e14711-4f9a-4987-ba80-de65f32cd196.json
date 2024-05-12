@@ -1,0 +1,96 @@
+[
+    {
+        "id": 0,
+        "seek": 0,
+        "start": 0.0,
+        "end": 8.0,
+        "text": " [Clearing throat]",
+        "tokens": [
+            50364,
+            542,
+            34,
+            306,
+            1921,
+            12394,
+            60,
+            50764
+        ],
+        "temperature": 0.4,
+        "avg_logprob": -0.5049328914908475,
+        "compression_ratio": 2.380952380952381,
+        "no_speech_prob": 0.4560108482837677
+    },
+    {
+        "id": 1,
+        "seek": 0,
+        "start": 8.0,
+        "end": 13.0,
+        "text": " Hello. Hello. Hello. [Clears throat]",
+        "tokens": [
+            50764,
+            2425,
+            13,
+            2425,
+            13,
+            2425,
+            13,
+            542,
+            34,
+            306,
+            685,
+            12394,
+            60,
+            51014
+        ],
+        "temperature": 0.4,
+        "avg_logprob": -0.5049328914908475,
+        "compression_ratio": 2.380952380952381,
+        "no_speech_prob": 0.4560108482837677
+    },
+    {
+        "id": 2,
+        "seek": 0,
+        "start": 13.0,
+        "end": 17.0,
+        "text": " Hello. [Clears throat]",
+        "tokens": [
+            51014,
+            2425,
+            13,
+            542,
+            34,
+            306,
+            685,
+            12394,
+            60,
+            51214
+        ],
+        "temperature": 0.4,
+        "avg_logprob": -0.5049328914908475,
+        "compression_ratio": 2.380952380952381,
+        "no_speech_prob": 0.4560108482837677
+    },
+    {
+        "id": 3,
+        "seek": 0,
+        "start": 17.0,
+        "end": 22.0,
+        "text": " Hello. [Clears throat]",
+        "tokens": [
+            51214,
+            2425,
+            13,
+            542,
+            34,
+            306,
+            685,
+            12394,
+            60,
+            51464
+        ],
+        "temperature": 0.4,
+        "avg_logprob": -0.5049328914908475,
+        "compression_ratio": 2.380952380952381,
+        "no_speech_prob": 0.4560108482837677
+    }
+]
