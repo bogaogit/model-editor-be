@@ -15,6 +15,7 @@ import { S3Module } from "./aws/s3/S3.module";
 import { ConvertedFileInfo } from "./video/file-scan/FileScan.entity";
 import { ScheduleModule } from "@nestjs/schedule";
 import { TasksModule } from "./tasks/Tasks.module";
+import { CodeGenerationModule } from "./code-generation/CodeGeneration.module";
 
 /**
  * http://localhost:3000/static/unnamed.png to access images
@@ -44,7 +45,8 @@ import { TasksModule } from "./tasks/Tasks.module";
     AnalysedVideoModule,
     FileScanModule,
     TranscribeModule,
-    S3Module
+    S3Module,
+    CodeGenerationModule
   ],
 })
 export class AppModule implements NestModule {
