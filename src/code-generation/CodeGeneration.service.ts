@@ -4,6 +4,25 @@ import fs from "fs";
 import { CodeGenerationContract } from "./CodeGeneration.contract";
 import { utilsFunctionsString } from "./CodeTemplate";
 
+/**
+ * example code generation tamplate:
+ *
+ * applicationModel.entities.forEach(entity => {
+ *     if (entity.name !== "Court"){
+ *         writeQueue.push({
+ *             path: `D:\\testoutput\\${entity.name}.ts`,
+ *             code: generateCode(entity)
+ *         })
+ *     }
+ * })
+ *
+ * keywards: applicationModel, writeQueue, generateCode
+ *
+ * applicationModel: application model object
+ * writeQueue: write file job array
+ * generateCode: code template function
+ */
+
 export interface CodeGenerationOutput {
   output: string;
 }
@@ -17,7 +36,7 @@ export class CodeGenerationService {
     const functionString = `
     ${utilsFunctionsString}
     
-    function output(data) {
+    function generateCode(data) {
       let result = ""
       ${codeTemplateString}
       return result
@@ -35,15 +54,14 @@ export class CodeGenerationService {
     const functionString = this.buildExecutableFunction(codeTemplateString);
 
     const applicationModel = codeGenerationContract.applicationModelObject;
-    let writeToFileBuffer = [];
+    let writeQueue = [];
 
     eval(ts.transpile(functionString + codeGenerationTemplate));
 
     console.log("********************");
-    console.log(writeToFileBuffer);
+    console.log(writeQueue);
 
-
-    writeToFileBuffer.forEach(writeToFile => {
+    writeQueue.forEach(writeToFile => {
       fs.writeFile(
         writeToFile.path,
         writeToFile.code,
