@@ -42,3 +42,5 @@ lerna-debug.log*
 /assets
 
 sample.ts
+/recorder/node_modules
+/on-demand-service/node_modules
