@@ -10,13 +10,13 @@ const server = net.createServer((socket) => {
 
   // Handle incoming data from the client
   socket.on('data', (data) => {
-    console.log('Received data from client:', data.toString());
+    console.log('Received data from client:');
 
     // You can process the received data here
     // ...
 
     // Optionally send a response back to the client
-    socket.write('Hello from the TCP service!');
+    socket.write(data);
   });
 
   // Handle socket errors

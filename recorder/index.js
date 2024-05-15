@@ -1,4 +1,5 @@
-const { Transform } = require('stream');
+
+const { Transform, Writable, PassThrough } = require('stream');
 const net = require('net');
 const { RtAudio, RtAudioFormat } = require("audify");
 
@@ -38,6 +39,9 @@ function generateAudioData(length) {
 const inputs = rtAudio.getDefaultInputDevice()
 const outputs = rtAudio.getDefaultOutputDevice()
 
+const passThrough = new PassThrough()
+passThrough.resume()
+
 rtAudio.openStream(
   {
     deviceId: outputs, // Output device id (Get all devices using `getDevices`)
@@ -55,14 +59,18 @@ rtAudio.openStream(
   "MyStream", // The name of the stream (used for JACK Api)
   (pcm) => {
     // console.log(pcm)
-    rtAudio.write(pcm)
+    passThrough.write(pcm)
   } // Input callback function, write every input pcm data to the output buffer
 );
+
+
 
 rtAudio.start()
 
 // Create a TCP socket connection
 const socket = net.createConnection({ host, port });
+
+passThrough.pipe(socket)
 
 // Create our custom audio stream (optional for simulated data)
 const audioStream = new MyAudioStream();
@@ -80,11 +88,16 @@ socket.on('connect', () => {
   console.log('Successfully connected to TCP service');
 });
 
+socket.on('data', (data) => {
+  console.log("data from service")
+  rtAudio.write(data)
+});
+
 // Close the socket and audio stream when finished
 // ... (add logic to close the connection when you're done sending data)
 
 // Stop generating audio data (if applicable)
 // ... (add logic to stop your audio generation)
 
-socket.end();
+// socket.end();
 // audio.end(); // or audioStream.end() if you used it
