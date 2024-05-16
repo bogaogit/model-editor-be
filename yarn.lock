@@ -4173,7 +4173,7 @@ fb-watchman@^2.0.0:
 
 ffmpeg-static@^5.2.0:
   version "5.2.0"
-  resolved "https://registry.npmjs.org/ffmpeg-static/-/ffmpeg-static-5.2.0.tgz"
+  resolved "https://registry.yarnpkg.com/ffmpeg-static/-/ffmpeg-static-5.2.0.tgz#6ca64a5ed6e69ec4896d175c1f69dd575db7c5ef"
   integrity sha512-WrM7kLW+do9HLr+H6tk7LzQ7kPqbAgLjdzNE32+u3Ff11gXt9Kkkd2nusGFrlWMIe+XaA97t+I8JS7sZIrvRgA==
   dependencies:
     "@derhuerst/http-basic" "^8.2.0"
@@ -7085,6 +7085,11 @@ write-file-atomic@^4.0.2:
   dependencies:
     imurmurhash "^0.1.4"
     signal-exit "^3.0.7"
+
+ws@^8.17.0:
+  version "8.17.0"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-8.17.0.tgz#d145d18eca2ed25aaf791a183903f7be5e295fea"
+  integrity sha512-uJq6108EgZMAl20KagGkzCKfMEjxmKvZHG7Tlq0Z6nOky7YF7aq4mOx6xK8TJ/i1LeK4Qus7INktacctDgY8Ow==
 
 xtend@^4.0.0:
   version "4.0.2"

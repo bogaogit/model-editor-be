@@ -16,6 +16,7 @@ import { ConvertedFileInfo } from "./video/file-scan/FileScan.entity";
 import { ScheduleModule } from "@nestjs/schedule";
 import { TasksModule } from "./tasks/Tasks.module";
 import { CodeGenerationModule } from "./code-generation/CodeGeneration.module";
+import { RtspModule } from "./live-streaming/Rtsp.module";
 
 /**
  * http://localhost:3000/static/unnamed.png to access images
@@ -46,7 +47,8 @@ import { CodeGenerationModule } from "./code-generation/CodeGeneration.module";
     FileScanModule,
     TranscribeModule,
     S3Module,
-    CodeGenerationModule
+    CodeGenerationModule,
+    RtspModule,
   ],
 })
 export class AppModule implements NestModule {
