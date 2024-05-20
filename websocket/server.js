@@ -4,9 +4,11 @@ const { randomUUID } = require("crypto");
 const wss = new WebSocket.Server({ port: 8080 }); // Replace 8080 with your desired port
 let webSocketStoredActionList = []
 let rooms = []
+const clients = [];
 
 wss.on("connection", (ws) => {
   console.log("New client connected");
+  clients.push(ws);
 
   ws.on("message", (message) => {
     console.log("Client message:", message.toString());
@@ -58,14 +60,47 @@ wss.on("connection", (ws) => {
         }))
         break
       case 'updateEntity':
-        webSocketStoredActionList.push({
+        const action = {
           id: randomUUID(),
           roomId: body.roomId,
           webSocketAction: webSocketAction,
           userInfo: userInfo
-        })
+        }
+
+        webSocketStoredActionList.push(action)
+
+        break
+      case 'updateEntityAndSync':
+        const updateEntityAndSyncAction = {
+          id: randomUUID(),
+          roomId: body.roomId,
+          webSocketAction: webSocketAction,
+          userInfo: userInfo
+        }
+
+        webSocketStoredActionList.push(updateEntityAndSyncAction)
+
+        clients.forEach(client => client.send(JSON.stringify({
+          type: "syncLatestAction",
+          actionList: [updateEntityAndSyncAction]
+        })));
+
         break
       case 'syncUpdates':
+        let actionList = []
+        if (!!currentActionId){
+          const webSocketStoredActionListForRoom = webSocketStoredActionList.filter(e => e.roomId === roomId)
+          const index = webSocketStoredActionListForRoom.findIndex(e => e.id === currentActionId)
+          actionList = webSocketStoredActionListForRoom.slice(index + 1, webSocketStoredActionListForRoom.length)
+        } else {
+          actionList = webSocketStoredActionList.filter(e => e.roomId === roomId)
+        }
+
+        ws.send(JSON.stringify({
+          type: "syncUpdates",
+          actionList
+        }))
+
         break
       case 'clearActionList':
         webSocketStoredActionList = []
@@ -74,20 +109,6 @@ wss.on("connection", (ws) => {
       default:
         console.log('unknown')
     }
-
-    let actionList = []
-    if (!!currentActionId){
-      const webSocketStoredActionListForRoom = webSocketStoredActionList.filter(e => e.roomId === roomId)
-      const index = webSocketStoredActionListForRoom.findIndex(e => e.id === currentActionId)
-      actionList = webSocketStoredActionListForRoom.slice(index + 1, webSocketStoredActionListForRoom.length)
-    } else {
-      actionList = webSocketStoredActionList.filter(e => e.roomId === roomId)
-    }
-
-    ws.send(JSON.stringify({
-        type: "syncUpdates",
-        actionList
-    }))
   });
 
   ws.on("close", () => {
