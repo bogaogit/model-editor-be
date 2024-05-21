@@ -45,3 +45,4 @@ sample.ts
 /recorder/node_modules
 /on-demand-service/node_modules
 /websocket/node_modules
+/websocket/.idea
