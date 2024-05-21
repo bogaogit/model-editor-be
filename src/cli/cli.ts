@@ -5,11 +5,11 @@ import { Command } from "commander";
 const program = new Command()
 
 program
-  .name('string-util')
+  .name('dForm')
   .description('CLI to some JavaScript string utilities')
   .version('0.8.0');
 
-program.command('split')
+program.command('websocket')
   .description('Split a string into substrings and display as an array')
   .argument('<string>', 'string to split')
   .option('--first', 'display just the first substring')
