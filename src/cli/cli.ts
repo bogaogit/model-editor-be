@@ -1,6 +1,7 @@
 import { Command } from "commander";
 
-// yarn cli help split
+// yarn cli split --separator=/ a/b/c
+
 const program = new Command()
 
 program
