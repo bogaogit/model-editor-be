@@ -1,5 +1,5 @@
 import { Command } from "commander";
-import { addWebSocketCommand } from "./commands/websocket-command";
+import { addWebSocketCommands } from "./commands/websocket-command";
 
 // yarn cli split --separator=/ a/b/c
 
@@ -10,6 +10,6 @@ program
   .description('CLI to some JavaScript string utilities')
   .version('0.8.0');
 
-addWebSocketCommand(program)
+addWebSocketCommands(program)
 
 program.parse();
