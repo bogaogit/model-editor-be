@@ -90,7 +90,10 @@ socket.on('connect', () => {
 
 socket.on('data', (data) => {
   console.log("data from service")
-  rtAudio.write(data)
+  if (data){
+    rtAudio.write(data)
+  }
+
 });
 
 // Close the socket and audio stream when finished

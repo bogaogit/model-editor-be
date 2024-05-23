@@ -10,7 +10,7 @@ const server = net.createServer((socket) => {
 
   // Handle incoming data from the client
   socket.on('data', (data) => {
-    console.log('Received data from client:');
+    // console.log('Received data from client:', data.toString());
 
     // You can process the received data here
     // ...
