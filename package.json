@@ -49,7 +49,11 @@
     "typeorm": "^0.3.17",
     "uuid": "^9.0.1",
     "whisper-node": "^1.1.1",
-    "ws": "^8.17.0"
+    "ws": "^8.17.0",
+    "audify": "^1.9.0",
+    "net": "^1.0.2",
+    "node-record-lpcm16": "^1.0.1",
+    "stream": "^0.0.2"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",

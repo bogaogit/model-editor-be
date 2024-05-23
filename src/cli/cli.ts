@@ -1,5 +1,6 @@
 import { Command } from "commander";
 import { addWebSocketCommands } from "./commands/websocket-command";
+import { addRecorderCommands } from "./commands/recorder-command";
 
 // yarn cli split --separator=/ a/b/c
 
@@ -11,5 +12,6 @@ program
   .version('0.8.0');
 
 addWebSocketCommands(program)
+addRecorderCommands(program)
 
 program.parse();
