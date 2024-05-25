@@ -30,7 +30,11 @@ export class RecorderService {
     passThrough.resume();
 
     this.rtAudio.openStream(
-      null,
+      {
+        deviceId: outputs, // Output device id (Get all devices using `getDevices`)
+        nChannels: 1, // Number of channels
+        firstChannel: 0 // First channel index on device (default = 0).
+      },
       {
         deviceId: inputs, // Input device id (Get all devices using `getDevices`)
         nChannels: 1, // Number of channels
@@ -41,7 +45,6 @@ export class RecorderService {
       1920, // Frame size is 1920 (40ms)
       "MyStream", // The name of the stream (used for JACK Api)
       (pcm) => {
-        console.log(pcm)
         passThrough.write(pcm);
       },
       () => {
@@ -49,7 +52,7 @@ export class RecorderService {
     );
 
 
-    // this.rtAudio.start();
+    this.rtAudio.start();
 
 
 // Create a TCP socket connection
@@ -71,15 +74,16 @@ export class RecorderService {
 
     socket.on("data", (data) => {
       if (data) {
-        passthrough.push(data)
+        // passthrough.push(data)
+        this.rtAudio.write(data)
       }
     });
 
-    await this.rtAudioDeviceHandler.output(
-      this.rtAudio,
-      passthrough,
-      (err: Error, stdout?: string, stderr?: string) => {
-        console.error('RTAudio output broke, son', { err, stderr, stdout })
-      });
+    // await this.rtAudioDeviceHandler.output(
+    //   this.rtAudio,
+    //   passthrough,
+    //   (err: Error, stdout?: string, stderr?: string) => {
+    //     console.error('RTAudio output broke, son', { err, stderr, stdout })
+    //   });
   }
 }

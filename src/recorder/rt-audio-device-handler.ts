@@ -68,12 +68,23 @@ export class RtAudioDeviceHandler {
       const bufferSize = BYTES_PER_PCM_SAMPLE * DEFAULT_FRAME_SIZE * device.outputChannels;
       const bufferer = new ByteBufferer(bufferSize);
 
-      for await (const chunk of input) {
-        const buffers = bufferer.write(chunk);
-        for (const buffer of buffers) {
-          rtAudio.write(buffer);
-        }
+
+      const buffers = [];
+
+// node.js readable streams implement the async iterator protocol
+      for await (const data of input) {
+        buffers.push(data);
       }
+
+      const finalBuffer = Buffer.concat(buffers);
+
+      rtAudio.write(finalBuffer);
+      // for await (const chunk of input) {
+      //   const buffers = bufferer.write(chunk);
+      //   for (const buffer of buffers) {
+      //     rtAudio.write(buffer);
+      //   }
+      // }
     } catch (error) {
       this.logger.error("Failed to start RtAudio device output", {
         deviceId,
