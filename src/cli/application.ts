@@ -1,8 +1,9 @@
-import { ApplicationContainer } from "./application-container";
-import { SYMBOLS } from "./symbols";
+import { ApplicationContainer } from "../modules/application-container";
+
 import { WebSocketService } from "../websocket/WebSocket.service";
 import { RecorderService } from "../recorder/Recorder.service";
 import { OnDemandService } from "../on-demand-service/OnDemandService.service";
+import { SYMBOLS } from "../modules/symbols";
 
 interface ApplicationContainers {
   webSocketService: WebSocketService;

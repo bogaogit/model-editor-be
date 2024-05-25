@@ -26,6 +26,8 @@ export class OnDemandService {
         // ...
 
         // Optionally send a response back to the client
+        console.log("****************data******************")
+        console.log(data)
         socket.write(data);
       });
 

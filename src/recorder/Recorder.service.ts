@@ -1,7 +1,10 @@
 import { PassThrough } from "stream";
 import net from "net";
 import { RtAudio, RtAudioFormat } from "audify";
-import { injectable } from "inversify";
+import { inject, injectable } from "inversify";
+import { ApplicationModelsService } from "../services/ApplicationModel.service";
+import { RtAudioDeviceHandler } from "./rt-audio-device-handler";
+import { SYMBOLS } from "../modules/symbols";
 
 // Replace with the IP address or hostname of the TCP service
 const host = "localhost";
@@ -11,14 +14,15 @@ const port = 7070;
 
 @injectable()
 export class RecorderService {
-  private rtAudio = new RtAudio(/* Insert here specific API if needed */);
+  private rtAudio = new RtAudio();
 
-
-  constructor() {
+  constructor(
+    @inject(SYMBOLS.RtAudioDeviceHandler) private readonly rtAudioDeviceHandler: RtAudioDeviceHandler
+  ) {
 
   }
 
-  startStream() {
+  async startStream() {
     const inputs = this.rtAudio.getDefaultInputDevice();
     const outputs = this.rtAudio.getDefaultOutputDevice();
 
@@ -26,11 +30,7 @@ export class RecorderService {
     passThrough.resume();
 
     this.rtAudio.openStream(
-      {
-        deviceId: outputs, // Output device id (Get all devices using `getDevices`)
-        nChannels: 1, // Number of channels
-        firstChannel: 0 // First channel index on device (default = 0).
-      },
+      null,
       {
         deviceId: inputs, // Input device id (Get all devices using `getDevices`)
         nChannels: 1, // Number of channels
@@ -41,7 +41,7 @@ export class RecorderService {
       1920, // Frame size is 1920 (40ms)
       "MyStream", // The name of the stream (used for JACK Api)
       (pcm) => {
-        // console.log(pcm)
+        console.log(pcm)
         passThrough.write(pcm);
       },
       () => {
@@ -49,7 +49,7 @@ export class RecorderService {
     );
 
 
-    this.rtAudio.start();
+    // this.rtAudio.start();
 
 
 // Create a TCP socket connection
@@ -67,10 +67,19 @@ export class RecorderService {
       console.log("Successfully connected to TCP service");
     });
 
+    const passthrough = new PassThrough()
+
     socket.on("data", (data) => {
       if (data) {
-        this.rtAudio.write(data);
+        passthrough.push(data)
       }
     });
+
+    await this.rtAudioDeviceHandler.output(
+      this.rtAudio,
+      passthrough,
+      (err: Error, stdout?: string, stderr?: string) => {
+        console.error('RTAudio output broke, son', { err, stderr, stdout })
+      });
   }
 }
