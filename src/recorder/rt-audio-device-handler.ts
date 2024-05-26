@@ -1,6 +1,6 @@
 import { RtAudio, RtAudioApi, RtAudioDeviceInfo, RtAudioErrorType, RtAudioFormat, RtAudioStreamFlags } from "audify";
 import { inject, injectable } from "inversify";
-import { Readable, Writable } from "stream";
+import { PassThrough, Readable, Writable } from "stream";
 import { ByteBufferer } from "./byte-bufferer";
 import { Logger } from "@nestjs/common";
 import { InvalidArgumentError } from "commander";
@@ -73,6 +73,7 @@ export class RtAudioDeviceHandler {
 
 // node.js readable streams implement the async iterator protocol
       for await (const data of input) {
+        console.log(data)
         buffers.push(data);
       }
 
@@ -113,9 +114,7 @@ export class RtAudioDeviceHandler {
     if (audioDeviceId === undefined) {
       return handleError(new Error("Target audio device not available"));
     }
-    if (audioDeviceId !== device.id) {
-      return handleError(new Error("Target audio device index has changed"));
-    }
+
 
     const sampleRate = device.preferredSampleRate
       ? device.preferredSampleRate
@@ -126,22 +125,29 @@ export class RtAudioDeviceHandler {
 
     try {
       // Open the input/output stream
+      const inputs = rtAudio.getDefaultInputDevice();
+      const outputs = rtAudio.getDefaultOutputDevice();
+
       rtAudio.openStream(
-        null,
         {
-          deviceId: device.id,
-          nChannels: device.inputChannels
+          deviceId: outputs, // Output device id (Get all devices using `getDevices`)
+          nChannels: 1, // Number of channels
+          firstChannel: 0 // First channel index on device (default = 0).
+        },
+        {
+          deviceId: inputs, // Input device id (Get all devices using `getDevices`)
+          nChannels: 1, // Number of channels
+          firstChannel: 0 // First channel index on device (default = 0).
         },
         RtAudioFormat.RTAUDIO_SINT16, // PCM Format - Signed 16-bit integer
-        sampleRate, // Sampling rate is the preferred rate, or the value closest 48kHz
-        DEFAULT_FRAME_SIZE,
-        "FTR Input Stream", // The name of the stream (used for JACK Api)
-        pcm => {
+        48000, // Sampling rate is 48kHz
+        1920, // Frame size is 1920 (40ms)
+        "MyStream", // The name of the stream (used for JACK Api)
+        (pcm) => {
           output.write(pcm);
-        }, // Input callback function, write every input pcm data to the output buffer
-        null,
-        RtAudioStreamFlags.RTAUDIO_HOG_DEVICE,
-        this.getRtAudioErrorMapper(handleError)
+        },
+        () => {
+        }
       );
 
       // Start the stream

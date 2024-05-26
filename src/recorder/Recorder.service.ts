@@ -1,10 +1,13 @@
-import { PassThrough } from "stream";
+import { PassThrough, Writable } from "stream";
 import net from "net";
 import { RtAudio, RtAudioFormat } from "audify";
 import { inject, injectable } from "inversify";
 import { ApplicationModelsService } from "../services/ApplicationModel.service";
 import { RtAudioDeviceHandler } from "./rt-audio-device-handler";
 import { SYMBOLS } from "../modules/symbols";
+import { AudioManager } from "./audio-manager";
+import ffmpeg from "fluent-ffmpeg";
+import { createWriteStream } from "fs";
 
 // Replace with the IP address or hostname of the TCP service
 const host = "localhost";
@@ -15,14 +18,95 @@ const port = 7070;
 @injectable()
 export class RecorderService {
   private rtAudio = new RtAudio();
+  audioStream: PassThrough | undefined
 
   constructor(
-    @inject(SYMBOLS.RtAudioDeviceHandler) private readonly rtAudioDeviceHandler: RtAudioDeviceHandler
+    @inject(SYMBOLS.RtAudioDeviceHandler) private readonly rtAudioDeviceHandler: RtAudioDeviceHandler,
+    @inject(SYMBOLS.AudioManager) private readonly audioManager: AudioManager,
   ) {
 
   }
 
   async startStream() {
+    this.audioManager.start()
+
+    this.audioStream = this.audioManager.subscribe()
+const outputStream = new PassThrough();
+
+
+    const ffmpegCommand = ffmpeg(this.audioStream)
+
+    let command = ffmpegCommand
+      .inputFormat('s16le') // PCM Signed 16 bit little endian.
+      .inputOptions([`-ar 48000`, `-ac 1`])
+      .output(outputStream, { end: true })
+      .outputOptions([
+        `-ac 1`,
+        '-c:a libopus',
+        '-mapping_family 255',
+        '-muxdelay 0',
+        '-f matroska',
+      ])
+
+    command
+      .on('error', (error, _stdout, stderr) => {
+        error.message = `Ffmpeg: Process threw an error ${error.message}`
+      })
+      .on('stderr', output => {
+        console.log(output)
+      })
+      .on('progress', progress => {
+        console.log(progress)
+      })
+      .on('end', () => {
+
+        console.log('Ffmpeg: processing finished')
+      })
+      .on('start', commandline => {
+        console.log('Ffmpeg: processing started')
+      })
+      .run()
+
+    this.audioStream.on("data", (data) => {
+      // console.log("recorder data")
+      // console.log(data)
+    })
+
+
+    const writeToDiskStream = createWriteStream("D:\\repo\\test.mkv")
+    writeToDiskStream.on('error', this.handleFailure.bind(this))
+
+    outputStream.pipe(writeToDiskStream)
+
+    const socket = net.createConnection({ host, port });
+
+    outputStream.pipe(socket);
+
+
+    // socket.on("error", (err) => {
+    //   console.error("Socket error:", err);
+    // });
+    //
+    // socket.on("connect", () => {
+    //   console.log("Successfully connected to TCP service");
+    // });
+    //
+    // const passthrough = new PassThrough()
+    //
+    // socket.on("data", (data) => {
+    //   if (data) {
+    //     passthrough.push(data)
+    //     // this.rtAudio.write(data)
+    //   }
+    // });
+
+  }
+
+  handleFailure(err: Error, stdout?: string, stderr?: string): void {
+    console.log(err)
+  }
+
+  async startStream2() {
     const inputs = this.rtAudio.getDefaultInputDevice();
     const outputs = this.rtAudio.getDefaultOutputDevice();
 
@@ -74,16 +158,16 @@ export class RecorderService {
 
     socket.on("data", (data) => {
       if (data) {
-        // passthrough.push(data)
-        this.rtAudio.write(data)
+        passthrough.push(data)
+        // this.rtAudio.write(data)
       }
     });
 
-    // await this.rtAudioDeviceHandler.output(
-    //   this.rtAudio,
-    //   passthrough,
-    //   (err: Error, stdout?: string, stderr?: string) => {
-    //     console.error('RTAudio output broke, son', { err, stderr, stdout })
-    //   });
+    await this.rtAudioDeviceHandler.output(
+      this.rtAudio,
+      passthrough,
+      (err: Error, stdout?: string, stderr?: string) => {
+        console.error('RTAudio output broke, son', { err, stderr, stdout })
+      });
   }
 }
