@@ -9,14 +9,14 @@ export function addWebSocketCommands(program: Command): void {
   getRooms(wsCommand)
 }
 
-// yarn cli websocket addConnection abc
+// yarn cli websocket start
 function addWebsocketConnection(wsCommand: Command): void {
   wsCommand
-    .command('addConnection')
-    .description('Connect to websocket and get list of rooms.')
+    .command('start')
+    .description('Start websocket service.')
     .action(async (str, options) => {
       const { webSocketService } = await configureApplicationForCli()
-      await webSocketService.setupWebSocketService()
+      await webSocketService.startWebSocketService()
     })
 }
 

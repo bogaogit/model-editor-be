@@ -19,7 +19,7 @@ export class WebSocketService {
     return this.rooms.find(e => e.id === id);
   }
 
-  setupServerMessageHandler(ws: any): void {
+  setServerMessageHandlers(ws: any): void {
     console.log("New client connected");
     this.clients.push(ws);
 
@@ -140,11 +140,11 @@ export class WebSocketService {
     });
   }
 
-  setupWebSocketService(): Promise<void> {
+  startWebSocketService(): Promise<void> {
     if (!this.wss) {
       this.wss = new WebSocket.Server({ port: 8080 });
       this.wss.on("connection", (ws) => {
-        this.setupServerMessageHandler(ws);
+        this.setServerMessageHandlers(ws);
       });
 
       console.log("Created WebSocket Service");
