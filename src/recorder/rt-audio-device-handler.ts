@@ -1,6 +1,6 @@
-import { RtAudio, RtAudioApi, RtAudioDeviceInfo, RtAudioErrorType, RtAudioFormat, RtAudioStreamFlags } from "audify";
-import { inject, injectable } from "inversify";
-import { PassThrough, Readable, Writable } from "stream";
+import { RtAudio, RtAudioDeviceInfo, RtAudioErrorType, RtAudioFormat, RtAudioStreamFlags } from "audify";
+import { injectable } from "inversify";
+import { Readable, Writable } from "stream";
 import { ByteBufferer } from "./byte-bufferer";
 import { Logger } from "@nestjs/common";
 import { InvalidArgumentError } from "commander";
@@ -23,35 +23,33 @@ export class RtAudioDeviceHandler {
   async output(
     input: Readable,
     handleError: (err: Error, stdout?: string, stderr?: string) => void,
-    sampleRate: number = SAMPLE_RATE_48K,
-    frameSize: number = DEFAULT_FRAME_SIZE
   ): Promise<void> {
-    const outputChannels = 1
     const rtAudio = new RtAudio();
     const defaultOutputDevice = rtAudio.getDefaultOutputDevice();
-    const deviceId = defaultOutputDevice;
-    const device = rtAudio.getDevices().find(x => x.id === deviceId);
-    if (device === undefined) {
-      throw new InvalidArgumentError(`${deviceId} is not a valid output id`);
+    const outputDevice = rtAudio.getDevices().find(x => x.id === defaultOutputDevice);
+
+    if (outputDevice === undefined) {
+      throw new InvalidArgumentError(`${defaultOutputDevice} is not a valid output id`);
     }
 
-    if (device.outputChannels === 0) {
-      throw new InvalidArgumentError(`${deviceId} does not have any audio outputs`);
+    if (outputDevice.outputChannels === 0) {
+      throw new InvalidArgumentError(`${defaultOutputDevice} does not have any audio outputs`);
     }
 
+    const outputChannels = 1
 
     try {
       // Open the input/output stream
       rtAudio.openStream(
         {
-          deviceId: device.id,
+          deviceId: outputDevice.id,
           nChannels: outputChannels
         },
         null,
         RtAudioFormat.RTAUDIO_SINT16, // PCM Format - Signed 16-bit integer
-        sampleRate ?? device.preferredSampleRate, // Sampling rate is the preferred rate, or the value closest 48kHz
-        frameSize,
-        "FTR Output Stream", // The name of the stream (used for JACK Api)
+        outputDevice.preferredSampleRate, // Sampling rate is the preferred rate, or the value closest 48kHz
+        DEFAULT_FRAME_SIZE,
+        "Output Stream", // The name of the stream (used for JACK Api)
         null,
         null,
         RtAudioStreamFlags.RTAUDIO_SCHEDULE_REALTIME,
@@ -64,18 +62,6 @@ export class RtAudioDeviceHandler {
       const bufferSize = BYTES_PER_PCM_SAMPLE * DEFAULT_FRAME_SIZE * outputChannels;
       const bufferer = new ByteBufferer(bufferSize);
 
-
-      const buffers = [];
-
-// node.js readable streams implement the async iterator protocol
-//       for await (const data of input) {
-//         // console.log(data)
-//         buffers.push(data);
-//       }
-
-      // const finalBuffer = Buffer.concat(buffers);
-
-      // rtAudio.write(finalBuffer);
       for await (const chunk of input) {
         const buffers = bufferer.write(chunk);
         for (const buffer of buffers) {
@@ -84,8 +70,8 @@ export class RtAudioDeviceHandler {
       }
     } catch (error) {
       this.logger.error("Failed to start RtAudio device output", {
-        deviceId,
-        device,
+        deviceId: defaultOutputDevice,
+        device: outputDevice,
         error
       });
 
@@ -94,51 +80,34 @@ export class RtAudioDeviceHandler {
   }
 
   capture(
-    rtAudio: RtAudio,
-    host: RtAudioApi,
-    device: RtAudioDeviceInfo,
     output: Writable,
     handleError: (err: Error, stdout?: string, stderr?: string) => void
   ): void {
-    // this.logger.info('Starting Audify Stream', {
-    //   host,
-    //   device,
-    // })
+    const rtAudio = new RtAudio();
 
-    // Ensure the target device is still available on the RtAudio instance
-    const audioDeviceId = this.getAudioDeviceId(rtAudio, device);
-    if (audioDeviceId === undefined) {
-      return handleError(new Error("Target audio device not available"));
+    const defaultInputDevice = rtAudio.getDefaultInputDevice();
+    const inputDevice = rtAudio.getDevices().find(x => x.id === defaultInputDevice);
+
+    if (inputDevice === undefined) {
+      throw new InvalidArgumentError(`${defaultInputDevice} is not a valid output id`);
     }
 
-
-    const sampleRate = device.preferredSampleRate
-      ? device.preferredSampleRate
-      : this.getDeviceSampleRateClosestToTarget(device.sampleRates);
-
-    // RtAudio write method requires a fixed size buffer calculate via the following
-    // frame_size * no_of_output_channels * size_of_sample_in_bytes.
+    if (inputDevice.inputChannels === 0) {
+      throw new InvalidArgumentError(`${defaultInputDevice} does not have any audio outputs`);
+    }
 
     try {
-      // Open the input/output stream
-      const inputs = rtAudio.getDefaultInputDevice();
-      const outputs = rtAudio.getDefaultOutputDevice();
-
       rtAudio.openStream(
+        null,
         {
-          deviceId: outputs, // Output device id (Get all devices using `getDevices`)
-          nChannels: 1, // Number of channels
-          firstChannel: 0 // First channel index on device (default = 0).
-        },
-        {
-          deviceId: inputs, // Input device id (Get all devices using `getDevices`)
-          nChannels: 1, // Number of channels
-          firstChannel: 0 // First channel index on device (default = 0).
+          deviceId: inputDevice.id,
+          nChannels: inputDevice.inputChannels,
+          firstChannel: 0
         },
         RtAudioFormat.RTAUDIO_SINT16, // PCM Format - Signed 16-bit integer
-        48000, // Sampling rate is 48kHz
-        1920, // Frame size is 1920 (40ms)
-        "MyStream", // The name of the stream (used for JACK Api)
+        inputDevice.preferredSampleRate, // Sampling rate is 48kHz
+        DEFAULT_FRAME_SIZE, // Frame size is 1920 (40ms)
+        "Input Stream", // The name of the stream (used for JACK Api)
         (pcm) => {
           output.write(pcm);
         },
@@ -146,20 +115,8 @@ export class RtAudioDeviceHandler {
         }
       );
 
-      // Start the stream
       rtAudio.start();
-
-      // this.logger.info('Started Audify Stream', {
-      //   host,
-      //   device,
-      // })
     } catch (error) {
-      this.logger.error("Failed to start RtAudio device capture", {
-        host,
-        device,
-        error
-      });
-
       return handleError(new Error("RtAudio: Failed to start"));
     }
   }

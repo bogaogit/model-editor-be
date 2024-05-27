@@ -1,4 +1,4 @@
-import { RtAudio, RtAudioApi, RtAudioDeviceInfo } from "audify";
+import { RtAudio, RtAudioApi, RtAudioDeviceInfo, RtAudioFormat } from "audify";
 import { inject, injectable } from "inversify";
 import { PassThrough } from "stream";
 
@@ -118,7 +118,7 @@ export class AudioManager {
       throw new InvalidArgumentError(`${deviceId} does not have any audio outputs`);
     }
 
-    this.rtAudioDeviceHandler.capture(rtAudio, deviceId, deviceInfo, passThrough, this.handleError.bind(this));
+    this.rtAudioDeviceHandler.capture(passThrough, this.handleError.bind(this));
 
     this.activeStream = {
       audioDevice: this.selectedAudioDevice!,
