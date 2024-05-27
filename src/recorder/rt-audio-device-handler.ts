@@ -26,6 +26,7 @@ export class RtAudioDeviceHandler {
     sampleRate: number = SAMPLE_RATE_48K,
     frameSize: number = DEFAULT_FRAME_SIZE
   ): Promise<void> {
+    const outputChannels = 1
     const rtAudio = new RtAudio();
     const defaultOutputDevice = rtAudio.getDefaultOutputDevice();
     const deviceId = defaultOutputDevice;
@@ -44,7 +45,7 @@ export class RtAudioDeviceHandler {
       rtAudio.openStream(
         {
           deviceId: device.id,
-          nChannels: device.outputChannels
+          nChannels: outputChannels
         },
         null,
         RtAudioFormat.RTAUDIO_SINT16, // PCM Format - Signed 16-bit integer
@@ -60,7 +61,7 @@ export class RtAudioDeviceHandler {
       // Start the stream
       rtAudio.start();
 
-      const bufferSize = BYTES_PER_PCM_SAMPLE * DEFAULT_FRAME_SIZE * device.outputChannels;
+      const bufferSize = BYTES_PER_PCM_SAMPLE * DEFAULT_FRAME_SIZE * outputChannels;
       const bufferer = new ByteBufferer(bufferSize);
 
 

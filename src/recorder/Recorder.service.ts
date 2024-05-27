@@ -27,7 +27,7 @@ export class RecorderService {
 
   }
 
-  async startStream3() {
+  async startStream() {
     this.audioManager.start()
 
     this.audioStream = this.audioManager.subscribe()
@@ -83,22 +83,62 @@ const outputStream = new PassThrough();
     outputStream.pipe(socket);
 
 
-    // socket.on("error", (err) => {
-    //   console.error("Socket error:", err);
-    // });
-    //
-    // socket.on("connect", () => {
-    //   console.log("Successfully connected to TCP service");
-    // });
-    //
-    // const passthrough = new PassThrough()
-    //
-    // socket.on("data", (data) => {
-    //   if (data) {
-    //     passthrough.push(data)
-    //     // this.rtAudio.write(data)
-    //   }
-    // });
+
+
+    socket.on("error", (err) => {
+      console.error("Socket error:", err);
+    });
+
+    socket.on("connect", () => {
+      console.log("Successfully connected to TCP service");
+    });
+
+    const passthrough = new PassThrough()
+
+    socket.on("data", (data) => {
+      if (data) {
+        passthrough.push(data)
+        // this.rtAudio.write(data)
+      }
+    });
+
+
+
+
+
+
+    const ffmpegCommandPcm = ffmpeg(passthrough)
+    const outputStreamPcm = new PassThrough();
+
+    let commandPcm = ffmpegCommandPcm
+      .inputOptions(['-re', '-guess_layout_max 0'])
+      .output(outputStreamPcm, { end: true })
+      .outputOptions(['-map 0:a', '-f s16le', '-acodec pcm_s16le', `-ac 1`, `-ar 48000`])
+
+    commandPcm
+      .on('error', (error, _stdout, stderr) => {
+        error.message = `Ffmpeg: Process threw an error ${error.message}`
+      })
+      .on('stderr', output => {
+        console.log(output)
+      })
+      .on('progress', progress => {
+        console.log(progress)
+      })
+      .on('end', () => {
+
+        console.log('Ffmpeg: processing finished')
+      })
+      .on('start', commandline => {
+        console.log('Ffmpeg: processing started')
+      })
+      .run()
+
+    await this.rtAudioDeviceHandler.output(
+      outputStreamPcm,
+      (err: Error, stdout?: string, stderr?: string) => {
+        console.error('RTAudio output broke, son', { err, stderr, stdout })
+      });
 
   }
 
@@ -106,7 +146,7 @@ const outputStream = new PassThrough();
     console.log(err)
   }
 
-  async startStream() {
+  async startStream2() {
     const inputs = this.rtAudio.getDefaultInputDevice();
     const outputs = this.rtAudio.getDefaultOutputDevice();
 
