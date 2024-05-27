@@ -20,11 +20,22 @@ export class RtAudioDeviceHandler {
   public constructor() {
   }
 
-  async output(
-    input: Readable,
-    handleError: (err: Error, stdout?: string, stderr?: string) => void,
-  ): Promise<void> {
-    const rtAudio = new RtAudio();
+  getDefaultInputDevice(rtAudio: RtAudio): RtAudioDeviceInfo {
+    const defaultInputDevice = rtAudio.getDefaultInputDevice();
+    const inputDevice = rtAudio.getDevices().find(x => x.id === defaultInputDevice);
+
+    if (inputDevice === undefined) {
+      throw new InvalidArgumentError(`${defaultInputDevice} is not a valid output id`);
+    }
+
+    if (inputDevice.inputChannels === 0) {
+      throw new InvalidArgumentError(`${defaultInputDevice} does not have any audio outputs`);
+    }
+
+    return inputDevice
+  }
+
+  getDefaultOutputDevice(rtAudio: RtAudio): RtAudioDeviceInfo {
     const defaultOutputDevice = rtAudio.getDefaultOutputDevice();
     const outputDevice = rtAudio.getDevices().find(x => x.id === defaultOutputDevice);
 
@@ -35,6 +46,16 @@ export class RtAudioDeviceHandler {
     if (outputDevice.outputChannels === 0) {
       throw new InvalidArgumentError(`${defaultOutputDevice} does not have any audio outputs`);
     }
+
+    return outputDevice
+  }
+
+  async output(
+    input: Readable,
+    handleError: (err: Error, stdout?: string, stderr?: string) => void,
+  ): Promise<void> {
+    const rtAudio = new RtAudio();
+    const outputDevice = this.getDefaultOutputDevice(rtAudio)
 
     const outputChannels = 1
 
@@ -70,7 +91,7 @@ export class RtAudioDeviceHandler {
       }
     } catch (error) {
       this.logger.error("Failed to start RtAudio device output", {
-        deviceId: defaultOutputDevice,
+        deviceId: outputDevice.id,
         device: outputDevice,
         error
       });
@@ -84,17 +105,7 @@ export class RtAudioDeviceHandler {
     handleError: (err: Error, stdout?: string, stderr?: string) => void
   ): void {
     const rtAudio = new RtAudio();
-
-    const defaultInputDevice = rtAudio.getDefaultInputDevice();
-    const inputDevice = rtAudio.getDevices().find(x => x.id === defaultInputDevice);
-
-    if (inputDevice === undefined) {
-      throw new InvalidArgumentError(`${defaultInputDevice} is not a valid output id`);
-    }
-
-    if (inputDevice.inputChannels === 0) {
-      throw new InvalidArgumentError(`${defaultInputDevice} does not have any audio outputs`);
-    }
+    const inputDevice = this.getDefaultInputDevice(rtAudio)
 
     try {
       rtAudio.openStream(
@@ -161,20 +172,6 @@ export class RtAudioDeviceHandler {
     if (rtAudio.isStreamOpen()) {
       rtAudio.closeStream();
     }
-  }
-
-  private getAudioDeviceId(rtAudio: RtAudio, device: RtAudioDeviceInfo): number | undefined {
-    const devices = rtAudio.getDevices();
-    return devices.find(device => device.name === device.name && device.inputChannels === device.inputChannels)
-      ?.id;
-  }
-
-  private getDeviceSampleRateClosestToTarget(sampleRates: number[]): number {
-    if (!sampleRates.length) {
-      this.logger.warn("No sample rates reported for audio device, setting sample rate to 48kHz, this may cause issues");
-      return SAMPLE_RATE_48K;
-    }
-    return getSupportedSampleRateClosestTo48khz(sampleRates);
   }
 }
 

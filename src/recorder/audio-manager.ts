@@ -65,10 +65,6 @@ export declare enum AudioHost {
 
 
 export interface ActiveAudioStream {
-  audioDevice: AudioDevice;
-  activeRtAudio: RtAudio;
-  activeRtAudioInfo: RtAudioDeviceInfo;
-  host: RtAudioApi;
   outputStream: PassThrough;
 }
 
@@ -86,13 +82,6 @@ export declare enum AudioDeviceState {
  */
 @injectable()
 export class AudioManager {
-  private _availableAudioDevices: AudioDevice[] | undefined;
-  selectedAudioDeviceState: AudioDeviceState | undefined;
-  selectedAudioDevice: AudioDevice | undefined;
-
-  /**
-   * Only public for testing
-   */
   activeStream: ActiveAudioStream | undefined;
 
   constructor(
@@ -121,11 +110,7 @@ export class AudioManager {
     this.rtAudioDeviceHandler.capture(passThrough, this.handleError.bind(this));
 
     this.activeStream = {
-      audioDevice: this.selectedAudioDevice!,
-      host: deviceId,
       outputStream: passThrough,
-      activeRtAudio: rtAudio,
-      activeRtAudioInfo: deviceInfo
     };
 
     console.log("capture output stream started.")
@@ -136,7 +121,7 @@ export class AudioManager {
   }
 
   terminate(): void {
-    this.rtAudioDeviceHandler.terminate(this.activeStream!.activeRtAudio);
+    // this.rtAudioDeviceHandler.terminate(this.activeStream!.activeRtAudio);
     this.activeStream?.outputStream.end();
     this.activeStream = undefined;
     return;
