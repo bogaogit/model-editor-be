@@ -21,12 +21,12 @@ export class RtAudioDeviceHandler {
   }
 
   async output(
-    rtAudio: RtAudio,
     input: Readable,
     handleError: (err: Error, stdout?: string, stderr?: string) => void,
     sampleRate: number = SAMPLE_RATE_48K,
     frameSize: number = DEFAULT_FRAME_SIZE
   ): Promise<void> {
+    const rtAudio = new RtAudio();
     const defaultOutputDevice = rtAudio.getDefaultOutputDevice();
     const deviceId = defaultOutputDevice;
     const device = rtAudio.getDevices().find(x => x.id === deviceId);
@@ -40,30 +40,25 @@ export class RtAudioDeviceHandler {
 
 
     try {
-      // // Open the input/output stream
-      // rtAudio.openStream(
-      //   {
-      //     deviceId: device.id,
-      //     nChannels: device.outputChannels
-      //   },
-      //   null,
-      //   RtAudioFormat.RTAUDIO_SINT16, // PCM Format - Signed 16-bit integer
-      //   sampleRate ?? device.preferredSampleRate, // Sampling rate is the preferred rate, or the value closest 48kHz
-      //   frameSize,
-      //   "FTR Output Stream", // The name of the stream (used for JACK Api)
-      //   null,
-      //   null,
-      //   RtAudioStreamFlags.RTAUDIO_SCHEDULE_REALTIME,
-      //   this.getRtAudioErrorMapper(handleError)
-      // );
-      //
-      // // Start the stream
-      // rtAudio.start();
+      // Open the input/output stream
+      rtAudio.openStream(
+        {
+          deviceId: device.id,
+          nChannels: device.outputChannels
+        },
+        null,
+        RtAudioFormat.RTAUDIO_SINT16, // PCM Format - Signed 16-bit integer
+        sampleRate ?? device.preferredSampleRate, // Sampling rate is the preferred rate, or the value closest 48kHz
+        frameSize,
+        "FTR Output Stream", // The name of the stream (used for JACK Api)
+        null,
+        null,
+        RtAudioStreamFlags.RTAUDIO_SCHEDULE_REALTIME,
+        this.getRtAudioErrorMapper(handleError)
+      );
 
-      // this.logger.info('Started Audify Stream', {
-      //   host,
-      //   device,
-      // })
+      // Start the stream
+      rtAudio.start();
 
       const bufferSize = BYTES_PER_PCM_SAMPLE * DEFAULT_FRAME_SIZE * device.outputChannels;
       const bufferer = new ByteBufferer(bufferSize);
@@ -72,20 +67,20 @@ export class RtAudioDeviceHandler {
       const buffers = [];
 
 // node.js readable streams implement the async iterator protocol
-      for await (const data of input) {
-        console.log(data)
-        buffers.push(data);
+//       for await (const data of input) {
+//         // console.log(data)
+//         buffers.push(data);
+//       }
+
+      // const finalBuffer = Buffer.concat(buffers);
+
+      // rtAudio.write(finalBuffer);
+      for await (const chunk of input) {
+        const buffers = bufferer.write(chunk);
+        for (const buffer of buffers) {
+          rtAudio.write(buffer);
+        }
       }
-
-      const finalBuffer = Buffer.concat(buffers);
-
-      rtAudio.write(finalBuffer);
-      // for await (const chunk of input) {
-      //   const buffers = bufferer.write(chunk);
-      //   for (const buffer of buffers) {
-      //     rtAudio.write(buffer);
-      //   }
-      // }
     } catch (error) {
       this.logger.error("Failed to start RtAudio device output", {
         deviceId,

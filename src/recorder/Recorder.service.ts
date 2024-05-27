@@ -27,7 +27,7 @@ export class RecorderService {
 
   }
 
-  async startStream() {
+  async startStream3() {
     this.audioManager.start()
 
     this.audioStream = this.audioManager.subscribe()
@@ -106,7 +106,7 @@ const outputStream = new PassThrough();
     console.log(err)
   }
 
-  async startStream2() {
+  async startStream() {
     const inputs = this.rtAudio.getDefaultInputDevice();
     const outputs = this.rtAudio.getDefaultOutputDevice();
 
@@ -116,23 +116,23 @@ const outputStream = new PassThrough();
     this.rtAudio.openStream(
       {
         deviceId: outputs, // Output device id (Get all devices using `getDevices`)
-        nChannels: 1, // Number of channels
+        nChannels: 2, // Number of channels
         firstChannel: 0 // First channel index on device (default = 0).
       },
       {
         deviceId: inputs, // Input device id (Get all devices using `getDevices`)
-        nChannels: 1, // Number of channels
+        nChannels: 2, // Number of channels
         firstChannel: 0 // First channel index on device (default = 0).
       },
       RtAudioFormat.RTAUDIO_SINT16, // PCM Format - Signed 16-bit integer
       48000, // Sampling rate is 48kHz
-      1920, // Frame size is 1920 (40ms)
+      512, // Frame size is 1920 (40ms)
       "MyStream", // The name of the stream (used for JACK Api)
       (pcm) => {
         passThrough.write(pcm);
       },
       () => {
-      }
+      },
     );
 
 
@@ -164,7 +164,6 @@ const outputStream = new PassThrough();
     });
 
     await this.rtAudioDeviceHandler.output(
-      this.rtAudio,
       passthrough,
       (err: Error, stdout?: string, stderr?: string) => {
         console.error('RTAudio output broke, son', { err, stderr, stdout })
