@@ -4,6 +4,7 @@ export const SYMBOLS = {
   RecorderService: Symbol.for('RecorderService'),
   OnDemandService: Symbol.for('OnDemandService'),
 
+  Tcp: Symbol.for('Tcp'),
   AudioManager: Symbol.for('AudioManager'),
   RtAudioDeviceHandler: Symbol.for('RtAudioDeviceHandler'),
 }

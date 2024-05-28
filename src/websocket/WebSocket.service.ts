@@ -2,7 +2,7 @@ import "reflect-metadata";
 import { inject, injectable } from "inversify";
 import { WebSocket } from "ws";
 import { randomUUID } from "crypto";
-import { RoomInfo, WebSocketActionStoreItem } from "./WebSocket.model";
+import { RoomInfo, WebSocketActionStoreItem, WebSocketRequest } from "./WebSocket.model";
 
 @injectable()
 export class WebSocketService {
@@ -19,6 +19,18 @@ export class WebSocketService {
     return this.rooms.find(e => e.id === id);
   }
 
+  pushActionToList(webSocketRequest: WebSocketRequest): WebSocketActionStoreItem {
+    const action: WebSocketActionStoreItem = {
+      id: randomUUID(),
+      roomId: webSocketRequest.roomId,
+      webSocketAction: webSocketRequest.webSocketAction,
+      userInfo: webSocketRequest.userInfo
+    };
+
+    this.webSocketStoredActionList.push(action);
+    return action
+  }
+
   setServerMessageHandlers(ws: any): void {
     console.log("New client connected");
     this.clients.push(ws);
@@ -26,9 +38,9 @@ export class WebSocketService {
     ws.on("message", (message) => {
       console.log("Client message:", message.toString());
 
-      const body = JSON.parse(message.toString() ?? "{}");
+      const webSocketRequest: WebSocketRequest = JSON.parse(message.toString() ?? "{}");
 
-      const { roomId, currentActionId, roomInfo, joinRoomId, webSocketAction, userInfo } = body;
+      const { roomId, currentActionId, roomInfo, joinRoomId, webSocketAction, userInfo } = webSocketRequest;
 
       switch (webSocketAction?.actionType) {
         case "createRoom": {
@@ -78,28 +90,15 @@ export class WebSocketService {
           break;
         }
         case "updateEntity": {
-          const action: WebSocketActionStoreItem = {
-            id: randomUUID(),
-            roomId: body.roomId,
-            webSocketAction: webSocketAction,
-            userInfo: userInfo
-          };
-
-          this.webSocketStoredActionList.push(action);
+          this.pushActionToList(webSocketRequest)
 
           break;
         }
-        case "updateEntityAndSync": {
-          const updateEntityAndSyncAction = {
-            id: randomUUID(),
-            roomId: body.roomId,
-            webSocketAction: webSocketAction,
-            userInfo: userInfo
-          };
-
-          this.webSocketStoredActionList.push(updateEntityAndSyncAction);
-
-          const room = this.getRoomById(body.roomId);
+        case "updateEntityAndSync":
+        case "sendMessage":
+        {
+          const updateEntityAndSyncAction = this.pushActionToList(webSocketRequest)
+          const room = this.getRoomById(webSocketRequest.roomId);
 
           room.clients.forEach(client => client.send(JSON.stringify({
             type: "syncLatestAction",

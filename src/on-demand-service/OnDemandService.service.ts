@@ -20,14 +20,6 @@ export class OnDemandService {
 
       // Handle incoming data from the client
       socket.on("data", (data) => {
-        // console.log('Received data from client:', data.toString());
-
-        // You can process the received data here
-        // ...
-
-        // Optionally send a response back to the client
-        // console.log("****************data******************")
-        // console.log(data)
         socket.write(data);
       });
 

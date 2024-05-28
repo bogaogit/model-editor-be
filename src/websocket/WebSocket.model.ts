@@ -16,7 +16,8 @@ export type WebSocketActionType =
   "getRoomList" |
   "joinRoom" |
   "syncLatestAction" |
-  "updateEntityAndSync"
+  "updateEntityAndSync" |
+  "sendMessage"
 
 export type UpdateEntityActionType = "add" | "update" | "delete" | "deleteAll"
 
