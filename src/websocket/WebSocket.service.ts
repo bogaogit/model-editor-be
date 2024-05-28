@@ -7,7 +7,7 @@ import { RoomInfo, WebSocketActionStoreItem, WebSocketRequest } from "./WebSocke
 @injectable()
 export class WebSocketService {
   private wss: WebSocket.Server;
-  private webSocketStoredActionList = [];
+  private webSocketStoredActionList: WebSocketActionStoreItem[] = [];
   private rooms: RoomInfo[] = [];
   private clients = [];
 
@@ -24,11 +24,12 @@ export class WebSocketService {
       id: randomUUID(),
       roomId: webSocketRequest.roomId,
       webSocketAction: webSocketRequest.webSocketAction,
-      userInfo: webSocketRequest.userInfo
+      userInfo: webSocketRequest.userInfo,
+      createTime: new Date()
     };
 
     this.webSocketStoredActionList.push(action);
-    return action
+    return action;
   }
 
   setServerMessageHandlers(ws: any): void {
@@ -90,14 +91,13 @@ export class WebSocketService {
           break;
         }
         case "updateEntity": {
-          this.pushActionToList(webSocketRequest)
+          this.pushActionToList(webSocketRequest);
 
           break;
         }
         case "updateEntityAndSync":
-        case "sendMessage":
-        {
-          const updateEntityAndSyncAction = this.pushActionToList(webSocketRequest)
+        case "sendMessage": {
+          const updateEntityAndSyncAction = this.pushActionToList(webSocketRequest);
           const room = this.getRoomById(webSocketRequest.roomId);
 
           room.clients.forEach(client => client.send(JSON.stringify({

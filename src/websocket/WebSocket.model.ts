@@ -41,6 +41,7 @@ export interface WebSocketActionStoreItem {
   roomId: string,
   webSocketAction: WebSocketAction
   userInfo: WebSocketUserInfo
+  createTime: Date
 }
 
 export interface WebSocketResponse {
