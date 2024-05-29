@@ -1,0 +1,21 @@
+{
+  "name": "model-editor-ws",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "build": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "crypto": "^1.0.1",
+    "inversify": "^6.0.2",
+    "ws": "^8.17.0"
+  }
+}
