@@ -58,7 +58,7 @@ export class WebSocketService {
             room: newRoom,
             userInfo: {
               userId: randomUUID(),
-              userName: randomUUID()
+              userName: userInfo.userName
             }
           }));
           break;
@@ -82,7 +82,7 @@ export class WebSocketService {
               type: "joinRoom",
               userInfo: {
                 userId: randomUUID(),
-                userName: randomUUID()
+                userName: userInfo.userName
               },
               room,
               actionList: this.webSocketStoredActionList.filter(e => e.roomId === room.id)
