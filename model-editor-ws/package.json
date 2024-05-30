@@ -4,8 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node src/server.js",
-    "build": "tsc"
+    "start": "tsc & node dist/server.js",
+    "build": "tsc",
+    "build-docker": "tsc & npx kill-port 8080 & docker build -t model-editor-ws . & docker run -p 8080:8080 model-editor-ws",
+    "build-docker-publish": "tsc & npx kill-port 8080 & docker build -t gaobobuq/model-editor-ws .",
+    "docker": "docker-compose -f docker-compose.yml up"
   },
   "keywords": [],
   "author": "",

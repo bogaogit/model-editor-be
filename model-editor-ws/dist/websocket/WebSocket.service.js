@@ -124,7 +124,7 @@ class WebSocketService {
             this.wss.on("connection", (ws) => {
                 this.setServerMessageHandlers(ws);
             });
-            console.log("Created WebSocket Service");
+            console.log("Running webSocket service at port: 8080");
             return;
         }
         else {

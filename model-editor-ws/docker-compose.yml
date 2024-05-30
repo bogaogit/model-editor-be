@@ -1,0 +1,9 @@
+version: '1.0'
+services:
+  ws:
+    build: .
+    image: node:18-alpine
+    command: sh -c "yarn install && yarn start"
+    ports:
+      - 8080:8080
+    restart: unless-stopped
