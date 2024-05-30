@@ -3,8 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.WebSocketService = void 0;
 //@ts-ignore
 const ws_1 = require("ws");
-const fs_1 = require("fs");
-const https_1 = require("https");
 //@ts-ignore
 const crypto_1 = require("crypto");
 class WebSocketService {
@@ -122,20 +120,11 @@ class WebSocketService {
     }
     startWebSocketService() {
         if (!this.wss) {
-            const httpsOptions = {
-                key: (0, fs_1.readFileSync)('./keys/key.pem'),
-                cert: (0, fs_1.readFileSync)('./keys/cert.pem')
-            };
-            const port = 8080;
-            const httpsServer = (0, https_1.createServer)(httpsOptions);
-            this.wss = new ws_1.WebSocket.Server({ server: httpsServer });
-            // this.wss = new WebSocket.Server({ port: 8080 });
-            httpsServer.listen(port, () => {
-                console.log(`WebSocket server is running on port ${port}`);
-            });
+            this.wss = new ws_1.WebSocket.Server({ port: 8080 });
             this.wss.on("connection", (ws) => {
                 this.setServerMessageHandlers(ws);
             });
+            console.log("Running webSocket service at port: 8080");
             return;
         }
         else {
