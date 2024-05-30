@@ -1,7 +1,5 @@
 //@ts-ignore
 import { WebSocket } from "ws";
-import {readFileSync} from "fs"
-import { createServer } from "https";
 //@ts-ignore
 import { randomUUID } from "crypto";
 import { RoomInfo, WebSocketActionStoreItem, WebSocketRequest } from "./WebSocket.model";
@@ -143,24 +141,12 @@ export class WebSocketService {
 
   startWebSocketService() {
     if (!this.wss) {
-      const httpsOptions = {
-        key : readFileSync('./keys/key.pem'),
-        cert : readFileSync('./keys/cert.pem')
-      };
-
-      const port = 8080;
-      const httpsServer = createServer(httpsOptions);
-      this.wss = new WebSocket.Server({ server: httpsServer });
-      // this.wss = new WebSocket.Server({ port: 8080 });
-
-      httpsServer.listen(port, () => {
-        console.log(`WebSocket server is running on port ${port}`);
-      })
-
+      this.wss = new WebSocket.Server({ port: 8080 });
       this.wss.on("connection", (ws: any) => {
         this.setServerMessageHandlers(ws);
       });
 
+      console.log("Running webSocket service at port: 8080");
       return;
     } else {
       console.log("WebSocket Service already created.");
