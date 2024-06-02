@@ -12,19 +12,16 @@ export function addWebSocketCommands(program: Command): void {
 // yarn cli websocket start
 function addWebsocketConnection(wsCommand: Command): void {
   wsCommand
-    .command('start <source> [destination]')
-    .description('Start websocket service.')
+    .command('start [port]')
+    .description('Start websocket service at port defult 8080.')
     .addOption(new Option('-p, --pizza-type <type>', 'flavour of pizza').default('nice', 'nice pizza'))
     .option('-s, --small', 'small pizza size')
-    .action(async (source, destination, options) => {
-      console.log("************")
+    .action(async (port, options) => {
       if (options.small) console.log('- small pizza size');
       if (options.pizzaType) console.log(`- ${options.pizzaType}`);
-      console.log(source);
-      console.log(destination);
 
       const { webSocketService } = await configureApplicationForCli()
-      await webSocketService.startWebSocketService()
+      await webSocketService.startWebSocketService(port)
     })
 }
 

@@ -139,17 +139,17 @@ export class WebSocketService {
     });
   }
 
-  startWebSocketService(): Promise<void> {
+  startWebSocketService(port: number = 8080): Promise<void> {
     if (!this.wss) {
-      this.wss = new WebSocket.Server({ port: 8080 });
+      this.wss = new WebSocket.Server({ port: port });
       this.wss.on("connection", (ws) => {
         this.setServerMessageHandlers(ws);
       });
 
-      console.log("Created WebSocket Service");
+      console.log("Created WebSocket Service at port: " + port);
       return;
     } else {
-      console.log("WebSocket Service already created.");
+      console.log("WebSocket Service already created at port: " + port);
     }
   }
 
