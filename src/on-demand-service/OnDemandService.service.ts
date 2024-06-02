@@ -1,5 +1,7 @@
 import net, { Server } from "net";
 import { injectable } from "inversify";
+import { createWriteStream } from "fs";
+import { Readable } from "stream";
 
 // Replace with the IP address or hostname of the TCP service
 const host = "localhost";
@@ -15,13 +17,27 @@ export class OnDemandService {
   }
 
   startService() {
+    const tcpStreamReadable = new Readable({
+      read() {},
+    })
+
     this.server = net.createServer((socket) => {
       console.log("Client connected");
 
+
+
+
       // Handle incoming data from the client
       socket.on("data", (data) => {
-        socket.write(data);
+        // socket.write(data);
+        if (data) {
+          tcpStreamReadable.push(data)
+        }
       });
+
+      const writeToDiskStream = createWriteStream("D:\\repo\\test2aaa.flv");
+
+      tcpStreamReadable.pipe(writeToDiskStream);
 
       // Handle socket errors
       socket.on("error", (err) => {

@@ -51,10 +51,10 @@ export class DesktopCaptureManager {
     });
 
 
-    const writeToDiskStream = createWriteStream("D:\\repo\\test.flv");
-    writeToDiskStream.on("error", this.handleFailure.bind(this));
-
-    this.activeStream.outputStream.pipe(writeToDiskStream);
+    // const writeToDiskStream = createWriteStream("D:\\repo\\test.flv");
+    // writeToDiskStream.on("error", this.handleFailure.bind(this));
+    //
+    // this.activeStream.outputStream.pipe(writeToDiskStream);
   }
 
   handleFailure(err: Error, stdout?: string, stderr?: string): void {

@@ -20,6 +20,7 @@ const port = 7070;
 export class RecorderService {
   private rtAudio = new RtAudio();
   audioStream: PassThrough | undefined;
+  desktopCaptureStream: PassThrough | undefined;
 
   constructor(
     @inject(SYMBOLS.RtAudioDeviceHandler) private readonly rtAudioDeviceHandler: RtAudioDeviceHandler,
@@ -34,6 +35,9 @@ export class RecorderService {
     this.desktopCaptureManager.start();
 
     this.audioStream = this.audioManager.subscribe();
+    this.desktopCaptureStream = this.desktopCaptureManager.subscribe();
+
+
     const outputStream = new PassThrough();
 
 
@@ -76,14 +80,14 @@ export class RecorderService {
     });
 
 
-    const writeToDiskStream = createWriteStream("D:\\repo\\test.mkv");
-    writeToDiskStream.on("error", this.handleFailure.bind(this));
-
-    outputStream.pipe(writeToDiskStream);
+    // const writeToDiskStream = createWriteStream("D:\\repo\\test.mkv");
+    // writeToDiskStream.on("error", this.handleFailure.bind(this));
+    //
+    // outputStream.pipe(writeToDiskStream);
 
     const socket = net.createConnection({ host, port });
 
-    outputStream.pipe(socket);
+    this.desktopCaptureStream.pipe(socket);
 
 
     socket.on("error", (err) => {
