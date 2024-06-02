@@ -1,12 +1,11 @@
-import { RtAudio, RtAudioApi, RtAudioDeviceInfo, RtAudioFormat } from "audify";
 import { inject, injectable } from "inversify";
 import { PassThrough } from "stream";
-
+import { spawn } from "child_process";
+import ffmpeg from "ffmpeg-static";
 
 import { RtAudioDeviceHandler } from "./rt-audio-device-handler";
 import { SYMBOLS } from "../modules/symbols";
-import { InvalidArgumentError } from "commander";
-import ffmpeg from "fluent-ffmpeg";
+
 import { createWriteStream } from "fs";
 
 export interface ActiveVideoStream {
@@ -38,46 +37,21 @@ export class DesktopCaptureManager {
 
 
 
-    const ffmpegCommand = ffmpeg();
+    const process = spawn(
+      ffmpeg,
+      ["-probesize", "10M", "-f", "gdigrab", "-framerate", "60", "-i", "desktop", "-f", "flv", "-"],
+      { stdio: "pipe" }
+    );
+    const stream = process.stdout;
+    stream.pipe(this.activeStream.outputStream)
 
-    let command = ffmpegCommand
-      .input("-i desktop")
-      .inputFormat("-f gdigrab")
-      .inputOptions([`-ar 48000`, `-ac 1`])
-      .output(this.activeStream.outputStream, { end: true })
-      .outputOptions([
-        "-framerate 30",
-        "-c:v libx264",
-        "-preset veryfast",
-        "-crf 28"
-      ]);
-
-    command
-      .on("error", (error, _stdout, stderr) => {
-        error.message = `Ffmpeg: Process threw an error ${error.message}`;
-      })
-      .on("stderr", output => {
-        console.log(output);
-      })
-      .on("progress", progress => {
-        console.log(progress);
-      })
-      .on("end", () => {
-
-        console.log("Ffmpeg: processing finished");
-      })
-      .on("start", commandline => {
-        console.log("Ffmpeg: processing started");
-      })
-      .run();
 
     this.activeStream.outputStream.on("data", (data) => {
-      console.log("recorder capture")
-      console.log(data)
+
     });
 
 
-    const writeToDiskStream = createWriteStream("D:\\repo\\test.mkv");
+    const writeToDiskStream = createWriteStream("D:\\repo\\test.flv");
     writeToDiskStream.on("error", this.handleFailure.bind(this));
 
     this.activeStream.outputStream.pipe(writeToDiskStream);
