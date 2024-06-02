@@ -8,6 +8,7 @@ import { SYMBOLS } from "../modules/symbols";
 import { AudioManager } from "./audio-manager";
 import ffmpeg from "fluent-ffmpeg";
 import { createWriteStream } from "fs";
+import { DesktopCaptureManager } from "./desktop-capture-manager";
 
 // Replace with the IP address or hostname of the TCP service
 const host = "localhost";
@@ -22,13 +23,15 @@ export class RecorderService {
 
   constructor(
     @inject(SYMBOLS.RtAudioDeviceHandler) private readonly rtAudioDeviceHandler: RtAudioDeviceHandler,
-    @inject(SYMBOLS.AudioManager) private readonly audioManager: AudioManager
+    @inject(SYMBOLS.AudioManager) private readonly audioManager: AudioManager,
+    @inject(SYMBOLS.DesktopCaptureManager) private readonly desktopCaptureManager: DesktopCaptureManager
   ) {
 
   }
 
   async startStream() {
     this.audioManager.start();
+    this.desktopCaptureManager.start();
 
     this.audioStream = this.audioManager.subscribe();
     const outputStream = new PassThrough();

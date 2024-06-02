@@ -7,4 +7,5 @@ export const SYMBOLS = {
   Tcp: Symbol.for('Tcp'),
   AudioManager: Symbol.for('AudioManager'),
   RtAudioDeviceHandler: Symbol.for('RtAudioDeviceHandler'),
+  DesktopCaptureManager: Symbol.for('DesktopCaptureManager'),
 }

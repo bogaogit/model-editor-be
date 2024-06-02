@@ -7,10 +7,10 @@ export function addRecorderCommands(program: Command): void {
   startStream(command)
 }
 
-// yarn cli recorder startStream
+// yarn cli recorder start-recording
 function startStream(command: Command): void {
   command
-    .command('startStream')
+    .command('start-recording')
     .description('Recorder to start tcp stream')
     .action(async (str, options) => {
       const { recorderService } = await configureApplicationForCli()

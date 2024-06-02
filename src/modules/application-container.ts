@@ -9,6 +9,7 @@ import { OnDemandService } from "../on-demand-service/OnDemandService.service";
 import { SYMBOLS } from "./symbols";
 import { RtAudioDeviceHandler } from "../recorder/rt-audio-device-handler";
 import { AudioManager } from "../recorder/audio-manager";
+import { DesktopCaptureManager } from "../recorder/desktop-capture-manager";
 
 export class ApplicationContainer {
   private readonly container = new Container()
@@ -19,6 +20,7 @@ export class ApplicationContainer {
     this.container.bind<OnDemandService>(SYMBOLS.OnDemandService).to(OnDemandService).inSingletonScope()
     this.container.bind<RtAudioDeviceHandler>(SYMBOLS.RtAudioDeviceHandler).to(RtAudioDeviceHandler).inSingletonScope()
     this.container.bind<AudioManager>(SYMBOLS.AudioManager).to(AudioManager).inSingletonScope()
+    this.container.bind<DesktopCaptureManager>(SYMBOLS.DesktopCaptureManager).to(DesktopCaptureManager).inSingletonScope()
   }
 
   rebind<T>(serviceIdentifier: interfaces.ServiceIdentifier<T>): interfaces.BindingToSyntax<T> {
