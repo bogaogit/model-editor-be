@@ -10,6 +10,7 @@ import { SYMBOLS } from "./symbols";
 import { RtAudioDeviceHandler } from "../recorder/rt-audio-device-handler";
 import { AudioManager } from "../recorder/audio-manager";
 import { DesktopCaptureManager } from "../recorder/desktop-capture-manager";
+import { LiveChatService } from "../live-chat/LiveChat.service";
 
 export class ApplicationContainer {
   private readonly container = new Container()
@@ -18,6 +19,7 @@ export class ApplicationContainer {
     this.container.bind<WebSocketService>(SYMBOLS.WebSocketService).to(WebSocketService).inSingletonScope()
     this.container.bind<RecorderService>(SYMBOLS.RecorderService).to(RecorderService).inSingletonScope()
     this.container.bind<OnDemandService>(SYMBOLS.OnDemandService).to(OnDemandService).inSingletonScope()
+    this.container.bind<LiveChatService>(SYMBOLS.LiveChatService).to(LiveChatService).inSingletonScope()
     this.container.bind<RtAudioDeviceHandler>(SYMBOLS.RtAudioDeviceHandler).to(RtAudioDeviceHandler).inSingletonScope()
     this.container.bind<AudioManager>(SYMBOLS.AudioManager).to(AudioManager).inSingletonScope()
     this.container.bind<DesktopCaptureManager>(SYMBOLS.DesktopCaptureManager).to(DesktopCaptureManager).inSingletonScope()

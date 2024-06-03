@@ -2,6 +2,7 @@ import { Command } from "commander";
 import { addWebSocketCommands } from "./commands/websocket-command";
 import { addRecorderCommands } from "./commands/recorder-command";
 import { addOnDemandServiceCommands } from "./commands/on-demand-service-command";
+import { addLiveChatServiceCommands } from "./commands/live-chat-service-command";
 
 // yarn cli split --separator=/ a/b/c
 
@@ -15,5 +16,6 @@ program
 addWebSocketCommands(program)
 addRecorderCommands(program)
 addOnDemandServiceCommands(program)
+addLiveChatServiceCommands(program)
 
 program.parse();
