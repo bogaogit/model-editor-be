@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Post } from "@nestjs/common";
 import { RtspService } from "./Rtsp.service";
-import Stream from "node-rtsp-stream";
+import { Stream } from "stream";
+
 
 @Controller('rtsp')
 export class RtspController {
@@ -24,6 +25,7 @@ export class RtspController {
       },
     };
 
+    //@ts-ignore
     const stream = new Stream(streamOptions);
 
     stream.on('error', (error) => {

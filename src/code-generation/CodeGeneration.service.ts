@@ -8,12 +8,11 @@ import { utilsFunctionsString } from "./CodeTemplate";
  * example code generation tamplate:
  *
  * applicationModel.entities.forEach(entity => {
- *     if (entity.name !== "Court"){
- *         writeQueue.push({
- *             path: `D:\\testoutput\\${entity.name}.ts`,
- *             code: generateCode(entity)
- *         })
- *     }
+ *     writeQueue.push({
+ *         path: `D:\\repo\\application-be\\src\\application\\contracts`,
+ *         fileName: `${entity.name}.ts`,
+ *         code: generateCode(entity)
+ *     })
  * })
  *
  * keywards: applicationModel, writeQueue, generateCode
@@ -34,10 +33,11 @@ export class CodeGenerationService {
 
   buildExecutableFunction(codeTemplateString: string): string {
     const functionString = `
+    let result = ""
     ${utilsFunctionsString}
-    
+      
     function generateCode(data) {
-      let result = ""
+      result = ""
       ${codeTemplateString}
       return result
     }
@@ -58,12 +58,15 @@ export class CodeGenerationService {
 
     eval(ts.transpile(functionString + codeGenerationTemplate));
 
-    console.log("********************");
-    console.log(writeQueue);
-
     writeQueue.forEach(writeToFile => {
+      fs.mkdir(writeToFile.path,{recursive:true},(err) => {
+        if(err) {
+          console.warn(err)
+        }
+      })
+
       fs.writeFile(
-        writeToFile.path,
+        writeToFile.path + "\\" + writeToFile.fileName,
         writeToFile.code,
         (err) => {
           console.log(err);
