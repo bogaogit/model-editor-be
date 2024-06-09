@@ -50,18 +50,3 @@ function al(
 }
 
 `
-
-export class CodeTemplate {
-    static generateCode(
-        codeTemplateString: string,
-        data: any
-    ): string {
-        let result = ""
-        try {
-            eval(ts.transpile(utilsFunctionsString + codeTemplateString));
-            return result + ""
-        } catch (e) {
-            return "Code Template has errors: " + e
-        }
-    }
-}

@@ -3,6 +3,7 @@ import * as ts from "typescript";
 import fs from "fs";
 import { CodeGenerationContract } from "./CodeGeneration.contract";
 import { utilsFunctionsString } from "./CodeTemplate";
+import { cc } from "./CodeTemplate.utils";
 
 /**
  * example code generation tamplate:
@@ -47,16 +48,32 @@ export class CodeGenerationService {
     return functionString;
   }
 
+  includeAllFunctions(applicationModel: any): string {
+    let functionsString = ""
+
+    applicationModel.codeTemplateFunctions.forEach(codeTemplateFunction => {
+      functionsString += `
+      function ${cc(codeTemplateFunction.name)}(data: any) {
+        ${codeTemplateFunction.code}
+      }
+      `
+    })
+
+    return functionsString;
+  }
+
   generateCode(codeGenerationContract: CodeGenerationContract): CodeGenerationOutput {
     const codeTemplateString = codeGenerationContract.codeTemplateData.codeTemplate.codeTemplateString;
     const { codeGenerationTemplate } = codeGenerationContract.codeTemplateData;
 
     const functionString = this.buildExecutableFunction(codeTemplateString);
 
+    const commonFunctionString = this.includeAllFunctions(codeTemplateString);
+
     const applicationModel = codeGenerationContract.applicationModelObject;
     let writeQueue = [];
 
-    eval(ts.transpile(functionString + codeGenerationTemplate));
+    eval(ts.transpile(functionString + commonFunctionString + codeGenerationTemplate));
 
     writeQueue.forEach(writeToFile => {
       fs.mkdir(writeToFile.path,{recursive:true},(err) => {
