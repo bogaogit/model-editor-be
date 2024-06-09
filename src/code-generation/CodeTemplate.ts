@@ -40,13 +40,13 @@ function lf(
 function a(
     inputString: string,
 ): string {
-    result += "\\n" + inputString
+    output += "\\n" + inputString
 }
 
 function al(
     inputString: string,
 ): string {
-    result += inputString
+    output += inputString
 }
 
 `

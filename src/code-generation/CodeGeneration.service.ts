@@ -34,13 +34,13 @@ export class CodeGenerationService {
 
   buildExecutableFunction(codeTemplateString: string): string {
     const functionString = `
-    let result = ""
+    let output = ""
     ${utilsFunctionsString}
       
-    function generateCode(data) {
-      result = ""
+    function generateCode(input) {
+      output = ""
       ${codeTemplateString}
-      return result
+      return output
     }
     
     `;
@@ -53,8 +53,8 @@ export class CodeGenerationService {
 
     applicationModel.codeTemplateFunctions.forEach(codeTemplateFunction => {
       functionsString += `
-      function ${cc(codeTemplateFunction.name)}(data: any) {
-        ${codeTemplateFunction.code}
+      function ${cc(codeTemplateFunction.name)}(input: any) {
+        ${codeTemplateFunction.code.codeTemplateString}
       }
       `
     })
@@ -68,7 +68,7 @@ export class CodeGenerationService {
 
     const functionString = this.buildExecutableFunction(codeTemplateString);
 
-    const commonFunctionString = this.includeAllFunctions(codeTemplateString);
+    const commonFunctionString = this.includeAllFunctions(codeGenerationContract.applicationModelObject);
 
     const applicationModel = codeGenerationContract.applicationModelObject;
     let writeQueue = [];
@@ -91,7 +91,7 @@ export class CodeGenerationService {
     });
 
     return {
-      output: "code generated !! from" + codeGenerationContract.codeTemplateData.codeTemplate.codeTemplateString
+      output: "code generated from" + codeGenerationContract.codeTemplateData.codeTemplate.codeTemplateString
     };
   }
 }
