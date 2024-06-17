@@ -1,12 +1,12 @@
 import { Body, Controller, Post } from "@nestjs/common";
-import { CodeGenerationContract, CodeGenerationRequestContract } from "./CodeGeneration.contract";
-import { CodeGenerationOutput, CodeGenerationService } from "./CodeGeneration.service";
+import { RequestTestContract, CodeGenerationRequestContract } from "./RequestTest.contract";
+import { CodeGenerationOutput, RequestTestService } from "./RequestTest.service";
 import { ApplicationModel } from "../models/ApplicationModel.entity";
 
 @Controller('code-generation')
-export class CodeGenerationController {
+export class RequestTestController {
   constructor(
-    private readonly codeGenerationService: CodeGenerationService
+    private readonly codeGenerationService: RequestTestService
   ) {
   }
 

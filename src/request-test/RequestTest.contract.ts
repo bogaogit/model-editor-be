@@ -4,7 +4,7 @@ export interface CodeGenerationRequestContract {
   applicationModelObject: any
 }
 
-export interface CodeGenerationContract {
+export interface RequestTestContract {
   codeTemplateData: CodeTemplateData,
   applicationModelObject: any
 }
