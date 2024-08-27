@@ -26,7 +26,7 @@ import { RequestTestModule } from "./request-test/RequestTest.module";
   imports: [
     ConfigModule.forRoot(),
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'uploads'),
+      rootPath: join(__dirname, '..', '..', 'uploads'),
       serveRoot: '/static'
     }),
     TypeOrmModule.forRoot({
