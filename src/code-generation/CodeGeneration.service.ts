@@ -3,6 +3,7 @@ import * as ts from "typescript";
 import fs from "fs";
 import { CodeGenerationContract } from "./CodeGeneration.contract";
 import { utilsFunctionsString } from "./CodeTemplate";
+import { cc } from "./CodeTemplate.utils";
 
 /**
  * example code generation tamplate:
@@ -33,18 +34,32 @@ export class CodeGenerationService {
 
   buildExecutableFunction(codeTemplateString: string): string {
     const functionString = `
-    let result = ""
+    let output = ""
     ${utilsFunctionsString}
       
-    function generateCode(data) {
-      result = ""
+    function generateCode(input) {
+      output = ""
       ${codeTemplateString}
-      return result
+      return output
     }
     
     `;
 
     return functionString;
+  }
+
+  includeAllFunctions(applicationModel: any): string {
+    let functionsString = ""
+
+    applicationModel.codeTemplateFunctions.forEach(codeTemplateFunction => {
+      functionsString += `
+      function ${cc(codeTemplateFunction.name)}(input: any) {
+        ${codeTemplateFunction.code.codeTemplateString}
+      }
+      `
+    })
+
+    return functionsString;
   }
 
   generateCode(codeGenerationContract: CodeGenerationContract): CodeGenerationOutput {
@@ -53,10 +68,12 @@ export class CodeGenerationService {
 
     const functionString = this.buildExecutableFunction(codeTemplateString);
 
+    const commonFunctionString = this.includeAllFunctions(codeGenerationContract.applicationModelObject);
+
     const applicationModel = codeGenerationContract.applicationModelObject;
     let writeQueue = [];
 
-    eval(ts.transpile(functionString + codeGenerationTemplate));
+    eval(ts.transpile(functionString + commonFunctionString + codeGenerationTemplate));
 
     writeQueue.forEach(writeToFile => {
       fs.mkdir(writeToFile.path,{recursive:true},(err) => {
@@ -74,7 +91,32 @@ export class CodeGenerationService {
     });
 
     return {
-      output: "code generated !! from" + codeGenerationContract.codeTemplateData.codeTemplate.codeTemplateString
+      output: "code generated!!"
+    };
+  }
+
+  generateCodeAllTemplates(codeGenerationContract: CodeGenerationContract): CodeGenerationOutput {
+    const applicationModel = codeGenerationContract.applicationModelObject;
+    applicationModel.codeTemplateGroups.forEach(codeTemplateGroup => {
+      codeTemplateGroup.codeTemplates.forEach(codeTemplate => {
+        if (codeTemplate.disabled !== true){
+          const contract: CodeGenerationContract = {
+            codeTemplateData: {
+              codeTemplate: {
+                codeTemplateString: codeTemplate.codeTemplate.codeTemplateString
+              },
+              codeGenerationTemplate: codeTemplate.codeGenerationTemplate
+            },
+            applicationModelObject: applicationModel
+          }
+
+          this.generateCode(contract)
+        }
+      })
+    })
+
+    return {
+      output: "code generated from all templates!!"
     };
   }
 }

@@ -17,6 +17,7 @@ import { ScheduleModule } from "@nestjs/schedule";
 import { TasksModule } from "./tasks/Tasks.module";
 import { CodeGenerationModule } from "./code-generation/CodeGeneration.module";
 import { RtspModule } from "./live-streaming/Rtsp.module";
+import { RequestTestModule } from "./request-test/RequestTest.module";
 
 /**
  * http://localhost:3000/static/unnamed.png to access images
@@ -25,7 +26,7 @@ import { RtspModule } from "./live-streaming/Rtsp.module";
   imports: [
     ConfigModule.forRoot(),
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'uploads'),
+      rootPath: join(__dirname, '..', '..', 'uploads'),
       serveRoot: '/static'
     }),
     TypeOrmModule.forRoot({
@@ -49,6 +50,7 @@ import { RtspModule } from "./live-streaming/Rtsp.module";
     S3Module,
     CodeGenerationModule,
     RtspModule,
+    RequestTestModule
   ],
 })
 export class AppModule implements NestModule {
