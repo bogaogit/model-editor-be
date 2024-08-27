@@ -1,20 +1,19 @@
 import { Body, Controller, Post } from "@nestjs/common";
-import { RequestTestContract, CodeGenerationRequestContract } from "./RequestTest.contract";
-import { CodeGenerationOutput, RequestTestService } from "./RequestTest.service";
-import { ApplicationModel } from "../models/ApplicationModel.entity";
+import { RequestTestContract } from "./RequestTest.contract";
+import { RequestTestService } from "./RequestTest.service";
 
-@Controller('code-generation')
+@Controller('request-test')
 export class RequestTestController {
   constructor(
-    private readonly codeGenerationService: RequestTestService
+    private readonly requestTestService: RequestTestService
   ) {
   }
 
   @Post()
-  async generateCode(@Body() codeGenerationRequestContract: CodeGenerationRequestContract): Promise<CodeGenerationOutput> {
-    return this.codeGenerationService.generateCode({
-      applicationModelObject: codeGenerationRequestContract,
-      codeTemplateData: codeGenerationRequestContract.entityData
+  async postRequest(@Body() requestTestContract: RequestTestContract): Promise<RequestTestContract> {
+    return this.requestTestService.postRequest({
+      applicationModelObject: requestTestContract.applicationModelObject,
+      entityData: requestTestContract.entityData
     });
   }
 }

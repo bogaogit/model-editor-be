@@ -27,6 +27,21 @@ function pc(
     }
 }
 
+function sc(
+    inputString: string,
+): string {
+    if (inputString){
+        return inputString
+            .match(/[a-z,0-9]+/gi)
+            .map(function (word) {
+                return word.charAt(0).toLowerCase() + word.substr(1).toLowerCase();
+            })
+            .join("_");
+    } else {
+        return "";
+    }
+}
+
 function kc(
     inputString: string,
 ): string {

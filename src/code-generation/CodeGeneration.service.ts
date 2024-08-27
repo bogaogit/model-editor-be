@@ -91,7 +91,32 @@ export class CodeGenerationService {
     });
 
     return {
-      output: "code generated from" + codeGenerationContract.codeTemplateData.codeTemplate.codeTemplateString
+      output: "code generated!!"
+    };
+  }
+
+  generateCodeAllTemplates(codeGenerationContract: CodeGenerationContract): CodeGenerationOutput {
+    const applicationModel = codeGenerationContract.applicationModelObject;
+    applicationModel.codeTemplateGroups.forEach(codeTemplateGroup => {
+      codeTemplateGroup.codeTemplates.forEach(codeTemplate => {
+        if (codeTemplate.disabled !== true){
+          const contract: CodeGenerationContract = {
+            codeTemplateData: {
+              codeTemplate: {
+                codeTemplateString: codeTemplate.codeTemplate.codeTemplateString
+              },
+              codeGenerationTemplate: codeTemplate.codeGenerationTemplate
+            },
+            applicationModelObject: applicationModel
+          }
+
+          this.generateCode(contract)
+        }
+      })
+    })
+
+    return {
+      output: "code generated from all templates!!"
     };
   }
 }

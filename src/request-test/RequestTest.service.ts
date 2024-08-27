@@ -1,9 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import * as ts from "typescript";
-import fs from "fs";
 import { RequestTestContract } from "./RequestTest.contract";
-import { utilsFunctionsString } from "./CodeTemplate";
-import { cc } from "./CodeTemplate.utils";
 
 /**
  * example code generation tamplate:
@@ -32,66 +28,7 @@ export class RequestTestService {
   constructor() {
   }
 
-  buildExecutableFunction(codeTemplateString: string): string {
-    const functionString = `
-    let output = ""
-    ${utilsFunctionsString}
-      
-    function generateCode(input) {
-      output = ""
-      ${codeTemplateString}
-      return output
-    }
-    
-    `;
-
-    return functionString;
-  }
-
-  includeAllFunctions(applicationModel: any): string {
-    let functionsString = ""
-
-    applicationModel.codeTemplateFunctions.forEach(codeTemplateFunction => {
-      functionsString += `
-      function ${cc(codeTemplateFunction.name)}(input: any) {
-        ${codeTemplateFunction.code.codeTemplateString}
-      }
-      `
-    })
-
-    return functionsString;
-  }
-
-  generateCode(codeGenerationContract: RequestTestContract): CodeGenerationOutput {
-    const codeTemplateString = codeGenerationContract.codeTemplateData.codeTemplate.codeTemplateString;
-    const { codeGenerationTemplate } = codeGenerationContract.codeTemplateData;
-
-    const functionString = this.buildExecutableFunction(codeTemplateString);
-
-    const commonFunctionString = this.includeAllFunctions(codeGenerationContract.applicationModelObject);
-
-    const applicationModel = codeGenerationContract.applicationModelObject;
-    let writeQueue = [];
-
-    eval(ts.transpile(functionString + commonFunctionString + codeGenerationTemplate));
-
-    writeQueue.forEach(writeToFile => {
-      fs.mkdir(writeToFile.path,{recursive:true},(err) => {
-        if(err) {
-          console.warn(err)
-        }
-      })
-
-      fs.writeFile(
-        writeToFile.path + "\\" + writeToFile.fileName,
-        writeToFile.code,
-        (err) => {
-          console.log(err);
-        });
-    });
-
-    return {
-      output: "code generated from" + codeGenerationContract.codeTemplateData.codeTemplate.codeTemplateString
-    };
+  postRequest(requestTestContract: RequestTestContract): RequestTestContract {
+    return requestTestContract
   }
 }
