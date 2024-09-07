@@ -19,16 +19,21 @@ from sys import platform
 from faster_whisper import WhisperModel
 from translatepy.translators.google import GoogleTranslate
 from TranscriptionWindow import TranscriptionWindow
+from redis_om import HashModel, get_redis_connection
 
-class TranscriptItem:
-    transcription = ""
-    time = 0
-    def toJSON(self):
-            return json.dumps(
-                self,
-                default=lambda o: o.__dict__,
-                sort_keys=True,
-                indent=4)
+redis_conn = get_redis_connection(
+    host="localhost",  # Replace with Redis host
+    port=6379,         # Replace with Redis port
+    decode_responses=True
+)
+
+class TranscriptItem(HashModel):
+    transcription: str
+    time: int
+
+    # Use the Redis connection here
+    class Meta:
+        database = redis_conn
 
 
 def main():
@@ -184,14 +189,16 @@ def main():
                     print(time_points)
                     print("************")
 
-                    temp = TranscriptItem()
-                    temp.transcription = text
-                    temp.time = int(time.time())
+                    transcript_item = TranscriptItem(
+                        transcription = text,
+                        time = int(time.time())
+                    )
 
-#                     sentences_json = json.dumps(sentences)
-#                     temp_json = json.dumps(temp)
-                    redis_client.set('sentences_1', temp.toJSON())
-                    print(temp.toJSON())
+                    transcript_item.save()
+                    print(">>>>>>>>>>>>")
+
+#                     redis_client.set('sentences_1', temp.toJSON())
+#                     print(temp.toJSON())
 
 #                     loaded_sentences = json.loads(redis_client.get('sentences'))
 #                     print(">>>>>>>>>>>>")
