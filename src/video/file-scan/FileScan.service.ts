@@ -128,11 +128,11 @@ export class FileScanService {
     return this.convertedFileInfoRepository.find();
   }
 
-  findOne(id: string): Promise<ConvertedFileInfo | null> {
+  findOne(id: string): Promise<ConvertedFileInfo> {
     return this.convertedFileInfoRepository.findOneBy({ id });
   }
 
-  findOneByName(name: string): Promise<ConvertedFileInfo | null> {
+  findOneByName(name: string): Promise<ConvertedFileInfo> {
     return this.convertedFileInfoRepository.findOneBy({ fileName: name });
   }
 
@@ -208,7 +208,7 @@ export class FileScanService {
     }
   }
 
-  async setFieldValue(entityData: ConvertedFileInfo, fieldName: FieldName, fieldValue: any): Promise<ConvertedFileInfo | UpdateResult> {
+  async setFieldValue(entityData: ConvertedFileInfo, fieldName: FieldName, fieldValue: any): Promise<void> {
     const findItem = await this.convertedFileInfoRepository.findOneBy({ fileName: entityData.fileName });
     let updateField;
     if (findItem) {
@@ -230,7 +230,7 @@ export class FileScanService {
           break;
       }
 
-      return await this.convertedFileInfoRepository.update({ id: findItem.id }, updateField);
+      await this.convertedFileInfoRepository.update({ id: findItem.id }, updateField);
     }
   }
 }

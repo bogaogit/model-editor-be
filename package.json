@@ -20,7 +20,9 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "cli": "yarn launch src/cli/cli.ts",
     "launch": "ts-node --files",
-    "ws": "yarn launch src/cli/cli.ts websocket start"
+    "ws": "yarn launch src/cli/cli.ts websocket start",
+    "ai:pull": "docker run -d -v ollama:/root/.ollama -p 11434:11434 --name ollama ollama/ollama",
+    "ai:run": "docker exec -it ollama ollama run llama3.1"
   },
   "dependencies": {
     "@aws-sdk/client-cloudwatch": "^3.450.0",

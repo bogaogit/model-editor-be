@@ -61,7 +61,7 @@ export class VideoProcessingService {
     inputFilePath: string,
     fileName: string,
     inputFileType: string,
-    callback?: () => void
+    callback?: any
   ) {
     const outputFolderPath = `uploads/audios/${fileName}`;
     DirectoryUtils.createPathRecursively(outputFolderPath);
