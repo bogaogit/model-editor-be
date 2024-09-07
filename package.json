@@ -52,6 +52,8 @@
     "node-record-lpcm16": "^1.0.1",
     "nodejs-whisper": "^0.1.6",
     "pg": "^8.11.3",
+    "redis": "^4.7.0",
+    "redis-om": "^0.4.6",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "socket.io": "^4.7.5",
