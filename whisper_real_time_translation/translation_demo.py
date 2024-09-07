@@ -19,7 +19,18 @@ from sys import platform
 from faster_whisper import WhisperModel
 from translatepy.translators.google import GoogleTranslate
 from TranscriptionWindow import TranscriptionWindow
-    
+
+class TranscriptItem:
+    transcription = ""
+    time = 0
+    def toJSON(self):
+            return json.dumps(
+                self,
+                default=lambda o: o.__dict__,
+                sort_keys=True,
+                indent=4)
+
+
 def main():
     
    
@@ -173,12 +184,18 @@ def main():
                     print(time_points)
                     print("************")
 
-                    sentences_json = json.dumps(sentences)
-                    redis_client.set('sentences', sentences_json)
+                    temp = TranscriptItem()
+                    temp.transcription = text
+                    temp.time = int(time.time())
 
-                    loaded_sentences = json.loads(redis_client.get('sentences'))
-                    print(">>>>>>>>>>>>")
-                    print(loaded_sentences)
+#                     sentences_json = json.dumps(sentences)
+#                     temp_json = json.dumps(temp)
+                    redis_client.set('sentences_1', temp.toJSON())
+                    print(temp.toJSON())
+
+#                     loaded_sentences = json.loads(redis_client.get('sentences'))
+#                     print(">>>>>>>>>>>>")
+#                     print(loaded_sentences)
                 else:
                     transcription[-1] = text
                     time_points[-1] = int(time.time())
@@ -204,3 +221,7 @@ def main():
 if __name__ == "__main__":
     
     main()
+
+def insert_sentence(sentence_object):
+    sentences_json = json.dumps(sentence_object)
+    redis_client.set('sentences', sentences_json)
