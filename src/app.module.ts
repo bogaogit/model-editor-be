@@ -18,6 +18,7 @@ import { TasksModule } from "./tasks/Tasks.module";
 import { CodeGenerationModule } from "./code-generation/CodeGeneration.module";
 import { RtspModule } from "./live-streaming/Rtsp.module";
 import { RequestTestModule } from "./request-test/RequestTest.module";
+import { TranscriptionModule } from "./transcription/transcription.module";
 
 /**
  * http://localhost:3000/static/unnamed.png to access images
@@ -50,7 +51,8 @@ import { RequestTestModule } from "./request-test/RequestTest.module";
     S3Module,
     CodeGenerationModule,
     RtspModule,
-    RequestTestModule
+    RequestTestModule,
+    TranscriptionModule
   ],
 })
 export class AppModule implements NestModule {
