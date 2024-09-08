@@ -27,13 +27,15 @@ redis_conn = get_redis_connection(
     decode_responses=True
 )
 
-class TranscriptItem(HashModel):
-    transcription: str
-    time: int
-
-    # Use the Redis connection here
-    class Meta:
-        database = redis_conn
+class TranscriptItem:
+    transcription = ""
+    time = 0
+    def toJSON(self):
+            return json.dumps(
+                self,
+                default=lambda o: o.__dict__,
+                sort_keys=True,
+                indent=4)
 
 
 def main():
@@ -123,6 +125,7 @@ def main():
     temp_file = NamedTemporaryFile().name 
     transcription = ['']
     time_points = ['']
+    current_sentence_index = 0
 
     with source:
         recorder.adjust_for_ambient_noise(source)
@@ -184,25 +187,17 @@ def main():
                     transcription.append(text)
                     time_points.append(int(time.time()))
 
-                    print("------------")
-                    print(transcription)
-                    print(time_points)
-                    print("************")
-
                     transcript_item = TranscriptItem(
                         transcription = text,
                         time = int(time.time())
                     )
 
-                    transcript_item.save()
-                    print(">>>>>>>>>>>>")
+                    redis_client.set(current_sentence_index, json.dumps(transcript_item))
+                    print("------------")
+                    print(json.dumps(transcript_item))
 
-#                     redis_client.set('sentences_1', temp.toJSON())
-#                     print(temp.toJSON())
-
-#                     loaded_sentences = json.loads(redis_client.get('sentences'))
-#                     print(">>>>>>>>>>>>")
-#                     print(loaded_sentences)
+                    current_sentence_index = current_sentence_index + 1
+                    print(current_sentence_index)
                 else:
                     transcription[-1] = text
                     time_points[-1] = int(time.time())
