@@ -30,6 +30,9 @@ redis_conn = get_redis_connection(
 class TranscriptItem:
     transcription = ""
     time = 0
+    def __init__(self, time, transcription):
+          self.transcription = transcription
+          self.time = time
     def toJSON(self):
             return json.dumps(
                 self,
@@ -187,14 +190,12 @@ def main():
                     transcription.append(text)
                     time_points.append(int(time.time()))
 
-                    transcript_item = TranscriptItem(
-                        transcription = text,
-                        time = int(time.time())
-                    )
+                    transcript_item = TranscriptItem(int(time.time()), text)
 
-                    redis_client.set(current_sentence_index, json.dumps(transcript_item))
+                    redis_client.set("index_" + str(current_sentence_index), transcript_item.toJSON())
+                    redis_client.set("current_index", current_sentence_index)
                     print("------------")
-                    print(json.dumps(transcript_item))
+                    print(transcript_item.toJSON())
 
                     current_sentence_index = current_sentence_index + 1
                     print(current_sentence_index)
