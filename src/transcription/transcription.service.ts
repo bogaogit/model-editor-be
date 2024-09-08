@@ -27,7 +27,7 @@ export class TranscriptionService {
     if (currentIndex > toIndex) {
       for (let index = toIndex + 1; index <= currentIndex; index++) {
         const record = await this.redis.get("index_" + index, (err, result) => result);
-        records.push(record)
+        records.push(JSON.parse(record))
       }
     }
 
