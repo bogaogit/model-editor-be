@@ -46,7 +46,7 @@ class TranscriptionWindow:
             except:
                 translated_text = ""
             text_to_display += '(' + translation_lang + ')' + translated_text + '\n'
-            print ((text_to_display).encode('utf8')) 
+#             print ((text_to_display).encode('utf8'))
             
         self.text_widget.delete(1.0, tk.END)
         self.text_widget.insert(tk.END, text_to_display)

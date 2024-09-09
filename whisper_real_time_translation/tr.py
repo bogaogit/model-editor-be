@@ -92,7 +92,7 @@ def main():
         if not mic_name or mic_name == 'list':
             print("Available microphone devices are: ")
             for index, name in enumerate(sr.Microphone.list_microphone_names()):
-                print(f"Microphone with name \"{name}\" found")   
+                print(f"Microphone with name \"{name}\" found")
             return
         else:
             for index, name in enumerate(sr.Microphone.list_microphone_names()):
@@ -184,28 +184,41 @@ def main():
                     text += segment.text
                 #text = result['text'].strip()
 
-                # If we detected a pause between recordings, add a new item to our transcripion.
+                # If we detected a pause between recordings, add a new item to our transcription.
                 # Otherwise edit the existing one.
                 if phrase_complete:
+                    current_time = int(time.time())
                     transcription.append(text)
-                    time_points.append(int(time.time()))
+                    time_points.append(current_time)
 
-                    transcript_item = TranscriptItem(int(time.time()), text)
+                    transcript_item = TranscriptItem(current_time, text)
+                    current_sentence_index = current_sentence_index + 1
 
+                    print("------------")
+                    print(current_sentence_index)
                     redis_client.set("index_" + str(current_sentence_index), transcript_item.toJSON())
                     redis_client.set("current_index", current_sentence_index)
-                    print("------------")
+
                     print(transcript_item.toJSON())
 
-                    current_sentence_index = current_sentence_index + 1
-                    print(current_sentence_index)
+
+
                 else:
+                    current_time = int(time.time())
                     transcription[-1] = text
-                    time_points[-1] = int(time.time())
+                    time_points[-1] = current_time
+                    transcript_item = TranscriptItem(current_time, text)
+                    print("------------")
+                    print(current_sentence_index)
+                    redis_client.set("index_" + str(current_sentence_index), transcript_item.toJSON())
+                    print(transcript_item.toJSON())
+
                 last_four_elements = transcription[-10:]
                 result = ''.join(last_four_elements)    
                 sentences = sent_tokenize(result)
                 window.update_text(sentences, translation_lang)
+                print(">>>>>>>>>>>>>>>")
+                print(transcription)
 
 #                 time_points.append(phrase_time)
 
@@ -225,6 +238,3 @@ if __name__ == "__main__":
     
     main()
 
-def insert_sentence(sentence_object):
-    sentences_json = json.dumps(sentence_object)
-    redis_client.set('sentences', sentences_json)

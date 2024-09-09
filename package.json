@@ -22,7 +22,9 @@
     "launch": "ts-node --files",
     "ws": "yarn launch src/cli/cli.ts websocket start",
     "ai:pull": "docker run -d -v ollama:/root/.ollama -p 11434:11434 --name ollama ollama/ollama",
-    "ai:run": "docker exec -it ollama ollama run llama3.1"
+    "ai:run": "docker exec -it ollama ollama run llama3.1",
+    "dc:up": "docker-compose -f docker-compose.yml up -d",
+    "dc:down": "docker-compose -f docker-compose.yml down"
   },
   "dependencies": {
     "@aws-sdk/client-cloudwatch": "^3.450.0",
