@@ -47,7 +47,7 @@ def main():
     
    
     parser = argparse.ArgumentParser()
-    parser.add_argument("--model", default="medium", help="Model to use",
+    parser.add_argument("--model", default="large", help="Model to use",
                         choices=["tiny", "base", "small", "medium", "large"])
     parser.add_argument("--device", default="auto", help="device to user for CTranslate2 inference",
                         choices=["auto", "cuda","cpu"])                   
