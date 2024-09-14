@@ -192,36 +192,23 @@ def main():
                     current_time = int(time.time())
                     transcription.append(text)
                     time_points.append(current_time)
-
-
                     current_sentence_index = current_sentence_index + 1
                     transcript_item = TranscriptItem(current_sentence_index, current_time, text)
 
-                    print("------------")
-                    print(current_sentence_index)
                     redis_client.set("index_" + str(current_sentence_index), transcript_item.toJSON())
                     redis_client.set("current_index", current_sentence_index)
-
-                    print(transcript_item.toJSON())
-
-
-
                 else:
                     current_time = int(time.time())
                     transcription[-1] = text
                     time_points[-1] = current_time
                     transcript_item = TranscriptItem(current_sentence_index, current_time, text)
-                    print("------------")
-                    print(current_sentence_index)
                     redis_client.set("index_" + str(current_sentence_index), transcript_item.toJSON())
-                    print(transcript_item.toJSON())
 
                 last_four_elements = transcription[-10:]
                 result = ''.join(last_four_elements)    
                 sentences = sent_tokenize(result)
                 window.update_text(sentences, translation_lang)
-                print(">>>>>>>>>>>>>>>")
-                print(transcription)
+
 
 #                 time_points.append(phrase_time)
 
