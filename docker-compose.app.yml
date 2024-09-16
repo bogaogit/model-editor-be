@@ -45,6 +45,26 @@ services:
       - NODE_ENV
     networks:
       - "my-network"
+  ws:
+    image: model-ws
+    container_name: model-ws-app-container
+    restart: on-failure
+    depends_on:
+      - serverside
+    ports:
+      - 8080:8080
+    networks:
+      - "my-network"
+  frontend:
+    image: model-fe
+    container_name: model-fe-app-container
+    restart: on-failure
+    depends_on:
+      - serverside
+    ports:
+      - 3000:3000
+    networks:
+      - "my-network"
 
 networks:
   my-network:
