@@ -1,3 +1,6 @@
+#!/usr/bin/env python2
+# Python 3.9.9
+
 import argparse
 import io
 import os
@@ -18,7 +21,6 @@ from time import sleep
 from sys import platform
 from faster_whisper import WhisperModel
 from translatepy.translators.google import GoogleTranslate
-from TranscriptionWindow import TranscriptionWindow
 from redis_om import HashModel, get_redis_connection
 
 redis_conn = get_redis_connection(
@@ -122,7 +124,6 @@ def main():
     nltk.download('punkt')
     nltk.download('punkt_tab')
     audio_model = WhisperModel(model, device = device, compute_type = compute_type , cpu_threads = cpu_threads)
-    window = TranscriptionWindow()
     
     record_timeout = args.record_timeout
     phrase_timeout = args.phrase_timeout
@@ -207,10 +208,6 @@ def main():
                 last_four_elements = transcription[-10:]
                 result = ''.join(last_four_elements)    
                 sentences = sent_tokenize(result)
-                window.update_text(sentences, translation_lang)
-
-
-#                 time_points.append(phrase_time)
 
                 # Clear the console to reprint the updated transcription.
 
