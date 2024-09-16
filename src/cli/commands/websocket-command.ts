@@ -19,9 +19,6 @@ function addWebsocketConnection(wsCommand: Command): void {
     .action(async (port, options) => {
       if (options.small) console.log('- small pizza size');
       if (options.pizzaType) console.log(`- ${options.pizzaType}`);
-
-      const { webSocketService } = await configureApplicationForCli()
-      await webSocketService.startWebSocketService(port)
     })
 }
 
@@ -31,8 +28,5 @@ function getRooms(wsCommand: Command): void {
     .command('getRooms')
     .description('Get connected rooms information in websocket server.')
     .action(async (str, options) => {
-      const { webSocketService } = await configureApplicationForCli()
-      const rooms = webSocketService.getRooms()
-      console.log(rooms)
     })
 }

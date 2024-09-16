@@ -55,6 +55,24 @@ services:
       - 8080:8080
     networks:
       - "my-network"
+  media-handler:
+    image: media-handler
+    container_name: model-media-handler-app-container
+    restart: on-failure
+    depends_on:
+      - database
+    ports:
+      - 8080:8080
+    environment:
+      - REDIS_HOST=redis
+      - DATABASE_HOST=database
+      - DATABASE_PORT=5432
+      - DATABASE_USER=postgres
+      - DATABASE_PASSWORD
+      - RUN_TASKS=true
+      - INPUT_DIRECTORY=["video-samples"]
+    networks:
+      - "my-network"
   frontend:
     image: model-fe
     container_name: model-fe-app-container

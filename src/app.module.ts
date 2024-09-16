@@ -7,14 +7,9 @@ import { ServeStaticModule } from "@nestjs/serve-static";
 import { join } from "path";
 import { LoggerMiddleware } from "./middlewares/logger.middleware";
 import { ConfigModule } from "@nestjs/config";
-import { VideoProcessingModule } from "./video/video-processing/VideoProcessing.module";
-import { AnalysedVideoModule } from "./video/analysed-video/AnalysedVideo.module";
-import { FileScanModule } from "./video/file-scan/FileScan.module";
 import { TranscribeModule } from "./aws/transcribe/Transcribe.module";
 import { S3Module } from "./aws/s3/S3.module";
-import { ConvertedFileInfo } from "./video/file-scan/FileScan.entity";
 import { ScheduleModule } from "@nestjs/schedule";
-import { TasksModule } from "./tasks/Tasks.module";
 import { CodeGenerationModule } from "./code-generation/CodeGeneration.module";
 import { RtspModule } from "./live-streaming/Rtsp.module";
 import { RequestTestModule } from "./request-test/RequestTest.module";
@@ -37,16 +32,12 @@ import { TranscriptionModule } from "./transcription/transcription.module";
       username: 'postgres',
       password: 'postgres',
       database: 'model-edit-be',
-      entities: [ApplicationModel, ConvertedFileInfo],
+      entities: [ApplicationModel],
       synchronize: true,
     }),
     ScheduleModule.forRoot(),
-    TasksModule,
     ApplicationModelsModule,
-    VideoProcessingModule,
     FilesModule,
-    AnalysedVideoModule,
-    FileScanModule,
     TranscribeModule,
     S3Module,
     CodeGenerationModule,

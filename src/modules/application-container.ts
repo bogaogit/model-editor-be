@@ -2,7 +2,6 @@
 import { Container, interfaces } from "inversify";
 
 
-import { WebSocketService } from "../websocket/WebSocket.service";
 import ServiceIdentifier = interfaces.ServiceIdentifier;
 import { RecorderService } from "../recorder/Recorder.service";
 import { OnDemandService } from "../on-demand-service/OnDemandService.service";
@@ -16,7 +15,6 @@ export class ApplicationContainer {
   private readonly container = new Container()
 
   constructor() {
-    this.container.bind<WebSocketService>(SYMBOLS.WebSocketService).to(WebSocketService).inSingletonScope()
     this.container.bind<RecorderService>(SYMBOLS.RecorderService).to(RecorderService).inSingletonScope()
     this.container.bind<OnDemandService>(SYMBOLS.OnDemandService).to(OnDemandService).inSingletonScope()
     this.container.bind<LiveChatService>(SYMBOLS.LiveChatService).to(LiveChatService).inSingletonScope()
