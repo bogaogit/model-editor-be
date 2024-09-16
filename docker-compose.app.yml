@@ -33,6 +33,7 @@ services:
     ports:
       - 4000:4000
     environment:
+      - REDIS_HOST=redis
       - DATABASE_HOST=database
       - DATABASE_PORT=5432
       - DATABASE_USER=postgres

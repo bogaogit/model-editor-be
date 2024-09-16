@@ -17,7 +17,7 @@ export class TranscriptionService {
   private redis: Redis;
 
   constructor() {
-    this.redis = new Redis();
+    this.redis = new Redis({port: 6379, host: process.env.REDIS_HOST});
   }
 
   async getRecordsByIndex(
