@@ -32,7 +32,7 @@ import { TranscriptionModule } from "./transcription/transcription.module";
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'localhost',
+      host: process.env.DATABASE_HOST,
       port: 5432,
       username: 'postgres',
       password: 'postgres',

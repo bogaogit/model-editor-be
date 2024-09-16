@@ -1,0 +1,50 @@
+version: "1"
+services:
+  database:
+    image: postgres:12-alpine
+    container_name: model-be-db-container
+    restart: "always"
+    ports:
+      - "5432:5432"
+    volumes:
+      - /root/LPI-001/data/db:/var/lib/postgresql:cached
+      - /root/LPI-001:/home/docker:delegated
+      - /root/LPI-001/docker/.pgpass:/root/.pgpass:ro
+    environment:
+      - POSTGRES_DB=model-edit-be
+      - POSTGRES_USER:postgres
+      - POSTGRES_PASSWORD=postgres
+    networks:
+      - "my-network"
+  redis:
+    image: redis:alpine
+    container_name: model-be-redis-container
+    ports:
+      - 6379:6379
+    networks:
+      - "my-network"
+  serverside:
+    image: model-be
+    container_name: model-be-app-container
+    restart: on-failure
+    depends_on:
+      - database
+      - redis
+    ports:
+      - 4000:4000
+    environment:
+      - DATABASE_HOST=database
+      - DATABASE_PORT=5432
+      - DATABASE_USER=postgres
+      - DATABASE_PASSWORD
+      - DATABASE_NAME
+      - DATABASE_SYNCHRONIZE
+      - RUN_TASKS=false
+      - INPUT_DIRECTORY=["E:\\\\videos"]
+      - NODE_ENV
+    networks:
+      - "my-network"
+
+networks:
+  my-network:
+    external: true
