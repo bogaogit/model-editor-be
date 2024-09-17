@@ -31,4 +31,4 @@ RUN npm install --only=production
 EXPOSE 4000
 
 # Start the NestJS application
-CMD ["node", "dist/src/main"]
+CMD ["node", "dist/main"]
