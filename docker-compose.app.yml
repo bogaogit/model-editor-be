@@ -62,7 +62,7 @@ services:
     depends_on:
       - database
     ports:
-      - 8080:8080
+      - 3002:3002
     environment:
       - REDIS_HOST=redis
       - DATABASE_HOST=database
